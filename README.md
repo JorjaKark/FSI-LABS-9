@@ -133,3 +133,96 @@ Common English constructs such as "AT THE END", "A NATIONAL", "IN THE SEASON" em
 These recognizable patterns allowed the remaining letters to be inferred systematically
 
 This iterative substitution process formed the core of the cipher-breaking method.
+
+6. Pattern Recognition in Partial Plaintext
+6.1 Increasing Readability With Each Iteration
+
+As additional letter mappings were tested, each new tr command revealed more readable English. For example, expanding the substitution to:
+
+tr 'ytnvupmrxqlgbe' 'THEANDIGOSWBF' < in0.txt > in5.txt
+
+
+produced partial plaintext including recognizable phrases such as:
+
+“THE OSCARS …”
+
+“THE AWARDS RACE WAS …”
+
+“AT THE END …”
+
+“A NATIONAL …”
+
+Although several characters remained unmapped, the structure and vocabulary clearly matched natural English, confirming that the deduction process was on the right track.
+
+6.2 Identifying Contextual Clues
+
+Repeated English structures strengthened further deductions:
+
+Names such as HARVEY WEINSTEIN
+
+Words like BOOKENDED, APPEAR, SEASON, CLOSING CEREMONY
+
+Phrases like AT THE END, THE EMERGENCE OF, EXTRA LONG
+
+These correctly-formed words acted as anchors, allowing you to infer the next unmapped ciphertext letters through context.
+
+This stage marked the transition from statistical analysis to human linguistic pattern recognition, which is crucial in solving monoalphabetic ciphers.
+
+7. Building the Full Substitution Table
+7.1 Expanding the Mapping to Cover Nearly All Letters
+
+The next iteration added more plaintext guesses:
+
+tr 'ytnvupmrxqlgbecdaih' 'THEANDIGOSWBFPYVBRLQXWIEJDSGK' < in0.txt > in6.txt
+
+
+This produced plaintext that was nearly complete, with only a few incorrect or missing characters.
+
+7.2 Completing the Entire Alphabet Mapping
+
+Finally, you applied a complete 26-letter substitution:
+
+tr 'abcdefghijklmnopqrstuvwxyz' 'CFMPYVBRLQXWIEJDSGK HNAZOTU' < in0.txt > in7.txt
+
+
+(Spacing above is from the screenshot; in your final report you will present the exact corrected key string.)
+
+This last substitution completely decrypted the ciphertext. All remaining gibberish segments resolved into fully readable English prose.
+
+By this stage, every ciphertext letter had been mapped uniquely to a plaintext letter, producing the final substitution key.
+
+8. Final Results
+8.1 Complete Substitution Key
+
+In your report, you will present the final key clearly (e.g., as a 26-letter mapping table).
+From the final screenshot, the mapping is exactly what you used in the last tr command.
+
+You will format it like:
+
+Cipher	Plain
+a	C
+b	F
+c	M
+d	P
+...	...
+
+(I can generate this table for you automatically if you want—just say the word.)
+
+8.2 Final Recovered Plaintext
+
+The last screenshot (head in7.txt) shows the fully recovered plaintext, beginning with:
+
+THE OSCARS TURN ON SUNDAY WHICH SEEMS ABOUT RIGHT AFTER THIS LONG STRANGE
+AWARDS TRIP THE BAGGEL FEELS LIKE A NONAGENARIAN TOO
+THE AWARDS RACE WAS BOOKENDED BY THE DEMISE OF HARVEY WEINSTEIN AT ITS OUTSET
+AND THE APPARENT IMPLOSION OF HIS FILM COMPANY AT THE END AND IT WAS SHAPED BY …
+
+…and continuing on as a standard English news article.
+
+This confirms that:
+
+The substitution key is correct
+
+The monoalphabetic cipher has been completely broken
+
+Frequency analysis combined with iterative substitution is sufficient for recovering full plaintext from this type of cipher
