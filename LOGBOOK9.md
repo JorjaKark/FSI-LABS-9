@@ -136,7 +136,11 @@ head in2.txt
 #### **8.**
 
 * **Commands Used:**
-  (Additional refinements to the key are tested.)
+
+  ```bash
+  tr 'ytnvupmrxqlgbecdaih' 'THEANDIGOSWBFPMYCLR' < in0.txt > in6.txt
+  head in6.txt
+  ```
 
 * **Screenshot:**
   ![Figure 10](./screenshots/screenshots-week9/task1/included/10_tr_attempt7.png)
