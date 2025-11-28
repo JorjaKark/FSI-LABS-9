@@ -113,24 +113,18 @@ head in2.txt
 
   <figcaption><strong>Figure 7</strong> – Larger sections of readable text appear, indicating convergence toward the correct substitution key.</figcaption>
 
+
 ---
 
 #### **6.**
 
 * **Commands Used:**
-  (Further mapping refinement.)
 
-* **Screenshot:**
-  ![Figure 8](./screenshots/screenshots-week9/task1/included/08_tr_attempt5.png)
+  ```bash
+  tr 'ytnvupmrxqlgbe' 'THEANDIGOSWBFP' < in0.txt > in5.txt
+  head in5.txt
+  ```
 
-  <figcaption><strong>Figure 8</strong> – The ciphertext increasingly resembles English as substitutions for medium-frequency letters are validated.</figcaption>
-
----
-
-#### **7.**
-
-* **Commands Used:**
-  (Yet another intermediate substitution.)
 
 * **Screenshot:**
   ![Figure 9](./screenshots/screenshots-week9/task1/included/09_tr_attempt6.png)
