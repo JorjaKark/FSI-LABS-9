@@ -1,9 +1,3 @@
-Below is a **fully polished, clean, ready-to-submit report**, written in a professional academic style and following the structure that matches your workflow and screenshots.
-
-You can copy/paste this directly into your lab submission.
-
----
-
 # **Frequency Analysis Attack on a Monoalphabetic Substitution Cipher**
 
 ## **1. Introduction**
@@ -212,11 +206,3 @@ tr 'ytnvupmr' 'THEANDIG'
 ...
 tr 'abcdefghijklmnopqrstuvwxyz' 'CFMPYVBRLQXWIEJDSGKHNAZOTU'
 ```
-
----
-
-If you'd like, I can also generate:
-
-✅ a PDF version
-✅ a LaTeX version
-✅ a condensed or extended version depending on your instructor’s requirements.
