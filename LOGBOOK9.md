@@ -49,11 +49,12 @@ The objective of this task is to apply frequency analysis techniques to the prov
 #### **2.**
 
 * **Commands Used:**
-```bash
-cp ciphertext.txt in0.txt
-tr 'ytn' 'THE' < in0.txt > in1.txt
-head in1.txt
-```
+
+  ```bash
+  cp ciphertext.txt in0.txt
+  tr 'ytn' 'THE' < in0.txt > in1.txt
+  head in1.txt
+  ```
 
   This step tests the hypothesis that ciphertext letters `ytn` map to the plaintext letters `T`, `H`, and `E`.
 
@@ -69,7 +70,11 @@ head in1.txt
 #### **3.**
 
 * **Commands Used:**
-  (The specific command in the screenshot shows an extended `tr` mapping used for further substitution testing.)
+
+```bash
+tr 'ytnvup' 'THEAND' < in0.txt > in2.txt
+head in2.txt
+```
 
 * **Screenshot:**
   ![Figure 5](./screenshots/screenshots-week9/task1/included/05_tr_attempt2.png)
