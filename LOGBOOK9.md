@@ -177,36 +177,17 @@ head in2.txt
 
   <figcaption><strong>Figure 12</strong> – First segment of the recovered plaintext after applying the full substitution key.</figcaption>
 
----
-
-#### **11.**
-
-* **Commands Used:**
-  (Continuation of final plaintext generation.)
 
 * **Screenshot:**
   ![Figure 13](./screenshots/screenshots-week9/task1/included/13_plaintext_partial2.png)
 
   <figcaption><strong>Figure 13</strong> – Second plaintext segment showing coherent English grammar and sentence flow.</figcaption>
 
----
-
-#### **12.**
-
-* **Commands Used:**
-  (Plaintext continued.)
 
 * **Screenshot:**
   ![Figure 14](./screenshots/screenshots-week9/task1/included/14_plaintext_partial3.png)
 
   <figcaption><strong>Figure 14</strong> – Third plaintext segment confirming correctness of the final substitution table.</figcaption>
-
----
-
-#### **13.**
-
-* **Commands Used:**
-  (Plaintext final section.)
 
 * **Screenshot:**
   ![Figure 15](./screenshots/screenshots-week9/task1/included/15_plaintext_partial4.png)
