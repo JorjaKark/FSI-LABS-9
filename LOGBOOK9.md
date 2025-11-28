@@ -150,6 +150,25 @@ AfxmD axNbimaTmNr lmTH THE aixqmNr aEhEcxNd xb THE lmNTEh xidcemaq THANsq
 
   <figcaption><strong>Figure 7</strong> – Larger sections of readable text appear, indicating convergence toward the correct substitution key.</figcaption>
 
+  * **TEXT: **
+
+  ```
+THE xqaAhq TzhN   xN qzNDAd lHmaH qEEcq AgxzT hmrHT AbTEh THmq ixNr qThANrE
+AlAhDq Thme THE gArrEh bEEiq imsE A NxNArENAhmAN Txx
+
+THE AlAhDq hAaE lAq gxxsENDED gd THE DEcmqE xb HAhfEd lEmNqTEmN AT mTq xzTqET
+AND THE AeeAhENT mceixqmxN xb Hmq bmic axceANd AT THE END AND mT lA q qHAeED gd
+THE EcEhrENaE xb cETxx TmcEq ze giAasrxlN eximTmaq AhcaANdD AaTmfmq c AND
+A NATmxNAi axNfEhqATmxN Aq ghmEb AND cAD Aq A bEfEh DhEAc AgxzT lHE THEh THEhE
+
+xzrHT Tx gE A ehEqmDENT lmNbhEd THE qEAqxN DmDNT ozqT qEEc EkThA ixNr mT lAq
+Nr mT lAq
+EkThA ixNr gEaAzqE THE xqaAhq lEhE cxfED Tx THE bmhqT lEEsEND mN cA haH Tx
+
+AfxmD axNbimaTmNr lmTH THE aixqmNr aEhEcxNd xb THE lmNTEh xidcemaq THANsq
+```
+
+
 
 ---
 
