@@ -12,7 +12,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-## **Phase 1: Frequency Analysis
+## **Phase 1: Frequency Analysis**
 
 #### **1.**
 
@@ -36,7 +36,6 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
   <figcaption><strong>Figure 2</strong> – Top bigram frequencies revealing repeating ciphertext digraphs useful for identifying English patterns.</figcaption>
 
-
   This result displays the trigram (3-gram) statistics.
 
 * **Screenshot:**
@@ -46,9 +45,13 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-## **Phase 2: **
+## **Phase 2: Substitution Attempts**
 
-#### **2.**
+Below, after each `tr` command, I have added short explanations describing **why I chose those specific substitutions**, based on simple frequency-analysis logic and common English patterns (all easily found in classical cryptanalysis sources or Wikipedia).
+
+---
+
+### **2. First Substitution Attempt**
 
 * **Commands Used:**
 
@@ -58,15 +61,16 @@ The objective of this task is to apply frequency analysis techniques to the prov
   head in1.txt
   ```
 
-  This step tests the hypothesis that ciphertext letters `ytn` map to the plaintext letters `T`, `H`, and `E`.
+* **Reasoning for choosing `ytn → THE`:**
+  From the trigram frequency output, the sequence **“ytn”** appeared far more often than other trigrams.
+  In English, **“the”** is the most common trigram by a wide margin, so it is standard in substitution-cipher attacks to test this first.
+  This type of reasoning is directly supported by well-known English trigram frequency lists.
 
 * **Screenshot:**
   ![Figure 4](./screenshots/screenshots-week9/task1/included/04_tr_attempt1.png)
 
   <figcaption><strong>Figure 4</strong> – Initial partial substitution showing the emergence of the plaintext word “THE”, validating the mapping.</figcaption>
 
-  ** Text: **
-  
 ```
 THE xqavhq Tzhu   xu qzupvd lHmaH qEEcq vgxzT hmrHT vbTEh THmq ixur qThvurE
 vlvhpq Thme THE gvrrEh bEEiq imsE v uxuvrEuvhmvu Txx
@@ -82,11 +86,9 @@ EkThv ixur gEavzqE THE xqavhq lEhE cxfEp Tx THE bmhqT lEEsEup mu cv haH Tx
 vfxmp axubimaTmur lmTH THE aixqmur aEhEcxud xb THE lmuTEh xidcemaq THvusq
 ```
 
-
 ---
 
-
-#### **3.**
+### **3. Second Substitution Attempt**
 
 * **Commands Used:**
 
@@ -95,63 +97,49 @@ tr 'ytnvup' 'THEAND' < in0.txt > in2.txt
 head in2.txt
 ```
 
+* **Reasoning for adding `vup → AND`:**
+  After confirming THE, several ciphertext clusters strongly resembled the shape of the word **“and”**.
+  The letters **v**, **u**, and **p** repeatedly appeared in positions typical of A, N, and D (for example between known consonants or forming small functional words).
+  “AND” is one of the most common English words, so mapping these next is a natural progression in classical frequency analysis.
+
 * **Screenshot:**
   ![Figure 5](./screenshots/screenshots-week9/task1/included/05_tr_attempt2.png)
 
   <figcaption><strong>Figure 5</strong> – Expanded character substitutions, resulting in additional partially recognizable English fragments.</figcaption>
 
-    * **TEXT: **
-
-  
 ```
 THE xqaAhq TzhN   xN qzNDAd lHmaH qEEcq AgxzT hmrHT AbTEh THmq ixNr qThANrE
 AlAhDq Thme THE gArrEh bEEiq imsE A NxNArENAhmAN Txx
-
-THE AlAhDq hAaE lAq gxxsENDED gd THE DEcmqE xb HAhfEd lEmNqTEmN AT mTq xzTqET
-AND THE AeeAhENT mceixqmxN xb Hmq bmic axceANd AT THE END AND mT lA q qHAeED gd
-THE EcEhrENaE xb cETxx TmcEq ze giAasrxlN eximTmaq AhcaANdD AaTmfmq c AND
-A NATmxNAi axNfEhqATmxN Aq ghmEb AND cAD Aq A bEfEh DhEAc AgxzT lHE THEh THEhE
-
-xzrHT Tx gE A ehEqmDENT lmNbhEd THE qEAqxN DmDNT ozqT qEEc EkThA ixNr mT lAq
-EkThA ixNr gEaAzqE THE xqaAhq lEhE cxfED Tx THE bmhqT lEEsEND mN cA haH Tx
-
-AfxmD axNbimaTmNr lmTH THE aixqmNr aEhEcxNd xb THE lmNTEh xidcemaq THANsq
+...
 ```
 
 ---
 
-#### **4.**
+### **4. Third Substitution Attempt**
 
 * **Commands Used:**
 
-  ```bash
-  tr 'ytnvupmr' 'THEANDIG' < in0.txt > in3.txt
-  head in3.txt
-  ```
+```bash
+tr 'ytnvupmr' 'THEANDIG' < in0.txt > in3.txt
+head in3.txt
+```
+
+* **Reasoning for adding `m r → I G`:**
+  Once AND and THE started appearing correctly, many words contained repeated occurrences of **m** in the position of a common vowel—most often **I** in English.
+  Meanwhile **r** appeared inside clusters resembling “ght,” “ing,” and “age,” all of which typically contain **G**.
+  This deduction comes from typical English digram/trigram structures observable in simple frequency tables.
 
 * **Screenshot:**
   ![Figure 6](./screenshots/screenshots-week9/task1/included/06_tr_attempt3.png)
 
-  <figcaption><strong>Figure 6</strong> – Continued improvement in plaintext visibility as more correct mappings are applied.</figcaption>
-
 ```
 THE xqaAhq TzhN   xN qzNDAd lHIaH qEEcq AgxzT hIGHT AbTEh THIq ixNG qThANGE
-AlAhDq ThIe THE gAGGEh bEEiq iIsE A NxNAGENAhIAN Txx
-
-THE AlAhDq hAaE lAq gxxsENDED gd THE DEcIqE xb HAhfEd lEINqTEIN AT ITq xzTqET
-AND THE AeeAhENT IceixqIxN xb HIq bIic axceANd AT THE END AND IT lA q qHAeED gd
-THE EcEhGENaE xb cETxx TIcEq ze giAasGxLN exiITTIaq AhcaANDd AaTIfIq c AND
-A NATIxNAi axNfEhqATIxN Aq ghIEb AND cAD Aq A bEfEh DhEAc AgxzT lHE THEh THEhE
-
-xzGHT Tx gE A ehEqIDENT lINbhEd THE qEAqxN DIDNT ozqT qEEc EkThA ixNG IT lAq
-EkThA ixNG gEaAzqE THE xqaAhq lEhE cxfED Tx THE bIhqT lEEsEND IN cA haH Tx
-
-AfxID axNbiIaTING lITH THE aixqING aEhEcxNd xb THE lINTEh xidceIaq THANsq
+...
 ```
 
 ---
 
-#### **5.**
+### **5. Fourth Substitution Attempt**
 
 * **Commands Used:**
 
@@ -160,30 +148,22 @@ AfxID axNbiIaTING lITH THE aixqING aEhEcxNd xb THE lINTEh xidceIaq THANsq
   head in4.txt
   ```
 
+* **Reasoning for adding `x q → O S`:**
+  The letter **x** frequently appeared where English typically has **O**—for example before consonants that commonly follow “O” (oN, oF, so, to).
+  The letter **q** appeared in positions resembling **S**, including plural-like endings or common blend positions (ST, SP).
+  Both O and S are extremely high-frequency English letters, so testing them next is standard practice.
+
 * **Screenshot:**
   ![Figure 7](./screenshots/screenshots-week9/task1/included/07_tr_attempt4.png)
 
-  <figcaption><strong>Figure 7</strong> – Larger sections of readable text appear, indicating convergence toward the correct substitution key.</figcaption>
-
 ```
 THE OSaAhS TzhN   ON SzNDAd lHIaH SEEcS AgOzT hIGHT AbTEh THIS iONG SThANGE
-AlAhDS ThIe THE gAGGEh bEEiS iIsE A NONAGENAhIAN TOO
-
-THE AlAhDS hAaE lAS gOOsENDED gd THE DEcISE Ob HAhfEd lEINSTEIN AT ITS OzTSET
-AND THE AeeAhENT IceiOSION Ob HIS bIic aOceANd AND AT THE END AND IT lAS S SHAeED gd
-THE EcEhGENaE Ob cETOO TIcES ze giAasGOLN eOiITIaS AhcaANDd AaTIFIS c AND
-A NATIONAi aONfEhSATION AS ghIEb AND cAD AS A bEfEh DhEAc AgOzT lHE THEh THEhE
-
-OzGHT TO gE A ehESIDENT lINbhEd THE SEASON DIDNT ozST SEEc EkThA iONG IT lAS
-EkThA iONG gEaAzSE THE OSaAhS lEhE cofED TO THE bIhST lEEsEND IN cA haH TO
-
-AfOID aONbiIaTING lITH THE aiOSING aEhEcONd Ob THE lINTEh OidceIaS THANsS
+...
 ```
-
 
 ---
 
-#### **6.**
+### **6. Fifth Substitution Attempt**
 
 * **Commands Used:**
 
@@ -192,30 +172,23 @@ AfOID aONbiIaTING lITH THE aiOSING aEhEcONd Ob THE lINTEh OidceIaS THANsS
   head in5.txt
   ```
 
+* **Reasoning for adding `l g b e → W B F P`:**
+  At this point, many long English words were partially recognizable:
+  “WITH”, “FEELS”, “AFTER”, “WAS”, “BY”, etc.
+  By comparing these near-complete word shapes with common English spellings, mapping these four letters to **W**, **B**, **F**, and **P** became straightforward.
+  This is standard contextual deduction made easier once major vowels and consonants are known.
 
 * **Screenshot:**
-  ![Figure 9](./screenshots/screenshots-week9/task1/included/09_tr_attempt6.png)
-
-  <figcaption><strong>Figure 9</strong> – Further clarity is achieved; several English words are now fully recognizable.</figcaption>
+  ![Figure 8](./screenshots/screenshots-week9/task1/included/09_tr_attempt6.png)
 
 ```
 THE OSaAhS TzhN   ON SzNDAd WHIaH SEEcS ABOzT hIGHT AFTEh THIS iONG SThANGE
-AWAhDS ThIP THE BAGGEh FEEiS iIsE A NONAGENAhIAN TOO
-
-THE AWAhDS hAaE WAS BOOsENDED Bd THE DEcISE OF HAhfEd WEINSTEIN AT ITS OzTSET
-AND THE APPAhENT IcPiOSION OF HIS FIic aOcPANd AND AT THE END AND IT WA S SHAPED Bd
-THE EcEhGENaE OF cETOO TIcES zP BiAasGOWN POIiTIAs AhcaANDd AaTIFIS c AND
-A NATIONAL aONfEhSATION AS BhIEF AND cAD AS A FEfEh DhEAc ABOzT WHE THEh THEhE
-
-OzGHT TO BE A PhESIDENT WINFhEd THE SEASON DIDNT ozST SEEc EkThA iONG IT WAS
-EkThA iONG BEaAzSE THE OSaAhS WEhE cofED TO THE FIhST WEEsEND IN cA haH TO
-
-AfOID aONFiiATING WITH THE aiOSING aEhEcONd OF THE WINTEh OidcPIaS THANsS
+...
 ```
 
 ---
 
-#### **8.**
+### **8. Sixth Substitution Attempt**
 
 * **Commands Used:**
 
@@ -224,59 +197,46 @@ AfOID aONFiiATING WITH THE aiOSING aEhEcONd OF THE WINTEh OidcPIaS THANsS
   head in6.txt
   ```
 
-* **Screenshot:**
-  ![Figure 10](./screenshots/screenshots-week9/task1/included/10_tr_attempt7.png)
+* **Reasoning for adding `c d a i h → M Y C L R`:**
+  After earlier substitutions, words like **METOO**, **COMPANY**, **CEREMONY**, **BLACK**, **RIGHT**, and **THERE** were almost readable, missing only a few letters.
+  Those missing positions matched the plaintext letters **M**, **Y**, **C**, **L**, and **R**, which fit consistently across multiple word contexts.
+  This stage typically involves recognizing whole words and filling in the gaps using simple elimination.
 
-  <figcaption><strong>Figure 10</strong> – A near-complete plaintext emerges as most alphabet mappings have been identified.</figcaption>
+* **Screenshot:**
+  ![Figure 9](./screenshots/screenshots-week9/task1/included/10_tr_attempt7.png)
 
 ```
 THE OSCARS TzRN   ON SzNDAY WHICH SEEMS ABozT RIGHT AFTER THIS LONG STRANGE
-AWARDS TRIP THE BAGGER FEELS LISz A NONAGENARIAN TOO
-
-THE AWARDS RACE WAS BOOsENDED BY THE DEMISE OF HArfEY WEINSTEIN AT ITS OzTSET
-AND THE APPARENT IMPLOSION OF HIS FILM COMPANY AT THE END AND IT WA S SHAPED BY
-THE EMERGENCE OF METOO TIMES zP BLACsGOWN POLITICS ARMCANDY ACTIVIS M AND
-A NATIONAL CONFERSATION AS BRIEF AND MAD AS A FeFER DREAM ABozT WHE THER THERE
-
-OzGHT TO BE A PRESIDENT WINFREY THE SEASON DIDNT ozST SEEM EkTRA LO NG IT WAS
-EkTRA LONG BECAzSE THE OSCARS WERE MoFEd TO THE FIRST WEEsEND IN MA RCH TO
-AfOID CONFLICTING WITH THE CLOSING CEREMONY OF THE WINTER OLYMPICS THANsS
+...
 ```
-
 
 ---
 
-#### **9.**
+### **9. Final Full Alphabet Substitution**
 
 * **Commands Used:**
+
   ```bash
   tr 'abcdefghijklmnopqrstuvwxyz' 'CFMYPVBRLQXWIEJDSGKHNAZOTU' < in0.txt > in7.txt
   head in7.txt
   ```
 
-* **Screenshot:**
-  ![Figure 11](./screenshots/screenshots-week9/task1/included/11_tr_head_partial.png)
+* **Reasoning:**
+  At this stage, the entire plaintext was nearly readable, and only a few letters remained unmapped.
+  Using **process of elimination**—ensuring each ciphertext letter maps to a unique plaintext letter—and checking for English spelling correctness, the final few letters were assigned.
+  This is the usual final step of a monoalphabetic substitution attack once 90% of the plaintext is visible.
 
-  <figcaption><strong>Figure 11</strong> – View of the substitution key header showing a nearly complete alphabet mapping.</figcaption>
+* **Screenshot:**
+  ![Figure 10](./screenshots/screenshots-week9/task1/included/11_tr_head_partial.png)
 
 ```
 THE OSCARS TURN   ON SUNDAY WHICH SEEMS ABOUT RIGHT AFTER THIS LONG STRANGE
-AWARDS TRIP THE BAGGER FEELS LIKE A NONAGENARIAN TOO
-
-THE AWARDS RACE WAS BOOKENDED BY THE DEMISE OF HARVEY WEINSTEIN AT ITS OUTSET
-AND THE APPARENT IMPLOSION OF HIS FILM COMPANY AT THE END AND IT WA S SHAPED BY
-THE EMERGENCE OF METOO TIMES UP BLACKGOWN POLITICS ARMCANDY ACTIVISM AND
-A NATIONAL CONVERSATION AS BRIEF AND MAD AS A FEVER DREAM ABOUT WHE THER THERE
-
-OUGHT TO BE A PRESIDENT WINFREY THE SEASON DIDNT JUST SEEM EXTRA LO NG IT WAS
-EXTRA LONG BECAUSE THE OSCARS WERE MOVED TO THE FIRST WEEKEND IN MA RCH TO
-AVOID CONFLICTING WITH THE CLOSING CEREMONY OF THE WINTER OLYMPICS
-THANKS
+...
 ```
 
 ---
 
-#### **10.**
+### **10. Viewing the Full Plaintext**
 
 * **Commands Used:**
 
@@ -284,27 +244,11 @@ THANKS
   cat in7.txt
   ```
 
-* **Screenshot:**
-  ![Figure 12](./screenshots/screenshots-week9/task1/included/12_plaintext_partial1.png)
-
-  <figcaption><strong>Figure 12</strong> – First segment of the recovered plaintext after applying the full substitution key.</figcaption>
-
-
-* **Screenshot:**
-  ![Figure 13](./screenshots/screenshots-week9/task1/included/13_plaintext_partial2.png)
-
-  <figcaption><strong>Figure 13</strong> – Second plaintext segment showing coherent English grammar and sentence flow.</figcaption>
-
-
-* **Screenshot:**
-  ![Figure 14](./screenshots/screenshots-week9/task1/included/14_plaintext_partial3.png)
-
-  <figcaption><strong>Figure 14</strong> – Third plaintext segment confirming correctness of the final substitution table.</figcaption>
-
-* **Screenshot:**
-  ![Figure 15](./screenshots/screenshots-week9/task1/included/15_plaintext_partial4.png)
-
-  <figcaption><strong>Figure 15</strong> – Final portion of the fully decrypted text, demonstrating the success of the frequency analysis attack.</figcaption>
+* **Screenshots (plaintext output):**
+  ![Figure 11](./screenshots/screenshots-week9/task1/included/12_plaintext_partial1.png)
+  ![Figure 12](./screenshots/screenshots-week9/task1/included/13_plaintext_partial2.png)
+  ![Figure 13](./screenshots/screenshots-week9/task1/included/14_plaintext_partial3.png)
+  ![Figure 14](./screenshots/screenshots-week9/task1/included/15_plaintext_partial4.png)
 
 ---
 
@@ -328,4 +272,3 @@ This task successfully demonstrated how frequency analysis, combined with iterat
 ## **Summary**
 
 In this task, frequency analysis was applied to a provided ciphertext to uncover patterns characteristic of English. Using `freq.py` outputs and a series of methodical substitution attempts with `tr`, a complete key was reconstructed, and the plaintext was fully decrypted. This exercise highlights the inherent weakness of monoalphabetic substitution ciphers and reinforces why more advanced cryptographic techniques are necessary for secure communications.
-
