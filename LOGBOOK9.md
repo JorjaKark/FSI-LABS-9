@@ -12,7 +12,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-## **Phase 1: Frequency Analysis and Initial Substitutions**
+## **Phase 1: Frequency Analysis
 
 #### **1.**
 
@@ -46,6 +46,8 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
+## **Phase 2: **
+
 #### **2.**
 
 * **Commands Used:**
@@ -65,7 +67,6 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-## **Phase 2: Iterative Key Refinement and Partial Decryption**
 
 #### **3.**
 
