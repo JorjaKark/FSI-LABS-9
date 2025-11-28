@@ -134,6 +134,21 @@ AfxmD axNbimaTmNr lmTH THE aixqmNr aEhEcxNd xb THE lmNTEh xidcemaq THANsq
 
   <figcaption><strong>Figure 6</strong> – Continued improvement in plaintext visibility as more correct mappings are applied.</figcaption>
 
+```
+THE xqaAhq TzhN   xN qzNDAd lHIaH qEEcq AgxzT hIGHT AbTEh THIq ixNG qThANGE
+AlAhDq ThIe THE gAGGEh bEEiq iIsE A NxNAGENAhIAN Txx
+
+THE AlAhDq hAaE lAq gxxsENDED gd THE DEcIqE xb HAhfEd lEINqTEIN AT ITq xzTqET
+AND THE AeeAhENT IceixqIxN xb HIq bIic axceANd AT THE END AND IT lA q qHAeED gd
+THE EcEhGENaE xb cETxx TIcEq ze giAasGxLN exiITTIaq AhcaANDd AaTIfIq c AND
+A NATIxNAi axNfEhqATIxN Aq ghIEb AND cAD Aq A bEfEh DhEAc AgxzT lHE THEh THEhE
+
+xzGHT Tx gE A ehEqIDENT lINbhEd THE qEAqxN DIDNT ozqT qEEc EkThA ixNG IT lAq
+EkThA ixNG gEaAzqE THE xqaAhq lEhE cxfED Tx THE bIhqT lEEsEND IN cA haH Tx
+
+AfxID axNbiIaTING lITH THE aixqING aEhEcxNd xb THE lINTEh xidceIaq THANsq
+```
+
 ---
 
 #### **5.**
