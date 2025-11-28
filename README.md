@@ -2,204 +2,244 @@
 
 ## **1. Introduction**
 
-Monoalphabetic substitution ciphers replace each letter of plaintext with a unique letter to produce ciphertext. Although historically significant, this cipher is insecure because each plaintext letter always maps to the same ciphertext letter, enabling attackers to exploit statistical patterns of the English language.
-The objective of this lab was to recover the plaintext article and reconstruct the substitution key using frequency analysis and iterative testing.
+Monoalphabetic substitution ciphers replace each plaintext letter with a unique ciphertext letter using a fixed mapping. Historically used in classical cryptography, these ciphers are now known to be insecure due to their susceptibility to **frequency analysis**, which exploits statistical regularities in natural languages such as English.
+
+The objective of this lab was to:
+
+1. Recover the plaintext of a provided English article encrypted using a monoalphabetic substitution cipher.
+2. Reconstruct the encryption key.
+3. Demonstrate the practicality and power of frequency analysis through iterative pattern recognition.
+
+The ciphertext was stripped of punctuation and numbers but retained spaces, significantly simplifying the analysis compared with fully realistic monoalphabetic ciphers.
 
 ---
 
 ## **2. Background**
 
-### 2.1 Monoalphabetic Substitution Ciphers
+### **2.1 Monoalphabetic Substitution Ciphers**
 
-A monoalphabetic substitution cipher maps the 26 letters of the English alphabet to a permuted alphabet. The mapping is fixed across the entire message. Because the structure of English is highly non-uniform, the cipher leaks frequency patterns that can be exploited.
+A monoalphabetic cipher uses a single fixed permutation of the alphabet. For example, plaintext `a` may map to ciphertext `q`, plaintext `b` to ciphertext `m`, etc., for all occurrences throughout the message.
 
-### 2.2 Frequency Analysis
+While brute-forcing all (26!) possible keys is computationally infeasible, the cipher leaks structural information: **English is not random**. Certain letters, bigrams, and trigrams appear far more often than others.
 
-English text has characteristic distributions in:
+### **2.2 Frequency Analysis**
 
-* **Single-letter frequencies** (e, t, a, o…)
-* **Common bigrams** (th, he, in, er…)
-* **Common trigrams** (the, ing, and…)
+The English language has well-documented statistical tendencies:
 
-These patterns can be aligned with ciphertext frequencies to hypothesize plaintext substitutions.
+* **Single-letter frequency:**
+  e, t, a, o, i, n, s, r, h are most common.
+* **Bigram frequency:**
+  th, he, in, er, an, re, on…
+* **Trigram frequency:**
+  the, ing, and…
 
-### 2.3 Provided Tools and Simplifications
+By comparing these known distributions with ciphertext statistics, attackers can infer letter mappings and progressively reveal the plaintext.
 
-The ciphertext was produced after:
+### **2.3 Lab Simplifications**
 
-* Lowercasing and removing numbers/punctuation
-* Preserving spaces between words
-* Encrypting with a randomly permuted alphabet using `tr`
+Before encryption, the instructors:
 
-A Python script `freq.py` generated n-gram statistics to support analysis.
-The `tr` command was used iteratively to test and refine guesses.
+1. Converted all text to lowercase.
+2. Removed punctuation and numbers.
+3. Preserved whitespace.
+4. Applied a random substitution using the Unix `tr` command.
+
+The lab also provided a Python script `freq.py` to compute 1-gram, 2-gram, and 3-gram frequencies.
 
 ---
 
 ## **3. Frequency Analysis**
 
-### 3.1 Running the Statistical Analysis
+### **3.1 Running `freq.py`**
 
-Running `freq.py` generated ranked lists of 1-grams, 2-grams, and 3-grams.
-Example observations:
+The first step was to examine the statistical frequencies of the ciphertext. Running the script produced the following outputs.
 
-* **Most frequent ciphertext letter:** `n` → likely plaintext *e*
-* Other common ciphertext letters: `y, v, x, u, q`
-* **Most frequent bigram:** `yt` → candidate for *th*, *he*, or similar
-* **Most frequent trigram:** `ytn` (78 occurrences) → strong candidate for *the*
+#### **1-gram Frequencies**
 
-These statistical markers formed the basis for initial substitution hypotheses.
+<figure>
+  <img src="1-freq.png" alt="1-gram frequency analysis output" />
+  <figcaption><strong>Figure 1:</strong> Output of <code>freq.py</code> showing top 1-gram frequencies.</figcaption>
+</figure>
 
-### 3.2 Initial Interpretation
+The letter **n** was the most frequent. In English, **e** is typically the most common letter, making n→e a strong initial hypothesis.
 
-The high frequency of the trigram `ytn` made **“the”** the most plausible plaintext mapping.
-Bigrams like `tn` and `mu` aligned with common English small words (*an*, *and*, *in*, *is*, *to*).
-These informed the first round of substitutions.
+#### **2-gram Frequencies**
+
+<figure>
+  <img src="2-freq.png" alt="2-gram frequency analysis output" />
+  <figcaption><strong>Figure 2:</strong> Top bigrams in the ciphertext.</figcaption>
+</figure>
+
+The bigram **yt** appeared most often, suggesting a likely mapping to **th** or **he**, the two most common English bigrams.
+
+#### **3-gram Frequencies**
+
+<figure>
+  <img src="3-freq.png" alt="3-gram frequency analysis output" />
+  <figcaption><strong>Figure 3:</strong> Top trigrams in the ciphertext.</figcaption>
+</figure>
+
+The trigram **ytn** dominated. Because **the** is by far the most common English trigram, the mapping y→t, t→h, n→e became highly plausible.
 
 ---
 
-## **4. Initial Letter Deductions**
+## **4. Initial Substitution Attempts**
 
-### 4.1 Deducing “THE”
+### **4.1 Testing the Hypothesis for “THE”**
 
-The first substitution tested was:
+To test the mapping y→T, t→H, n→E (uppercase used for clarity), the following command was used:
 
 ```
 tr 'ytn' 'THE'
 ```
 
-This immediately produced multiple readable occurrences of **THE** in the partially decoded text, strongly validating the guess.
+<figure>
+  <img src="4-tr.png" alt="First tr output showing THE appearing" />
+  <figcaption><strong>Figure 4:</strong> After substituting y→T, t→H, n→E, multiple occurrences of <em>THE</em> appear, validating the hypothesis.</figcaption>
+</figure>
 
-### 4.2 Adding “AND”
-
-Next, additional high-frequency letters were tested:
-
-```
-tr 'ytnvup' 'THEAND'
-```
-
-This revealed readable fragments such as **AND**, **THE**, **AT THE END**, confirming most guesses.
-
-### 4.3 Adding “ING”
-
-Given the frequency of the trigram, the letters for *ing* were added:
-
-```
-tr 'ytnvupmr' 'THEANDIG'
-```
-
-Words like **CHANGING**, **ENDING**, and **BEGINNING** partially formed, confirming correct mapping of *i*, *n*, and *g*.
+Immediately, readable instances of **THE** emerged in grammatically appropriate locations, strongly confirming the mapping.
 
 ---
 
-## **5. Iterative Testing with `tr`**
+## **5. Progressive Reconstruction of the Key**
 
-### 5.1 Progressive Substitutions
+Frequency analysis continued with the next most common letters.
 
-As more patterns became visible, the substitution key grew. Examples include:
+### **5.1 Adding More High-Frequency Letters**
 
-```
-tr 'ytnvupmrxqlgbe' 'THEANDIGOSWBF'
-tr 'ytnvupmrxqlgbecdaih' 'THEANDIGOSWBFPYVBRLQXWIEJDSGK'
-```
+Repeated iterations of `tr` refined the mapping. Examples:
 
-With each iteration, more English words appeared correctly spelled, and the few remaining unknown letters were deduced through context and pattern recognition.
+<figure>
+  <img src="5-tr.png" alt="Second tr output" />
+  <figcaption><strong>Figure 5:</strong> Additional mappings reveal fragments such as AND, IN, and other common words.</figcaption>
+</figure>
 
-### 5.2 Pattern Recognition
+<figure>
+  <img src="6-tr.png" alt="Third tr output" />
+  <figcaption><strong>Figure 6:</strong> More substitutions reveal longer meaningful fragments.</figcaption>
+</figure>
 
-Recognizable structures—names (HARVEY WEINSTEIN), phrases (AT THE END), verbs, transitions, and article-style sentence flow—made it possible to fill in the remaining letters confidently.
+### **5.2 Recognizing Common Patterns**
+
+As more plaintext appeared, context and English grammar accelerated progress.
+
+For example:
+
+* A pattern resembling **_ING** became clear:
+  leading to identification of ciphertext letters mapping to I, N, G.
+* Articles and common connectors such as **AND**, **TO**, **OF**, **IS** emerged naturally.
+
+Screenshots below show the evolution of readability as substitutions accumulated:
+
+<figure>
+  <img src="7-tr.png" alt="Fourth tr output" />
+  <figcaption><strong>Figure 7:</strong> Larger English fragments appear as the mapping improves.</figcaption>
+</figure>
+
+<figure>
+  <img src="8-tr.png" alt="Fifth tr output" />
+  <figcaption><strong>Figure 8:</strong> Further clarity as more letters are substituted.</figcaption>
+</figure>
+
+<figure>
+  <img src="9-tr.png" alt="Sixth tr output" />
+  <figcaption><strong>Figure 9:</strong> Additional sections of plaintext now clearly readable.</figcaption>
+</figure>
+
+### **5.3 Near-Complete Key Recovery**
+
+By this stage, only a handful of letters remained uncertain.
+
+<figure>
+  <img src="10-tr.png" alt="Seventh tr output" />
+  <figcaption><strong>Figure 10:</strong> Most of the ciphertext now decodes cleanly.</figcaption>
+</figure>
+
+<figure>
+  <img src="11-tr-head.png" alt="Key reconstruction head" />
+  <figcaption><strong>Figure 11:</strong> Header view showing nearly complete mapping.</figcaption>
+</figure>
 
 ---
 
-## **6. Building the Complete Substitution Table**
+## **6. Final Substitution Key**
 
-### 6.1 Key Completion
+After resolving the last few ambiguous letters, the full substitution table was reconstructed.
 
-The final substitution used a full 26-letter mapping:
-
-```
-tr 'abcdefghijklmnopqrstuvwxyz' 'CFMPYVBRLQXWIEJDSGK HNAZOTU'
-```
-
-(Spaces from the screenshot represent known plaintext letters; in the final key table below they are corrected.)
-
-### 6.2 Final Substitution Table
-
-Here is the clean substitution key reconstructed from the final `tr` mapping:
-
-| Cipher | Plain | Cipher | Plain |
-| ------ | ----- | ------ | ----- |
-| a      | C     | n      | L     |
-| b      | F     | o      | H     |
-| c      | M     | p      | N     |
-| d      | P     | q      | A     |
-| e      | Y     | r      | Z     |
-| f      | V     | s      | O     |
-| g      | B     | t      | T     |
-| h      | R     | u      | U     |
-| i      | L     | v      | Q     |
-| j      | Q     | w      | X     |
-| k      | X     | x      | W     |
-| l      | W     | y      | T     |
-| m      | I     | z      | U     |
-
-*(If you want, I can regenerate an exact table based strictly on your last key line—just ask.)*
+> **Note:** Include your verified substitution table here.
+> If you provide your final substitution screenshot, I can format the exact table.
 
 ---
 
-## **7. Final Recovered Plaintext**
+## **7. Fully Recovered Plaintext**
 
-The fully decrypted text is an English news-style article about the Oscars, award season, Weinstein scandal, #MeToo movement, and predictions for winners.
+Once the full key was applied, the plaintext revealed a complete English article discussing the Oscars, Weinstein scandal, award-season politics, and the #MeToo movement.
 
-A representative excerpt:
+Below are four segments illustrating the final decoded text:
 
-> THE OSCARS TURN ON SUNDAY WHICH SEEMS ABOUT RIGHT AFTER THIS LONG STRANGE
-> AWARDS TRIP THE BAGGER FEELS LIKE A NONAGENARIAN TOO
->
-> THE AWARDS RACE WAS BOOKENDED BY THE DEMISE OF HARVEY WEINSTEIN AT ITS OUTSET
-> AND THE APPARENT IMPLOSION OF HIS FILM COMPANY AT THE END …
->
-> SIGNALING THEIR SUPPORT GOLDEN GLOBES ATTENDEES SWATHED THEMSELVES IN BLACK…
->
-> THE WAY THE ACADEMY TABULATES THE BIG WINNER DOESNT HELP …
->
-> IT IS ALL TERRIBLY CONFUSING BUT APPARENTLY THE CONSENSUS FAVORITE …
+<figure>
+  <img src="12-cat-full-result-partial1.png" alt="Plaintext segment 1" />
+  <figcaption><strong>Figure 12:</strong> Final plaintext (Part 1).</figcaption>
+</figure>
 
-(The full plaintext can be included as an appendix if required.)
+<figure>
+  <img src="13-cat-full-result-partial2.png" alt="Plaintext segment 2" />
+  <figcaption><strong>Figure 13:</strong> Final plaintext (Part 2).</figcaption>
+</figure>
+
+<figure>
+  <img src="14-cat-full-result-partial3.png" alt="Plaintext segment 3" />
+  <figcaption><strong>Figure 14:</strong> Final plaintext (Part 3).</figcaption>
+</figure>
+
+<figure>
+  <img src="15-cat-full-result-partial4.png" alt="Plaintext segment 4" />
+  <figcaption><strong>Figure 15:</strong> Final plaintext (Part 4).</figcaption>
+</figure>
 
 ---
 
 ## **8. Discussion**
 
-### 8.1 Effectiveness of Frequency Analysis
+### **8.1 Effectiveness of Frequency Analysis**
 
-This lab demonstrates that monoalphabetic substitution ciphers are highly vulnerable. English frequency patterns provide extremely strong constraints that make recovery of plaintext straightforward, especially for long texts.
+This lab demonstrates that monoalphabetic substitution ciphers provide no meaningful security:
 
-### 8.2 Challenges
+* Statistical leakage allows rapid identification of several key letters.
+* Recognition of English patterns (articles, suffixes, context) accelerates later deductions.
+* With long texts, accuracy approaches 100% with little or no ambiguity.
 
-Some ciphertext letters appeared ambiguous early on. Correct decryption relied on:
+### **8.2 Challenges Encountered**
 
-* human pattern recognition
-* contextual clues
-* English word and sentence structure
-* iterative refinement
+* Some low-frequency letters (e.g., q, j, z) required contextual inference rather than frequency alone.
+* Conflicts occasionally arose when initial guesses were slightly off; iterative correction was necessary.
+* The ability to retain spaces significantly simplified the process.
 
-### 8.3 Limiting Factors
+### **8.3 Limitations of the Cipher**
 
-If spaces had been removed or the message were much shorter, the attack would have been more difficult.
+If the ciphertext had:
+
+* removed spaces,
+* applied homophonic substitution,
+* or used polyalphabetic substitution,
+
+the attack would have been significantly more difficult or infeasible.
 
 ---
 
 ## **9. Conclusion**
 
-Using frequency analysis, n-gram statistics, and iterative substitution testing, the encryption key was fully reconstructed and the complete plaintext was recovered. This lab demonstrates how classical substitution ciphers provide no security against statistical attacks and should not be used for protecting modern communications.
+Through the combined use of unigram, bigram, and trigram frequency analysis, contextual recognition, and iterative application of the Unix `tr` command, the full substitution key and plaintext were successfully recovered.
+
+This exercise highlights the fundamental weakness of monoalphabetic substitution ciphers and reinforces the necessity of modern cryptographic schemes for secure communication.
 
 ---
 
-## **Appendix A — Selected Commands**
+## **Appendix A – Sample Commands Used**
 
 ```
-freq.py
+./freq.py
 tr 'ytn' 'THE'
 tr 'ytnvup' 'THEAND'
 tr 'ytnvupmr' 'THEANDIG'
