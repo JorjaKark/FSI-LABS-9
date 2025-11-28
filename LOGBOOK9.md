@@ -100,23 +100,7 @@ head in2.txt
 
   <figcaption><strong>Figure 5</strong> – Expanded character substitutions, resulting in additional partially recognizable English fragments.</figcaption>
 
----
-
-#### **4.**
-
-* **Commands Used:**
-
-  ```bash
-  tr 'ytnvupmr' 'THEANDIG' < in0.txt > in3.txt
-  head in3.txt
-  ```
-
-* **Screenshot:**
-  ![Figure 6](./screenshots/screenshots-week9/task1/included/06_tr_attempt3.png)
-
-  <figcaption><strong>Figure 6</strong> – Continued improvement in plaintext visibility as more correct mappings are applied.</figcaption>
-
-  * **TEXT: **
+    * **TEXT: **
 
   
 ```
@@ -136,21 +120,21 @@ AfxmD axNbimaTmNr lmTH THE aixqmNr aEhEcxNd xb THE lmNTEh xidcemaq THANsq
 
 ---
 
-#### **5.**
+#### **4.**
 
 * **Commands Used:**
 
   ```bash
-  tr 'ytnvupmrxq' 'THEANDIGOS' < in0.txt > in4.txt
-  head in4.txt
+  tr 'ytnvupmr' 'THEANDIG' < in0.txt > in3.txt
+  head in3.txt
   ```
 
 * **Screenshot:**
-  ![Figure 7](./screenshots/screenshots-week9/task1/included/07_tr_attempt4.png)
+  ![Figure 6](./screenshots/screenshots-week9/task1/included/06_tr_attempt3.png)
 
-  <figcaption><strong>Figure 7</strong> – Larger sections of readable text appear, indicating convergence toward the correct substitution key.</figcaption>
+  <figcaption><strong>Figure 6</strong> – Continued improvement in plaintext visibility as more correct mappings are applied.</figcaption>
 
-  * **TEXT: **
+    * **TEXT: **
 
   ```
 THE xqaAhq TzhN   xN qzNDAd lHmaH qEEcq AgxzT hmrHT AbTEh THmq ixNr qThANrE
@@ -167,6 +151,26 @@ EkThA ixNr gEaAzqE THE xqaAhq lEhE cxfED Tx THE bmhqT lEEsEND mN cA haH Tx
 
 AfxmD axNbimaTmNr lmTH THE aixqmNr aEhEcxNd xb THE lmNTEh xidcemaq THANsq
 ```
+
+
+
+
+---
+
+#### **5.**
+
+* **Commands Used:**
+
+  ```bash
+  tr 'ytnvupmrxq' 'THEANDIGOS' < in0.txt > in4.txt
+  head in4.txt
+  ```
+
+* **Screenshot:**
+  ![Figure 7](./screenshots/screenshots-week9/task1/included/07_tr_attempt4.png)
+
+  <figcaption><strong>Figure 7</strong> – Larger sections of readable text appear, indicating convergence toward the correct substitution key.</figcaption>
+
 
 
 
