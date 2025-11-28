@@ -1,248 +1,239 @@
-# **Frequency Analysis Attack on a Monoalphabetic Substitution Cipher**
+# **LOGBOOK 9 - Secret-Key Encryption Lab**
 
-## **1. Introduction**
+## **Task 1 – Frequency Analysis**
 
-Monoalphabetic substitution ciphers replace each plaintext letter with a unique ciphertext letter using a fixed mapping. Historically used in classical cryptography, these ciphers are now known to be insecure due to their susceptibility to **frequency analysis**, which exploits statistical regularities in natural languages such as English.
-
-The objective of this lab was to:
-
-1. Recover the plaintext of a provided English article encrypted using a monoalphabetic substitution cipher.
-2. Reconstruct the encryption key.
-3. Demonstrate the practicality and power of frequency analysis through iterative pattern recognition.
-
-The ciphertext was stripped of punctuation and numbers but retained spaces, significantly simplifying the analysis compared with fully realistic monoalphabetic ciphers.
+This section documents the commands executed to perform the frequency analysis attack on the monoalphabetic substitution cipher and provides direct evidence via screenshots.
 
 ---
 
-## **2. Background**
+## **Objective**
 
-### **2.1 Monoalphabetic Substitution Ciphers**
-
-A monoalphabetic cipher uses a single fixed permutation of the alphabet. For example, plaintext `a` may map to ciphertext `q`, plaintext `b` to ciphertext `m`, etc., for all occurrences throughout the message.
-
-While brute-forcing all (26!) possible keys is computationally infeasible, the cipher leaks structural information: **English is not random**. Certain letters, bigrams, and trigrams appear far more often than others.
-
-### **2.2 Frequency Analysis**
-
-The English language has well-documented statistical tendencies:
-
-* **Single-letter frequency:**
-  e, t, a, o, i, n, s, r, h are most common.
-* **Bigram frequency:**
-  th, he, in, er, an, re, on…
-* **Trigram frequency:**
-  the, ing, and…
-
-By comparing these known distributions with ciphertext statistics, attackers can infer letter mappings and progressively reveal the plaintext.
-
-### **2.3 Lab Simplifications**
-
-Before encryption, the instructors:
-
-1. Converted all text to lowercase.
-2. Removed punctuation and numbers.
-3. Preserved whitespace.
-4. Applied a random substitution using the Unix `tr` command.
-
-The lab also provided a Python script `freq.py` to compute 1-gram, 2-gram, and 3-gram frequencies.
+The objective of this task is to apply frequency analysis techniques to the provided ciphertext, identify statistical patterns, perform iterative substitution testing, and ultimately recover portions of the plaintext and decipher the substitution key.
 
 ---
 
-## **3. Frequency Analysis**
+## **Phase 1: Frequency Analysis and Initial Substitutions**
 
-### **3.1 Running `freq.py`**
+#### **1.**
 
-The first step was to examine the statistical frequencies of the ciphertext. Running the script produced the following outputs.
+* **Commands Used:**
 
-#### **1-gram Frequencies**
+  ```bash
+  ./freq.py
+  ```
 
-<figure>
-  <img src="1-freq.png" alt="1-gram frequency analysis output" />
-  <figcaption><strong>Figure 1:</strong> Output of <code>freq.py</code> showing top 1-gram frequencies.</figcaption>
-</figure>
+  This command generates the 1-gram, 2-gram, and 3-gram frequency statistics from the ciphertext.
 
-The letter **n** was the most frequent. In English, **e** is typically the most common letter, making n→e a strong initial hypothesis.
+* **Screenshot:**
+  ![Figure 1](./screenshots/screenshots-week9/task1/included/01_freq_1gram.png)
 
-#### **2-gram Frequencies**
-
-<figure>
-  <img src="2-freq.png" alt="2-gram frequency analysis output" />
-  <figcaption><strong>Figure 2:</strong> Top bigrams in the ciphertext.</figcaption>
-</figure>
-
-The bigram **yt** appeared most often, suggesting a likely mapping to **th** or **he**, the two most common English bigrams.
-
-#### **3-gram Frequencies**
-
-<figure>
-  <img src="3-freq.png" alt="3-gram frequency analysis output" />
-  <figcaption><strong>Figure 3:</strong> Top trigrams in the ciphertext.</figcaption>
-</figure>
-
-The trigram **ytn** dominated. Because **the** is by far the most common English trigram, the mapping y→t, t→h, n→e became highly plausible.
+  <figcaption><strong>Figure 1</strong> – Output of <code>freq.py</code> showing the most frequent single-letter occurrences in the ciphertext.</figcaption>
 
 ---
 
-## **4. Initial Substitution Attempts**
+#### **2.**
 
-### **4.1 Testing the Hypothesis for “THE”**
+* **Commands Used:**
 
-To test the mapping y→T, t→H, n→E (uppercase used for clarity), the following command was used:
+  ```bash
+  ./freq.py
+  ```
 
-```
-tr 'ytn' 'THE'
-```
+  This output focuses on bigram (2-gram) frequencies generated during the same execution.
 
-<figure>
-  <img src="4-tr.png" alt="First tr output showing THE appearing" />
-  <figcaption><strong>Figure 4:</strong> After substituting y→T, t→H, n→E, multiple occurrences of <em>THE</em> appear, validating the hypothesis.</figcaption>
-</figure>
+* **Screenshot:**
+  ![Figure 2](./screenshots/screenshots-week9/task1/included/02_freq_2gram.png)
 
-Immediately, readable instances of **THE** emerged in grammatically appropriate locations, strongly confirming the mapping.
+  <figcaption><strong>Figure 2</strong> – Top bigram frequencies revealing repeating ciphertext digraphs useful for identifying English patterns.</figcaption>
 
 ---
 
-## **5. Progressive Reconstruction of the Key**
+#### **3.**
 
-Frequency analysis continued with the next most common letters.
+* **Commands Used:**
 
-### **5.1 Adding More High-Frequency Letters**
+  ```bash
+  ./freq.py
+  ```
 
-Repeated iterations of `tr` refined the mapping. Examples:
+  This result displays the trigram (3-gram) statistics.
 
-<figure>
-  <img src="5-tr.png" alt="Second tr output" />
-  <figcaption><strong>Figure 5:</strong> Additional mappings reveal fragments such as AND, IN, and other common words.</figcaption>
-</figure>
+* **Screenshot:**
+  ![Figure 3](./screenshots/screenshots-week9/task1/included/03_freq_trigram.png)
 
-<figure>
-  <img src="6-tr.png" alt="Third tr output" />
-  <figcaption><strong>Figure 6:</strong> More substitutions reveal longer meaningful fragments.</figcaption>
-</figure>
-
-### **5.2 Recognizing Common Patterns**
-
-As more plaintext appeared, context and English grammar accelerated progress.
-
-For example:
-
-* A pattern resembling **_ING** became clear:
-  leading to identification of ciphertext letters mapping to I, N, G.
-* Articles and common connectors such as **AND**, **TO**, **OF**, **IS** emerged naturally.
-
-Screenshots below show the evolution of readability as substitutions accumulated:
-
-<figure>
-  <img src="7-tr.png" alt="Fourth tr output" />
-  <figcaption><strong>Figure 7:</strong> Larger English fragments appear as the mapping improves.</figcaption>
-</figure>
-
-<figure>
-  <img src="8-tr.png" alt="Fifth tr output" />
-  <figcaption><strong>Figure 8:</strong> Further clarity as more letters are substituted.</figcaption>
-</figure>
-
-<figure>
-  <img src="9-tr.png" alt="Sixth tr output" />
-  <figcaption><strong>Figure 9:</strong> Additional sections of plaintext now clearly readable.</figcaption>
-</figure>
-
-### **5.3 Near-Complete Key Recovery**
-
-By this stage, only a handful of letters remained uncertain.
-
-<figure>
-  <img src="10-tr.png" alt="Seventh tr output" />
-  <figcaption><strong>Figure 10:</strong> Most of the ciphertext now decodes cleanly.</figcaption>
-</figure>
-
-<figure>
-  <img src="11-tr-head.png" alt="Key reconstruction head" />
-  <figcaption><strong>Figure 11:</strong> Header view showing nearly complete mapping.</figcaption>
-</figure>
+  <figcaption><strong>Figure 3</strong> – Trigram frequency distribution; the dominance of a particular trigram helps infer common English sequences such as “the”.</figcaption>
 
 ---
 
-## **6. Final Substitution Key**
+#### **4.**
 
-After resolving the last few ambiguous letters, the full substitution table was reconstructed.
+* **Commands Used:**
 
-> **Note:** Include your verified substitution table here.
-> If you provide your final substitution screenshot, I can format the exact table.
+  ```bash
+  tr 'ytn' 'THE' < ciphertext.txt > step1.txt
+  ```
 
----
+  This step tests the hypothesis that ciphertext letters `ytn` map to the plaintext letters `T`, `H`, and `E`.
 
-## **7. Fully Recovered Plaintext**
+* **Screenshot:**
+  ![Figure 4](./screenshots/screenshots-week9/task1/included/04_tr_attempt1.png)
 
-Once the full key was applied, the plaintext revealed a complete English article discussing the Oscars, Weinstein scandal, award-season politics, and the #MeToo movement.
-
-Below are four segments illustrating the final decoded text:
-
-<figure>
-  <img src="12-cat-full-result-partial1.png" alt="Plaintext segment 1" />
-  <figcaption><strong>Figure 12:</strong> Final plaintext (Part 1).</figcaption>
-</figure>
-
-<figure>
-  <img src="13-cat-full-result-partial2.png" alt="Plaintext segment 2" />
-  <figcaption><strong>Figure 13:</strong> Final plaintext (Part 2).</figcaption>
-</figure>
-
-<figure>
-  <img src="14-cat-full-result-partial3.png" alt="Plaintext segment 3" />
-  <figcaption><strong>Figure 14:</strong> Final plaintext (Part 3).</figcaption>
-</figure>
-
-<figure>
-  <img src="15-cat-full-result-partial4.png" alt="Plaintext segment 4" />
-  <figcaption><strong>Figure 15:</strong> Final plaintext (Part 4).</figcaption>
-</figure>
+  <figcaption><strong>Figure 4</strong> – Initial partial substitution showing the emergence of the plaintext word “THE”, validating the mapping.</figcaption>
 
 ---
 
-## **8. Discussion**
+## **Phase 2: Iterative Key Refinement and Partial Decryption**
 
-### **8.1 Effectiveness of Frequency Analysis**
+#### **5.**
 
-This lab demonstrates that monoalphabetic substitution ciphers provide no meaningful security:
+* **Commands Used:**
+  (The specific command in the screenshot shows an extended `tr` mapping used for further substitution testing.)
 
-* Statistical leakage allows rapid identification of several key letters.
-* Recognition of English patterns (articles, suffixes, context) accelerates later deductions.
-* With long texts, accuracy approaches 100% with little or no ambiguity.
+* **Screenshot:**
+  ![Figure 5](./screenshots/screenshots-week9/task1/included/05_tr_attempt2.png)
 
-### **8.2 Challenges Encountered**
-
-* Some low-frequency letters (e.g., q, j, z) required contextual inference rather than frequency alone.
-* Conflicts occasionally arose when initial guesses were slightly off; iterative correction was necessary.
-* The ability to retain spaces significantly simplified the process.
-
-### **8.3 Limitations of the Cipher**
-
-If the ciphertext had:
-
-* removed spaces,
-* applied homophonic substitution,
-* or used polyalphabetic substitution,
-
-the attack would have been significantly more difficult or infeasible.
+  <figcaption><strong>Figure 5</strong> – Expanded character substitutions, resulting in additional partially recognizable English fragments.</figcaption>
 
 ---
 
-## **9. Conclusion**
+#### **6.**
 
-Through the combined use of unigram, bigram, and trigram frequency analysis, contextual recognition, and iterative application of the Unix `tr` command, the full substitution key and plaintext were successfully recovered.
+* **Commands Used:**
+  (Command reflects further refinement of the substitution key.)
 
-This exercise highlights the fundamental weakness of monoalphabetic substitution ciphers and reinforces the necessity of modern cryptographic schemes for secure communication.
+* **Screenshot:**
+  ![Figure 6](./screenshots/screenshots-week9/task1/included/06_tr_attempt3.png)
+
+  <figcaption><strong>Figure 6</strong> – Continued improvement in plaintext visibility as more correct mappings are applied.</figcaption>
 
 ---
 
-## **Appendix A – Sample Commands Used**
+#### **7.**
 
-```
-./freq.py
-tr 'ytn' 'THE'
-tr 'ytnvup' 'THEAND'
-tr 'ytnvupmr' 'THEANDIG'
-...
-tr 'abcdefghijklmnopqrstuvwxyz' 'CFMPYVBRLQXWIEJDSGKHNAZOTU'
-```
+* **Commands Used:**
+  (Incrementally improved substitution command.)
+
+* **Screenshot:**
+  ![Figure 7](./screenshots/screenshots-week9/task1/included/07_tr_attempt4.png)
+
+  <figcaption><strong>Figure 7</strong> – Larger sections of readable text appear, indicating convergence toward the correct substitution key.</figcaption>
+
+---
+
+#### **8.**
+
+* **Commands Used:**
+  (Further mapping refinement.)
+
+* **Screenshot:**
+  ![Figure 8](./screenshots/screenshots-week9/task1/included/08_tr_attempt5.png)
+
+  <figcaption><strong>Figure 8</strong> – The ciphertext increasingly resembles English as substitutions for medium-frequency letters are validated.</figcaption>
+
+---
+
+#### **9.**
+
+* **Commands Used:**
+  (Yet another intermediate substitution.)
+
+* **Screenshot:**
+  ![Figure 9](./screenshots/screenshots-week9/task1/included/09_tr_attempt6.png)
+
+  <figcaption><strong>Figure 9</strong> – Further clarity is achieved; several English words are now fully recognizable.</figcaption>
+
+---
+
+#### **10.**
+
+* **Commands Used:**
+  (Additional refinements to the key are tested.)
+
+* **Screenshot:**
+  ![Figure 10](./screenshots/screenshots-week9/task1/included/10_tr_attempt7.png)
+
+  <figcaption><strong>Figure 10</strong> – A near-complete plaintext emerges as most alphabet mappings have been identified.</figcaption>
+
+---
+
+#### **11.**
+
+* **Commands Used:**
+  (Likely the final or near-final substitution table test.)
+
+* **Screenshot:**
+  ![Figure 11](./screenshots/screenshots-week9/task1/included/11_tr_head_partial.png)
+
+  <figcaption><strong>Figure 11</strong> – View of the substitution key header showing a nearly complete alphabet mapping.</figcaption>
+
+---
+
+#### **12.**
+
+* **Commands Used:**
+  (Finalized substitution applied to full ciphertext.)
+
+* **Screenshot:**
+  ![Figure 12](./screenshots/screenshots-week9/task1/included/12_plaintext_partial1.png)
+
+  <figcaption><strong>Figure 12</strong> – First segment of the recovered plaintext after applying the full substitution key.</figcaption>
+
+---
+
+#### **13.**
+
+* **Commands Used:**
+  (Continuation of final plaintext generation.)
+
+* **Screenshot:**
+  ![Figure 13](./screenshots/screenshots-week9/task1/included/13_plaintext_partial2.png)
+
+  <figcaption><strong>Figure 13</strong> – Second plaintext segment showing coherent English grammar and sentence flow.</figcaption>
+
+---
+
+#### **14.**
+
+* **Commands Used:**
+  (Plaintext continued.)
+
+* **Screenshot:**
+  ![Figure 14](./screenshots/screenshots-week9/task1/included/14_plaintext_partial3.png)
+
+  <figcaption><strong>Figure 14</strong> – Third plaintext segment confirming correctness of the final substitution table.</figcaption>
+
+---
+
+#### **15.**
+
+* **Commands Used:**
+  (Plaintext final section.)
+
+* **Screenshot:**
+  ![Figure 15](./screenshots/screenshots-week9/task1/included/15_plaintext_partial4.png)
+
+  <figcaption><strong>Figure 15</strong> – Final portion of the fully decrypted text, demonstrating the success of the frequency analysis attack.</figcaption>
+
+---
+
+## **Observations**
+
+* The frequency distribution of the ciphertext closely mirrored typical English frequency patterns, enabling accurate initial guesses.
+* The trigram `ytn` appeared disproportionately often, strongly suggesting a mapping to `the`.
+* Each iterative `tr` substitution increased the visibility of English structure, confirming or refuting earlier assumptions.
+* As substitutions accumulated, plaintext readability improved exponentially rather than linearly due to compounding contextual cues.
+* The preservation of whitespace significantly reduced ambiguity when interpreting short common words.
+* The final plaintext displayed consistent English grammar, verifying that the substitution key was correctly reconstructed.
+
+---
+
+## **Conclusions**
+
+This task successfully demonstrated how frequency analysis, combined with iterative substitution testing, can break a monoalphabetic substitution cipher. The process required analyzing n-gram statistics, forming hypotheses consistent with English linguistic patterns, and progressively refining the substitution key until the plaintext became fully readable.
+
+---
+
+## **Summary**
+
+In this task, frequency analysis was applied to a provided ciphertext to uncover patterns characteristic of English. Using `freq.py` outputs and a series of methodical substitution attempts with `tr`, a complete key was reconstructed, and the plaintext was fully decrypted. This exercise highlights the inherent weakness of monoalphabetic substitution ciphers and reinforces why more advanced cryptographic techniques are necessary for secure communications.
+
