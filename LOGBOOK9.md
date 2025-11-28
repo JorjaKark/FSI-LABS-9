@@ -86,7 +86,11 @@ head in2.txt
 #### **4.**
 
 * **Commands Used:**
-  (Command reflects further refinement of the substitution key.)
+
+  ```bash
+  tr 'ytnvupmr' 'THEANDIG' < in0.txt > in3.txt
+  head in3.txt
+  ```
 
 * **Screenshot:**
   ![Figure 6](./screenshots/screenshots-week9/task1/included/06_tr_attempt3.png)
