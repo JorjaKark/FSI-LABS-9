@@ -102,7 +102,11 @@ head in2.txt
 #### **5.**
 
 * **Commands Used:**
-  (Incrementally improved substitution command.)
+
+  ```bash
+  tr 'ytnvupmrxq' 'THEANDIGOS' < in0.txt > in4.txt
+  head in4.txt
+  ```
 
 * **Screenshot:**
   ![Figure 7](./screenshots/screenshots-week9/task1/included/07_tr_attempt4.png)
