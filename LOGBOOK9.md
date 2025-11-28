@@ -29,16 +29,6 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
   <figcaption><strong>Figure 1</strong> – Output of <code>freq.py</code> showing the most frequent single-letter occurrences in the ciphertext.</figcaption>
 
----
-
-#### **2.**
-
-* **Commands Used:**
-
-  ```bash
-  ./freq.py
-  ```
-
   This output focuses on bigram (2-gram) frequencies generated during the same execution.
 
 * **Screenshot:**
@@ -46,15 +36,6 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
   <figcaption><strong>Figure 2</strong> – Top bigram frequencies revealing repeating ciphertext digraphs useful for identifying English patterns.</figcaption>
 
----
-
-#### **3.**
-
-* **Commands Used:**
-
-  ```bash
-  ./freq.py
-  ```
 
   This result displays the trigram (3-gram) statistics.
 
@@ -65,7 +46,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **4.**
+#### **2.**
 
 * **Commands Used:**
 
@@ -84,7 +65,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ## **Phase 2: Iterative Key Refinement and Partial Decryption**
 
-#### **5.**
+#### **3.**
 
 * **Commands Used:**
   (The specific command in the screenshot shows an extended `tr` mapping used for further substitution testing.)
@@ -96,7 +77,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **6.**
+#### **4.**
 
 * **Commands Used:**
   (Command reflects further refinement of the substitution key.)
@@ -108,7 +89,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **7.**
+#### **5.**
 
 * **Commands Used:**
   (Incrementally improved substitution command.)
@@ -120,7 +101,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **8.**
+#### **6.**
 
 * **Commands Used:**
   (Further mapping refinement.)
@@ -132,7 +113,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **9.**
+#### **7.**
 
 * **Commands Used:**
   (Yet another intermediate substitution.)
@@ -144,7 +125,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **10.**
+#### **8.**
 
 * **Commands Used:**
   (Additional refinements to the key are tested.)
@@ -156,7 +137,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **11.**
+#### **9.**
 
 * **Commands Used:**
   (Likely the final or near-final substitution table test.)
@@ -168,7 +149,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **12.**
+#### **10.**
 
 * **Commands Used:**
   (Finalized substitution applied to full ciphertext.)
@@ -180,7 +161,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **13.**
+#### **11.**
 
 * **Commands Used:**
   (Continuation of final plaintext generation.)
@@ -192,7 +173,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **14.**
+#### **12.**
 
 * **Commands Used:**
   (Plaintext continued.)
@@ -204,7 +185,7 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
 ---
 
-#### **15.**
+#### **13.**
 
 * **Commands Used:**
   (Plaintext final section.)
