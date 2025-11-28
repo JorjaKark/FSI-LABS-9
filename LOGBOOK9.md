@@ -65,6 +65,24 @@ The objective of this task is to apply frequency analysis techniques to the prov
 
   <figcaption><strong>Figure 4</strong> – Initial partial substitution showing the emergence of the plaintext word “THE”, validating the mapping.</figcaption>
 
+  ** Text: **
+  
+```
+THE xqavhq Tzhu   xu qzupvd lHmaH qEEcq vgxzT hmrHT vbTEh THmq ixur qThvurE
+vlvhpq Thme THE gvrrEh bEEiq imsE v uxuvrEuvhmvu Txx
+
+THE vlvhpq hvaE lvq gxxsEupEp gd THE pEcmqE xb HvhfEd lEmuqTEmu vT mTq xzTqET
+vup THE veevhEuT mceixqmvu xb Hmq bmic axcevud vT THE Eup vup mT lvq q qHveEp gd
+THE EcEhrEuaE xb cETxx TmcEq ze givasrxlu eximTmaq vhcavupd vaTmfmq c vup
+v uvTmxuvi axufEhqvTmxu vq ghmEb vup cvp vq v bEfEh phEvc vgxzT lHE THEh THEhE
+
+xzrHT Tx gE v ehEqmpEuT lmubHEd THE qEvqxu pmpuT ozqT qEEc EkThv ixur mT lvq
+EkThv ixur gEavzqE THE xqavhq lEhE cxfEp Tx THE bmhqT lEEsEup mu cv haH Tx
+
+vfxmp axubimaTmur lmTH THE aixqmur aEhEcxud xb THE lmuTEh xidcemaq THvusq
+```
+
+
 ---
 
 
