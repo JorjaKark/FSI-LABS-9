@@ -168,7 +168,9 @@ head in2.txt
 
 * **Commands Used:**
 
-
+  ```bash
+  cat in7.txt
+  ```
 
 * **Screenshot:**
   ![Figure 12](./screenshots/screenshots-week9/task1/included/12_plaintext_partial1.png)
