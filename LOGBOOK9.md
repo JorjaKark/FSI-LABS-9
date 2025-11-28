@@ -49,11 +49,11 @@ The objective of this task is to apply frequency analysis techniques to the prov
 #### **2.**
 
 * **Commands Used:**
-<code>
+```bash
 cp ciphertext.txt in0.txt
 tr 'ytn' 'THE' < in0.txt > in1.txt
 head in1.txt
-</code>
+```
 
   This step tests the hypothesis that ciphertext letters `ytn` map to the plaintext letters `T`, `H`, and `E`.
 
