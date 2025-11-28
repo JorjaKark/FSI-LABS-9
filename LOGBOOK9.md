@@ -152,7 +152,10 @@ head in2.txt
 #### **9.**
 
 * **Commands Used:**
-  (Likely the final or near-final substitution table test.)
+  ```bash
+  tr 'abcdefghijklmnopqrstuvwxyz' 'CFMYPVBRLQXWIEJDSGKHNAZOTU' < in0.txt > in7.txt
+  head in7.txt
+  ```
 
 * **Screenshot:**
   ![Figure 11](./screenshots/screenshots-week9/task1/included/11_tr_head_partial.png)
@@ -164,7 +167,8 @@ head in2.txt
 #### **10.**
 
 * **Commands Used:**
-  (Finalized substitution applied to full ciphertext.)
+
+
 
 * **Screenshot:**
   ![Figure 12](./screenshots/screenshots-week9/task1/included/12_plaintext_partial1.png)
