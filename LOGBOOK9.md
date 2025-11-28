@@ -165,7 +165,20 @@ AfxID axNbiIaTING lITH THE aixqING aEhEcxNd xb THE lINTEh xidceIaq THANsq
 
   <figcaption><strong>Figure 7</strong> – Larger sections of readable text appear, indicating convergence toward the correct substitution key.</figcaption>
 
+```
+THE OSaAhS TzhN   ON SzNDAd lHIaH SEEcS AgOzT hIGHT AbTEh THIS iONG SThANGE
+AlAhDS ThIe THE gAGGEh bEEiS iIsE A NONAGENAhIAN TOO
 
+THE AlAhDS hAaE lAS gOOsENDED gd THE DEcISE Ob HAhfEd lEINSTEIN AT ITS OzTSET
+AND THE AeeAhENT IceiOSION Ob HIS bIic aOceANd AND AT THE END AND IT lAS S SHAeED gd
+THE EcEhGENaE Ob cETOO TIcES ze giAasGOLN eOiITIaS AhcaANDd AaTIFIS c AND
+A NATIONAi aONfEhSATION AS ghIEb AND cAD AS A bEfEh DhEAc AgOzT lHE THEh THEhE
+
+OzGHT TO gE A ehESIDENT lINbhEd THE SEASON DIDNT ozST SEEc EkThA iONG IT lAS
+EkThA iONG gEaAzSE THE OSaAhS lEhE cofED TO THE bIhST lEEsEND IN cA haH TO
+
+AfOID aONbiIaTING lITH THE aiOSING aEhEcONd Ob THE lINTEh OidceIaS THANsS
+```
 
 
 ---
