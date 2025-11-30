@@ -126,18 +126,15 @@ The program:
 - **Screenshot(s):**
 
 ![Figure 2](./screenshots/screenshots-week10/task3/2-code_part1.png)
-
 <figcaption><strong>Figure 2</strong> – Initializing SHA-256 and loading forged internal state.</figcaption>
 
 ![Figure 3](./screenshots/screenshots-week10/task3/3-code_part2.png)
-
 <figcaption><strong>Figure 3</strong> – Preparing the extended payload and updating the SHA-256 context.</figcaption>
 
 ![Figure 4](./screenshots/screenshots-week10/task3/4-code_part3.png)
-
 <figcaption><strong>Figure 4</strong> – Adding a macOS-specific definition of <code>htole32</code> using <code>OSSwapHostToLittleInt32</code> to resolve a compilation error when loading the SHA-256 internal state.</figcaption>
 
-- Note:
+
 > On macOS, an extra `#ifdef __APPLE__` block was added to define `htole32` via `OSSwapHostToLittleInt32`, ensuring the program compiles correctly while still correctly initializing the SHA-256 state.
 
 ---
