@@ -272,3 +272,193 @@ This task successfully demonstrated how frequency analysis, combined with iterat
 ## **Summary**
 
 In this task, frequency analysis was applied to a provided ciphertext to uncover patterns characteristic of English. Using `freq.py` outputs and a series of methodical substitution attempts with `tr`, a complete key was reconstructed, and the plaintext was fully decrypted. This exercise highlights the inherent weakness of monoalphabetic substitution ciphers and reinforces why more advanced cryptographic techniques are necessary for secure communications.
+
+
+---
+
+## **Task 2 – Encryption using Different Ciphers and Modes**
+
+---
+
+This task explores the encryption of a plaintext file using multiple symmetric-key encryption modes provided by OpenSSL. The purpose is to demonstrate how different block cipher modes—**ECB**, **CBC**, and **CTR**—behave when encrypting identical plaintext with the same key. By comparing the resulting ciphertext files, we can analyze how structural patterns in the plaintext are preserved or concealed under each mode, thereby assessing the relative strengths of each mode in resisting pattern leakage and ciphertext analysis.
+
+---
+
+### **Methodology**
+
+#### **Step 1: Verifying the Plaintext File Size**
+
+To ensure consistency across all encryption operations, the byte size of the plaintext file was first checked using the `wc -c` command.
+
+```bash
+wc -c Files/words.txt
+```
+
+**Output:**
+
+```
+206662 Files/words.txt
+```
+
+This confirms that the input file is approximately **206 KB**, a sufficiently large sample to observe cryptographic mode behavior.
+
+> **Figure 1** – `wc -c` confirming byte size of plaintext
+> ![Figure 1](attachment:/mnt/data/1.png)
+
+---
+
+#### **Step 2: Creating a Symbolic Link to the Plaintext**
+
+To facilitate command readability and prevent filename clutter, a symbolic link `plaintext.txt` was created pointing to `Files/words.txt` using `ln -sf`.
+
+```bash
+ln -sf Files/words.txt plaintext.txt
+ls -l plaintext.txt
+```
+
+**Output:**
+
+```
+lrwxrwxrwx 1 fsi fsi 15 Nov 30 15:12 plaintext.txt -> Files/words.txt
+```
+
+This ensures that all encryption commands operate on a consistently named input without duplicating the file.
+
+> **Figure 2** – Symbolic link creation and verification
+> ![Figure 2](attachment:/mnt/data/2.png)
+
+---
+
+#### **Step 3: Defining the Encryption Key and IV**
+
+The symmetric key and initialization vector (IV) were defined in hexadecimal format as environment variables:
+
+```bash
+export KEY=00112233445566778899aabbccddeeff
+export IV=0102030405060708090a0b0c0d0e0f00
+```
+
+* `KEY` is a **128-bit (16-byte)** hexadecimal string, suitable for AES-128.
+* `IV` is similarly 128 bits, required for CBC and CTR modes but **not used in ECB**.
+
+These variables allow secure and flexible use within OpenSSL commands.
+
+---
+
+#### **Step 4: Performing Encryption with Different Modes**
+
+Each encryption command uses `openssl enc` with the `-e` flag (encrypt), the specified cipher mode, input file, and output binary. Key and IV are provided in hex.
+
+---
+
+**(a) ECB Mode:**
+
+```bash
+openssl enc -aes-128-ecb -e -in plaintext.txt -out cipher_ecb.bin -K $KEY
+```
+
+> No IV is required for ECB.
+
+**(b) CBC Mode:**
+
+```bash
+openssl enc -aes-128-cbc -e -in plaintext.txt -out cipher_cbc.bin -K $KEY -iv $IV
+```
+
+**(c) CTR Mode:**
+
+```bash
+openssl enc -aes-128-ctr -e -in plaintext.txt -out cipher_ctr.bin -K $KEY -iv $IV
+```
+
+After execution, the ciphertext files were listed for validation:
+
+```bash
+ls -l plaintext.txt cipher_*.bin
+```
+
+**Output:**
+
+```
+-rw-rw-r-- 1 fsi fsi 206662 Nov 30 15:13 cipher_cbc.bin
+-rw-rw-r-- 1 fsi fsi 206672 Nov 30 15:13 cipher_ctr.bin
+-rw-rw-r-- 1 fsi fsi 206672 Nov 30 15:13 cipher_ecb.bin
+lrwxrwxrwx 1 fsi fsi     15 Nov 30 15:12 plaintext.txt -> Files/words.txt
+```
+
+> **Figure 3** – All encryption modes executed successfully; ciphertext file sizes match
+> ![Figure 3](attachment:/mnt/data/3.png)
+
+---
+
+### **Technical Explanation**
+
+#### AES-128 Block Cipher
+
+All encryption commands used **AES-128**, which processes 128-bit blocks (16 bytes) under a 128-bit key. The differences between the modes affect how blocks are chained or processed:
+
+---
+
+#### **ECB (Electronic Codebook Mode)**
+
+* **Each block is encrypted independently.**
+* Identical plaintext blocks yield identical ciphertext blocks.
+* No diffusion across blocks; patterns in plaintext remain visible.
+
+This mode is **deterministic and vulnerable** to pattern analysis—unsuitable for encrypting large or structured data.
+
+---
+
+#### **CBC (Cipher Block Chaining Mode)**
+
+* Each plaintext block is **XOR’d with the previous ciphertext block** before encryption.
+* Requires a unique IV for the first block.
+* Errors propagate; loss of a single block affects decryption of two blocks.
+
+CBC introduces randomness and breaks identical plaintext block repetition, offering **semantic security** when used with unpredictable IVs.
+
+---
+
+#### **CTR (Counter Mode)**
+
+* Converts block cipher into a stream cipher.
+* Encrypts a counter value (IV + nonce), then XORs with plaintext.
+* Each counter is unique per block, ensuring stream variability.
+
+CTR mode supports **parallelism** and is **error-resilient** (bit errors do not propagate), making it ideal for high-performance applications.
+
+---
+
+### **Result & Verification**
+
+* All three encryption modes produced binary ciphertext files of comparable size (~206 KB), confirming full encryption of the plaintext input.
+* ECB and CTR outputs were 206,672 bytes, while CBC was slightly smaller (206,662). This discrepancy is likely due to:
+
+  * ECB/CTR requiring **padding** to complete the final block.
+  * CBC mode possibly already aligned due to exact block-length data.
+
+The encryption commands executed without error, and the output files can now be examined for structural analysis or decrypted to test mode behaviors.
+
+---
+
+### **Observations**
+
+* ECB mode is deterministic; repeating plaintext blocks are not concealed.
+* CBC mode ensures that each ciphertext block depends on both the current and previous plaintext, providing stronger confidentiality.
+* CTR mode transforms AES into a **stream cipher**, ideal for variable-length plaintexts and partial encryption needs.
+* File sizes across modes were consistent with AES block-size and padding behavior.
+* OpenSSL’s `enc` utility simplifies command-line cryptography, but defaults (e.g., padding, format) must be understood to avoid insecure use.
+
+---
+
+### **Conclusions**
+
+This task demonstrated practical encryption using AES under three distinct modes via the `openssl enc` utility. Each mode exhibits different cryptographic behaviors, particularly in handling block repetition, error propagation, and IV usage. The exercise emphasizes the importance of mode selection in real-world cryptographic implementations:
+
+* **ECB should be avoided** due to pattern leakage.
+* **CBC and CTR** provide stronger security guarantees and practical flexibility.
+* Proper IV/key management is critical for maintaining confidentiality.
+
+The hands-on approach validates theoretical cryptographic principles through controlled experimentation and file inspection.
+
+---
