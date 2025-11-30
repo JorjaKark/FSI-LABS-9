@@ -1,5 +1,7 @@
 # **LOGBOOK 9 - Secret-Key Encryption Lab**
 
+This logbook investigates core symmetric-key cryptography concepts through practical experimentation. It begins by breaking a monoalphabetic substitution cipher using frequency analysis and iterative substitution refinement. It then evaluates AES encryption modes and demonstrates how different block-cipher structures handle and propagate errors under ciphertext corruption.
+
 ## **Task 1 – Frequency Analysis**
 
 The objective of this task is to apply frequency analysis techniques to the provided ciphertext, identify statistical patterns, perform iterative substitution testing, and ultimately recover portions of the plaintext and decipher the substitution key.
