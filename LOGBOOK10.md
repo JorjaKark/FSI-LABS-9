@@ -86,7 +86,7 @@ In this task, we calculated the full SHA-256 padding for a given authenticated m
 
 ---
 
-# ## **Task 3: Conduct the Hash Length Extension Attack**
+## **Task 3: Conduct the Hash Length Extension Attack**
 
 ### **Background: Why the Length Extension Attack Is Possible (Merkle–Damgård Construction)**
 
