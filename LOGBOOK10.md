@@ -81,7 +81,7 @@ The objective of this task was to compute the exact SHA-256 padding that the ser
 
 ## **Summary**
 
-In this task, I calculated the full SHA-256 padding for a given authenticated message. I measured its byte length, computed the corresponding bit-length, determined the number of required padding bytes, constructed the final padded block, and encoded all padding bytes for URL-safe insertion. These steps are foundational for performing the hash length extension attack in the following tasks.
+In this task, we calculated the full SHA-256 padding for a given authenticated message. We measured its byte length, computed the corresponding bit-length, determined the number of required padding bytes, constructed the final padded block, and encoded all padding bytes for URL-safe insertion. These steps are foundational for performing the hash length extension attack in the following tasks.
 
 
 ---
@@ -248,6 +248,6 @@ The server accepted our forged MAC and served the protected file.
 
 ## **Summary**
 
-In Task 3, I used the MAC from Task 1 and the padding from Task 2 to perform a full hash length extension attack. By reconstructing the SHA-256 internal state, generating a forged MAC for an extended message, and submitting it to the server, I successfully bypassed authentication and retrieved the protected file `secret.txt`.
+In Task 3, we used the MAC from Task 1 and the padding from Task 2 to perform a full hash length extension attack. By reconstructing the SHA-256 internal state, generating a forged MAC for an extended message, and submitting it to the server, we successfully bypassed authentication and retrieved the protected file `secret.txt`.
 
 
