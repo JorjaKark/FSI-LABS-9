@@ -1,6 +1,8 @@
 # **LOGBOOK 9 - Secret-Key Encryption Lab**
 
-This logbook investigates core symmetric-key cryptography concepts through practical experimentation. It begins by breaking a monoalphabetic substitution cipher using frequency analysis and iterative substitution refinement. It then evaluates AES encryption modes and demonstrates how different block-cipher structures handle and propagate errors under ciphertext corruption.
+This logbook investigates core symmetric-key cryptography concepts through practical experimentation. It breaks a monoalphabetic substitution cipher using frequency analysis and substitution refinement, and then evaluates AES encryption modes to demonstrate how different block-cipher structures handle and propagate errors under ciphertext corruption.
+
+---
 
 ## **Task 1 – Frequency Analysis**
 
