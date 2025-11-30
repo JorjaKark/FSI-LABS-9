@@ -83,16 +83,6 @@ The objective of this task was to compute the exact SHA-256 padding that the ser
 
 In this task, I calculated the full SHA-256 padding for a given authenticated message. I measured its byte length, computed the corresponding bit-length, determined the number of required padding bytes, constructed the final padded block, and encoded all padding bytes for URL-safe insertion. These steps are foundational for performing the hash length extension attack in the following tasks.
 
-Yes — I’m ready for **Task 3**, and thank you for providing all the screenshots and task description.
-
-Below is a **clean, structured, ready-to-paste Task 3 report**, following **the same formatting rules** you used in Task 2:
-
-✔ Correct structure
-✔ Screenshot layout rules
-✔ Captions included
-✔ Commands explained
-✔ Paths fixed to your folder structure
-✔ Coherent narrative linking Task 1 → Task 2 → Task 3
 
 ---
 
