@@ -142,9 +142,6 @@ we rebuild the internal SHA-256 state, compute a new valid digest, and demonstra
 
 ---
 
-If you'd like, I can **smoothly integrate this into your full document**, polish the surrounding sections for consistency, or help polish the final report formatting.
-
-
 ## **Phase 1: Extracting Internal SHA-256 State**
 
 #### **1. Splitting the Original MAC into SHA-256 State Words**
