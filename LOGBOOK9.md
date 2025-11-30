@@ -665,18 +665,15 @@ This confirms CTR behaves like a stream cipher—with **no diffusion**.
 ### **ECB Mode**
 
 A single 16-byte region was corrupted. All other plaintext remained intact. This matches ECB’s independent block processing.
----
 
 ### **CBC Mode**
 
 Two consecutive plaintext blocks were corrupted, aligning with CBC’s chained XOR dependency.
----
 
 ### **CFB Mode**
 
 Multiple consecutive bytes were corrupted before the keystream feedback resynchronized. This matches CFB’s shift-register design.
 
----
 
 ### **CTR Mode**
 
