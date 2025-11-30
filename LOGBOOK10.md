@@ -202,7 +202,8 @@ The final URL included:
 * **Command Used:**
 
 ```bash
-curl "<forged URL with padding and new MAC>"
+curl "<[forged URL with padding and new MAC](http://www.seedlab-hashlen.com/?myname=<name>&uid=<uid>
+&lstcmd=1<padding>&download=secret.txt&mac=<new-mac>)>"
 ```
 
 * **Screenshot(s):**
