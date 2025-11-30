@@ -520,6 +520,7 @@ echo -n "X" | dd of=corrupted_ctr.bin bs=1 seek=299 count=1 conv=notrunc
 *This overwrites exactly one ciphertext byte without changing file length.*
 
 **Screenshot:**
+![Figure 18](./screenshots/screenshots-week9/task1/included/t5-1.png)
 <figcaption><strong>Figure 18</strong> – Using <code>dd</code> to overwrite a single ciphertext byte at offset 299.</figcaption>
 
 ### **4. Decrypting the corrupted ciphertext**
@@ -533,6 +534,7 @@ openssl enc -aes-128-ctr -d -in corrupted_ctr.bin -out recovered_ctr.txt -K $KEY
 ```
 
 **Screenshot:**
+![Figure 19](./screenshots/screenshots-week9/task1/included/t5-2.png)
 <figcaption><strong>Figure 19</strong> – Decryption of corrupted ECB, CBC, and CTR ciphertext files using the original key and IV.</figcaption>
 
 ### **5. Inspecting the damaged region**
@@ -546,8 +548,10 @@ tail -c +280 recovered_ctr.txt | head -c 32
 ```
 
 **Screenshot:**
+ ![Figure 20](./screenshots/screenshots-week9/task1/included/t5-3.png)
 <figcaption><strong>Figure 20</strong> – Extracted plaintext region showing corruption effects for ECB and CBC modes.</figcaption>
 
+  ![Figure 21](./screenshots/screenshots-week9/task1/included/t5-4.png)
 <figcaption><strong>Figure 21</strong> – Extracted plaintext region showing single-byte corruption characteristic of CTR mode.</figcaption>
 
 ---
