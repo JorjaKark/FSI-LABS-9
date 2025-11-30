@@ -86,11 +86,64 @@ In this task, we calculated the full SHA-256 padding for a given authenticated m
 
 ---
 
-## **Task 3: Conduct the Hash Length Extension Attack**
+# ## **Task 3: Conduct the Hash Length Extension Attack**
 
-The objective of this task is to forge a **valid MAC** for an extended request by exploiting SHA-256’s vulnerability to hash length extension. Using the MAC from Task 1 and the padding computed in Task 2, we reconstruct the internal SHA-256 state, append a malicious payload (`&download=secret.txt`), compute a new valid MAC, and successfully retrieve the protected file from the server.
+### **Background: Why the Length Extension Attack Is Possible (Merkle–Damgård Construction)**
+
+To understand why this attack works, it is essential to examine how SHA-256 processes messages internally. SHA-256 follows the **Merkle–Damgård construction**, meaning it hashes data in fixed-size **512-bit blocks** using a compression function that updates an internal state consisting of eight 32-bit words (the chaining variables).
+
+The process operates as:
+
+1. Initialize the internal state with a fixed IV.
+2. Break the message into 512-bit blocks.
+3. For each block:
+
+   * The compression function updates the internal state.
+4. After all blocks (including the final padded block),
+   **the internal state itself becomes the final SHA-256 hash output.**
+
+This design has a critical implication for security:
+
+> **The SHA-256 digest *reveals* the exact internal state after processing the padded original message.**
+
+Because SHA-256 appends padding *based only on the length of the message*, not on its contents, an attacker who knows the digest of `key || message` can:
+
+* Reconstruct the internal state from the MAC
+* Reproduce the correct padding the server would have applied
+* Continue hashing additional attacker-controlled data
+* **without knowing the key**
+
+This allows forging:
+
+```
+SHA256(key || message || padding || attacker_data)
+```
+
+which is the core of the **hash length extension attack**.
+This vulnerability exists specifically in MACs constructed as:
+
+```
+MAC = SHA256(key || message)
+```
+
+and is the reason why constructions such as HMAC are used in modern cryptographic systems—they prevent exactly this kind of attack.
 
 ---
+
+### **Objective of the Task**
+
+With this background, the goal of Task 3 is to exploit SHA-256’s Merkle–Damgård structure to forge a **valid MAC** for an extended request. Using:
+
+* the original MAC from Task 1
+* the exact padding reconstructed in Task 2
+* and a malicious extension (`&download=secret.txt`)
+
+we rebuild the internal SHA-256 state, compute a new valid digest, and demonstrate that the server accepts this forged request—allowing access to the protected `secret.txt` file.
+
+---
+
+If you'd like, I can **smoothly integrate this into your full document**, polish the surrounding sections for consistency, or help polish the final report formatting.
+
 
 ## **Phase 1: Extracting Internal SHA-256 State**
 
