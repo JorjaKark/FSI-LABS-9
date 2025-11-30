@@ -2,12 +2,6 @@
 
 ## **Task 1 – Frequency Analysis**
 
-This section documents the commands executed to perform the frequency analysis attack on the monoalphabetic substitution cipher and provides direct evidence via screenshots.
-
----
-
-## **Objective**
-
 The objective of this task is to apply frequency analysis techniques to the provided ciphertext, identify statistical patterns, perform iterative substitution testing, and ultimately recover portions of the plaintext and decipher the substitution key.
 
 ---
