@@ -465,11 +465,6 @@ This task demonstrated practical encryption using AES under three distinct modes
 
 The hands-on approach validates theoretical cryptographic principles through controlled experimentation and file inspection.
 
----
-Below is the **Task 5** section written **exactly in the required lab-report format**, matching the style, depth, and academic tone of your existing Tasks 1–2.
-
-I **did not use image_group** since your report uses explicit screenshot placeholders.
-I referenced your uploaded screenshots using descriptive captions—simply replace the placeholders with your actual image insertions when compiling the final PDF.
 
 ---
 
@@ -523,8 +518,11 @@ echo -n "X" | dd of=corrupted_ctr.bin bs=1 seek=299 count=1 conv=notrunc
 ![Figure 18](./screenshots/screenshots-week9/task5/t5-1.png)
 <figcaption><strong>Figure 18</strong> – Using <code>dd</code> to overwrite a single ciphertext byte at offset 299.</figcaption>
 
+To prepare the files for controlled corruption, the directory was inspected to confirm the presence of the original ciphertexts, and duplicate versions (`corrupted_*.bin`) were created for modification:
+
+
  ![Figure 19](./screenshots/screenshots-week9/task5/t5-2.png)
-<figcaption><strong>Figure 19</strong> – Directory state after duplicating ciphertext files and preparing corrupted versions.</figcaption>
+<figcaption><strong>Figure 19</strong> – Directory state showing original ciphertext files and duplicated <code>corrupted_*.bin</code> versions prepared for corruption.</figcaption>
 
 ### **4. Decrypting the corrupted ciphertext**
 
@@ -554,8 +552,7 @@ tail -c +280 recovered_ctr.txt | head -c 32
 
 **Screenshot:**
 
-
-  ![Figure 21](./screenshots/screenshots-week9/task5/t5-4.png)
+![Figure 21](./screenshots/screenshots-week9/task5/t5-4.png)
 <figcaption><strong>Figure 21</strong> – Extracted plaintext region showing single-byte corruption characteristic of CTR mode.</figcaption>
 
 ---
@@ -666,25 +663,23 @@ This confirms CTR behaves like a stream cipher—with **no diffusion**.
 
 ### **ECB Mode**
 
-Only **one 16-byte block** was corrupted. ECB decrypts each block independently, so the error was fully contained within that block. All other plaintext remained correct.
-
+A single 16-byte region was corrupted. All other plaintext remained intact. This matches ECB’s independent block processing.
 ---
 
 ### **CBC Mode**
 
-Exactly **two blocks** were corrupted. The modified ciphertext block produced a garbled plaintext block, and the following block decrypted incorrectly due to XOR chaining. Normal plaintext resumed afterward.
-
+Two consecutive plaintext blocks were corrupted, aligning with CBC’s chained XOR dependency.
 ---
 
 ### **CFB Mode**
 
-Corruption affected **several consecutive bytes**. Because CFB feeds ciphertext back into the keystream, the error propagated for multiple bytes before the mode resynchronized.
+Multiple consecutive bytes were corrupted before the keystream feedback resynchronized. This matches CFB’s shift-register design.
 
 ---
 
 ### **CTR Mode**
 
-Only **one byte** was corrupted. CTR generates keystream independently of ciphertext, so the modification impacted only the corresponding plaintext byte with no further propagation.
+Exactly one plaintext byte was altered. CTR behaves like a stream cipher and does not propagate errors.
 
 ---
 
