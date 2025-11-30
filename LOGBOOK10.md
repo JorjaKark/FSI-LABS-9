@@ -135,7 +135,7 @@ The program:
 <figcaption><strong>Figure 4</strong> – Adding a macOS-specific definition of <code>htole32</code> using <code>OSSwapHostToLittleInt32</code> to resolve a compilation error when loading the SHA-256 internal state.</figcaption>
 
 
-> On macOS, an extra `#ifdef __APPLE__` block was added to define `htole32` via `OSSwapHostToLittleInt32`, ensuring the program compiles correctly while still correctly initializing the SHA-256 state.
+ > On macOS, an extra `#ifdef __APPLE__` block was added to define `htole32` via `OSSwapHostToLittleInt32`, ensuring the program compiles correctly while still correctly initializing the SHA-256 state.
 
 ---
 
