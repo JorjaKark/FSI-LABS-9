@@ -302,8 +302,9 @@ wc -c Files/words.txt
 
 This confirms that the input file is approximately **206 KB**, a sufficiently large sample to observe cryptographic mode behavior.
 
-> **Figure 1** – `wc -c` confirming byte size of plaintext
-> ![Figure 1](attachment:/mnt/data/1.png)
+* **Screenshots:**
+**Figure 15** – `wc -c` confirming byte size of plaintext
+![Figure 15](./screenshots/screenshots-week9/task2/1.png)
 
 ---
 
@@ -324,8 +325,9 @@ lrwxrwxrwx 1 fsi fsi 15 Nov 30 15:12 plaintext.txt -> Files/words.txt
 
 This ensures that all encryption commands operate on a consistently named input without duplicating the file.
 
-> **Figure 2** – Symbolic link creation and verification
-> ![Figure 2](attachment:/mnt/data/2.png)
+* **Screenshots:**
+**Figure 16** – Symbolic link creation and verification
+![Figure 16](./screenshots/screenshots-week9/task2/2.png)
 
 ---
 
@@ -386,8 +388,8 @@ ls -l plaintext.txt cipher_*.bin
 lrwxrwxrwx 1 fsi fsi     15 Nov 30 15:12 plaintext.txt -> Files/words.txt
 ```
 
-> **Figure 3** – All encryption modes executed successfully; ciphertext file sizes match
-> ![Figure 3](attachment:/mnt/data/3.png)
+**Figure 17** – All encryption modes executed successfully; ciphertext file sizes match
+![Figure 17](./screenshots/screenshots-week9/task2/3.png)
 
 ---
 
