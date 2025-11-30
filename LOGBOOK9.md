@@ -229,6 +229,7 @@ THE OSCARS TzRN   ON SzNDAY WHICH SEEMS ABozT RIGHT AFTER THIS LONG STRANGE
 * **Screenshot:**
   ![Figure 10](./screenshots/screenshots-week9/task1/included/11_tr_head_partial.png)
 
+
 ```
 THE OSCARS TURN   ON SUNDAY WHICH SEEMS ABOUT RIGHT AFTER THIS LONG STRANGE
 ...
@@ -303,8 +304,8 @@ wc -c Files/words.txt
 This confirms that the input file is approximately **206 KB**, a sufficiently large sample to observe cryptographic mode behavior.
 
 * **Screenshots:**
-**Figure 15** – `wc -c` confirming byte size of plaintext
 ![Figure 15](./screenshots/screenshots-week9/task2/1.png)
+<figcaption><strong>Figure 15</strong> – <code>wc -c</code> confirming byte size of plaintext.</figcaption>
 
 ---
 
@@ -326,8 +327,9 @@ lrwxrwxrwx 1 fsi fsi 15 Nov 30 15:12 plaintext.txt -> Files/words.txt
 This ensures that all encryption commands operate on a consistently named input without duplicating the file.
 
 * **Screenshots:**
-**Figure 16** – Symbolic link creation and verification
+
 ![Figure 16](./screenshots/screenshots-week9/task2/2.png)
+<figcaption><strong>Figure 16</strong> – Symbolic link creation and verification.</figcaption>
 
 ---
 
@@ -388,8 +390,8 @@ ls -l plaintext.txt cipher_*.bin
 lrwxrwxrwx 1 fsi fsi     15 Nov 30 15:12 plaintext.txt -> Files/words.txt
 ```
 
-**Figure 17** – All encryption modes executed successfully; ciphertext file sizes match
 ![Figure 17](./screenshots/screenshots-week9/task2/3.png)
+<figcaption><strong>Figure 17</strong> – All encryption modes executed successfully; ciphertext file sizes match.</figcaption>
 
 ---
 
