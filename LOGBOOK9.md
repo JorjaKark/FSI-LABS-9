@@ -553,7 +553,8 @@ tail -c +280 recovered_ctr.txt | head -c 32
 **Screenshot:**
 
 ![Figure 21](./screenshots/screenshots-week9/task5/t5-4.png)
-<figcaption><strong>Figure 21</strong> – Extracted plaintext region showing single-byte corruption characteristic of CTR mode.</figcaption>
+<figcaption><strong>Figure 21</strong> – Extracted plaintext regions for ECB, CBC, and CTR modes after ciphertext corruption.</figcaption>
+
 
 ---
 
