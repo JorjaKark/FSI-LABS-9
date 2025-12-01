@@ -704,4 +704,396 @@ These results reinforce critical security design principles:
 
 The experiment confirms—in practice—the theoretical cryptographic behavior of AES modes under ciphertext corruption.
 
+---
 
+# **Challenge**
+
+This challenge extends the work done in the **Secret-Key Encryption Lab** by applying statistical cryptanalysis to a Vigenère cipher over an **extended alphabet of 36 symbols** (A-Z + 0-9):
+
+We are given:
+
+* A Vigenère-encrypted ciphertext
+* A key length of 5
+* An alphabet of 36 valid characters
+* A hint related to the course name, **Fundamentos de Segurança Informática (FSI)**
+
+The final objective is to answer:
+
+> **O que deve acontecer aos gatos gordos?**
+
+To answer this, we reconstructed the unknown key and fully decrypted the ciphertext.
+
+---
+
+# **Phase 1 — Alphabet and English Frequency Model**
+
+To solve the cypher, we require:
+
+1. a **mod 36 alphabet**, and
+2. an **English letter frequency distribution** to score candidate decryptions.
+
+---
+
+## **1.1 — Defining the Alphabet**
+
+```python
+ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+N = len(ALPHABET)  # 36
+INDEX = {ch: i for i, ch in enumerate(ALPHABET)}
+```
+
+### **Explanation**
+
+* The challenge explicitly states that valid symbols are **A–Z and digits 0–9**, giving us **36 symbols**.
+* `ALPHABET` defines the symbol order for modular arithmetic.
+* `INDEX` maps each character to its numeric index for Vigenère operations.
+* All decryption formulas rely on:
+
+```
+(value - shift) mod 36
+```
+
+This ensures that letters and digits are treated consistently.
+
+---
+
+## **1.2 — English Letter Frequencies**
+
+```python
+ENGLISH_FREQ = {
+    'A': 0.0817, 'B': 0.0149, 'C': 0.0278, 'D': 0.0425, 'E': 0.1270,
+    'F': 0.0223, 'G': 0.0202, 'H': 0.0609, 'I': 0.0697, 'J': 0.0015,
+    'K': 0.0077, 'L': 0.0403, 'M': 0.0241, 'N': 0.0675, 'O': 0.0751,
+    'P': 0.0193, 'Q': 0.0010, 'R': 0.0599, 'S': 0.0633, 'T': 0.0906,
+    'U': 0.0276, 'V': 0.0098, 'W': 0.0236, 'X': 0.0015, 'Y': 0.0197,
+    'Z': 0.0007,
+}
+```
+
+### **Where these values come from**
+
+These frequencies represent empirical estimates of how often each letter appears in English text, derived from large corpora (books, newspapers, etc.).
+They match the distributions documented in:
+
+* <a>[https://en.wikipedia.org/wiki/Letter_frequency](https://en.wikipedia.org/wiki/Letter_frequency)</a>
+* <a>[https://en.wikipedia.org/wiki/Frequency_analysis](https://en.wikipedia.org/wiki/Frequency_analysis)</a>
+* <a>[https://en.wikipedia.org/wiki/Substitution_cipher](https://en.wikipedia.org/wiki/Substitution_cipher)</a>
+
+All of these resources are referenced in the **Secret-Key Encryption Lab** guide.
+
+These frequencies serve as the **expected model** for χ² English-likeness scoring.
+
+![English Letter Frequencies](./screenshots/screenshots-week9/challenge/1engletterfreqgraph.png)
+
+<figcaption><strong>Figure 22</strong> – English letter frequency distribution used as the expected profile in χ² scoring.</figcaption>
+
+---
+
+# **Phase 2 — Understanding the Vigenère Structure (Key Length = 5)**
+
+Knowing the key length allows classical Vigenère decomposition:
+
+* Write ciphertext in 5 interleaved columns
+* Each column corresponds to **one key character**
+* Each column is a **Caesar cipher (mod 36)**
+
+This matches the cryptanalysis approach described in the Vigenère and frequency-analysis literature:
+once the key length is known, each segment behaves like a shifted monoalphabetic cipher.
+
+---
+
+# **Phase 3 — Breaking Each Column With χ² Scoring**
+
+Each key position is solved by:
+
+1. Extracting every 5th character from the ciphertext
+2. Trying all 36 possible shifts
+3. Using χ² to measure how English-like each decryption is
+4. Choosing the shift with the lowest score
+
+---
+
+## **3.1 — Decrypting a Caesar Segment (mod 36)**
+
+```python
+def decrypt_caesar_for_segment(segment, key_char):
+    shift = INDEX[key_char]
+    result = []
+    for c in segment:
+        if c in INDEX:
+            ci = INDEX[c]
+            pi = (ci - shift) % N
+            result.append(ALPHABET[pi])
+    return ''.join(result)
+```
+
+### **Explanation**
+
+For a fixed key character:
+
+```
+Plain = (Cipher - shift) mod 36
+```
+
+This function tests a *candidate* shift for one column of the ciphertext.
+
+---
+
+## **3.2 — χ² English-Likeness Scoring**
+
+```python
+def score_english(text):
+    letters = [c for c in text if c in string.ascii_uppercase]
+    n = len(letters)
+    if n == 0:
+        return float('inf')
+
+    counts = {ch: 0 for ch in ENGLISH_FREQ}
+    for c in letters:
+        counts[c] += 1
+
+    chi2 = 0.0
+    for ch, exp_freq in ENGLISH_FREQ.items():
+        observed = counts[ch]
+        expected = exp_freq * n
+        if expected > 0:
+            chi2 += (observed - expected) ** 2 / expected
+
+    return chi2
+```
+
+### **Explanation**
+
+* Converts the decrypted segment into a frequency table
+* Compares it to expected English frequencies
+* Computes a χ² value
+* Lower χ² → more likely to be valid English
+
+This statistical test is the core of the reconstruction procedure.
+
+---
+
+## **3.3 — Guessing All 5 Key Characters**
+
+```python
+def guess_key(ciphertext, key_length=5):
+    ciphertext = ciphertext.upper()
+    key = []
+
+    for offset in range(key_length):
+        segment_chars = [
+            c for i, c in enumerate(ciphertext)
+            if i % key_length == offset and c in ALPHABET
+        ]
+        segment = ''.join(segment_chars)
+
+        best_char = None
+        best_score = float('inf')
+
+        for k in ALPHABET:
+            dec = decrypt_caesar_for_segment(segment, k)
+            s = score_english(dec)
+            if s < best_score:
+                best_score = s
+                best_char = k
+
+        key.append(best_char)
+
+    return ''.join(key)
+```
+
+### **Explanation**
+
+* Iterates over the 5 key positions
+* Extracts the corresponding ciphertext characters
+* Tests all 36 possible shifts using χ² scoring
+* Picks the shift with the lowest score
+
+This reconstructs the complete Vigenère key.
+
+---
+
+# **Phase 4 — Full Vigenère Decryption (mod 36)**
+
+Once the key is known, the ciphertext is decrypted by:
+
+```python
+def decrypt_vigenere(ciphertext, key):
+    key_indices = [INDEX[c] for c in key]
+    nkey = len(key_indices)
+
+    result = []
+    for i, c in enumerate(ciphertext):
+        if c not in INDEX:
+            result.append(c)
+            continue
+
+        ci = INDEX[c]
+        ki = key_indices[i % nkey]
+        pi = (ci - ki) % N
+
+        result.append(ALPHABET[pi])
+
+    return ''.join(result)
+```
+
+### **Explanation**
+
+This applies:
+
+```
+P[i] = (C[i] – Key[i mod 5]) mod 36
+```
+
+for every character in the ciphertext.
+
+---
+
+# **Phase 5 — Running the Code and Recovering the Plaintext**
+
+Output of the script:
+
+```
+Guessed key: FSI25
+Plaintext: INTERCHANGINGMINDCONTROLCOMELETTHEREVOLUTIONTAKEITSTOLLIFYOUCOULDFLICKASWITCHANDOPENYOUR3RDEYEYOUDSEETHATWESHOULDNEVERBEAFRAIDTODIERISEUPANDTAKETHEPOWERBACKITSTIMETHE
+```
+
+The recovered plaintext corresponds to a part of the song **“Uprising”** by **Muse**.
+The next lyric line — implied but not included in the ciphertext — is:
+
+> **“The fat cats will have a heart attack.”**
+
+Thus, the plaintext indirectly reveals the answer to the challenge.
+
+### **Final Answer:**
+
+**Os gatos gordos devem ter um ataque cardíaco.**
+
+---
+
+# **Conclusion**
+
+This challenge demonstrated how classical frequency-analysis techniques can successfully break a generalized Vigenère cipher implemented over a 36-symbol alphabet (A–Z and 0–9). Achieving this required combining:
+
+* a correct alphabet mapping
+* empirical English-letter frequency data
+* χ² statistical scoring
+* Caesar-column decomposition
+* and a known key length of 5
+
+we reconstructed the key **FSI25** and fully decrypted the ciphertext.
+
+The recovered plaintext revealed a fragment of lyrics from **“Uprising”** by **Muse**, whose next line provides the intended answer to the challenge question:
+
+> **O que deve acontecer aos gatos gordos?**
+> **Os gatos gordos devem ter um ataque cardíaco.**
+
+This exercise reinforces the core concepts of classical cryptanalysis: identifying structure, exploiting natural-language redundancy, and using statistical tools to reverse polyalphabetic encryption.
+
+---
+
+# **Appendix A — Full Python Implementation**
+
+```python
+import string
+
+# --------------- ALPHABET ---------------
+ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+N = len(ALPHABET)  # 36
+INDEX = {ch: i for i, ch in enumerate(ALPHABET)}
+
+# --------------- ENGLISH LETTER FREQUENCIES ---------------
+ENGLISH_FREQ = {
+    'A': 0.0817, 'B': 0.0149, 'C': 0.0278, 'D': 0.0425, 'E': 0.1270,
+    'F': 0.0223, 'G': 0.0202, 'H': 0.0609, 'I': 0.0697, 'J': 0.0015,
+    'K': 0.0077, 'L': 0.0403, 'M': 0.0241, 'N': 0.0675, 'O': 0.0751,
+    'P': 0.0193, 'Q': 0.0010, 'R': 0.0599, 'S': 0.0633, 'T': 0.0906,
+    'U': 0.0276, 'V': 0.0098, 'W': 0.0236, 'X': 0.0015, 'Y': 0.0197,
+    'Z': 0.0007,
+}
+
+# --------------- DECRYPT SINGLE CAESAR MOD 36 ---------------
+def decrypt_caesar_for_segment(segment, key_char):
+    shift = INDEX[key_char]
+    result = []
+    for c in segment:
+        if c in INDEX:
+            ci = INDEX[c]
+            pi = (ci - shift) % N
+            result.append(ALPHABET[pi])
+    return ''.join(result)
+
+# --------------- CHI-SQUARED ENGLISH SCORING ---------------
+def score_english(text):
+    letters = [c for c in text if c in string.ascii_uppercase]
+    n = len(letters)
+    if n == 0:
+        return float('inf')
+
+    counts = {ch: 0 for ch in ENGLISH_FREQ}
+    for c in letters:
+        counts[ch] += 1
+
+    chi2 = 0.0
+    for ch, exp_freq in ENGLISH_FREQ.items():
+        observed = counts[ch]
+        expected = exp_freq * n
+        if expected > 0:
+            chi2 += (observed - expected) ** 2 / expected
+
+    return chi2
+
+# --------------- KEY GUESSING (MOD 36) ---------------
+def guess_key(ciphertext, key_length=5):
+    ciphertext = ciphertext.upper()
+    key = []
+
+    for offset in range(key_length):
+        segment_chars = [
+            c for i, c in enumerate(ciphertext)
+            if i % key_length == offset and c in ALPHABET
+        ]
+        segment = ''.join(segment_chars)
+
+        best_char = None
+        best_score = float('inf')
+
+        for k in ALPHABET:
+            dec = decrypt_caesar_for_segment(segment, k)
+            s = score_english(dec)
+            if s < best_score:
+                best_score = s
+                best_char = k
+
+        key.append(best_char)
+
+    return ''.join(key)
+
+# --------------- FULL VIGENERE DECRYPTION (MOD 36) ---------------
+def decrypt_vigenere(ciphertext, key):
+    key_indices = [INDEX[c] for c in key]
+    nkey = len(key_indices)
+
+    result = []
+    for i, c in enumerate(ciphertext):
+        if c not in INDEX:
+            result.append(c)
+            continue
+
+        ci = INDEX[c]
+        ki = key_indices[i % nkey]
+        pi = (ci - ki) % N
+
+        result.append(ALPHABET[pi])
+
+    return ''.join(result)
+
+# --------------- RUN ---------------
+ciphertext = "N516MHZIFBN5OEDSVKGIY9WD7T4MD9YBP6MJDWDPY0WFOF2MAOXBWDGNX6GPH62D8K3Q4FFA4AOHZIF8T7MFTTCZVMIW66TTCLK9JBP2O1W09JZ3LF90WZ39FXZ2DIBW5DJ9QK9Z7IF8YSS6OMWXGRJ9J27P01KON4MLCJ"
+
+keyguess = guess_key(ciphertext, key_length=5)
+print("Guessed key:", keyguess)
+
+plaintext = decrypt_vigenere(ciphertext, keyguess)
+print("Plaintext:", plaintext)
+```
