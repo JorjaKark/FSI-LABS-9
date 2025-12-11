@@ -1,5 +1,75 @@
 # **LOGBOOK 10 - Hash Length Extension Attack Lab**
 
+## **Task 1: Send Request to List Files**
+
+The objective of this task was to understand how the server authenticates requests using a naive MAC construction `MAC = SHA256(key || message)`. We acted as a legitimate user who knows the secret key to construct a valid request that lists the files in the server's directory. This baseline step confirms that we can successfully communicate with the server and calculate valid MACs before attempting to exploit the vulnerability.
+
+## **Phase 1: Constructing the Request String**
+
+#### **1. Defining the Request Parameters**
+
+* **Parameters Used:**
+
+  * `myname`: **GoncaloMoreira** (Group member identification)
+
+  * `uid`: **1001** (User ID from `key.txt`)
+
+  * `key`: **123456** (Secret key associated with UID 1001)
+
+  * `lstcmd`: **1** (Command to list files)
+
+* **String Construction:**
+  The server calculates the MAC by concatenating the key and the URL parameters (without the `?`).
+  Format: `<key>:<params>`
+  Resulting String: `123456:myname=GoncaloMoreira&uid=1001&lstcmd=1`
+
+## **Phase 2: Calculating the MAC**
+
+#### **2. Generating the SHA-256 Hash**
+
+* **Command Used:**
+```
+echo -n "123456:myname=GoncaloMoreira&uid=1001&lstcmd=1" | shasum -a 256
+´´´
+
+**Description:**
+We used the `echo -n` command to output the constructed string without a trailing newline character, piping it into `shasum -a 256` to calculate the SHA-256 hash. This hash acts as the Message Authentication Code (MAC).
+
+* **Screenshot:**
+
+<figcaption><strong>Figure 1</strong> – Calculating the valid MAC for the initial request using the secret key and parameters.</figcaption>
+
+## **Phase 3: Validating the Request**
+
+#### **3. Sending the Request to the Server**
+
+* **Command Used:**
+
+curl -s "http://www.seedlab-hashlen.com/?myname=GoncaloMoreira&uid=1001&lstcmd=1&mac=364c4a47395840c8d3ffde232897c3b01123a0f54c1316fe5053549e1c3cd1eb"
+
+
+**Description:**
+We constructed the full URL by appending the calculated MAC to the original parameters. We used `curl` to send the HTTP GET request to the server.
+
+* **Screenshot:**
+
+<figcaption><strong>Figure 2</strong> – Server response confirming "Yes, your MAC is valid" and listing the directory contents (key.txt, secret.txt).</figcaption>
+
+## **Observations**
+
+* The MAC calculation must strictly follow the `key:message` format. Any extra whitespace or newline characters (e.g., forgetting `-n` in echo) results in an invalid MAC.
+
+* The server response confirms that the naive MAC verification logic is working as intended for legitimate requests.
+
+## **Conclusions**
+
+* We successfully authenticated a request using the shared secret key.
+
+* The server accepted the MAC `364c...d1eb`, executing the `lstcmd` and revealing the existence of a `secret.txt` file.
+
+* This establishes the baseline state (original message and its valid MAC) required to perform the Length Extension Attack in subsequent tasks.
+
+
 ## **Task 2: Create Padding**
 
 The objective of this task was to compute the exact SHA-256 padding that the server would apply to the original message constructed in Task 1, ensuring that we can accurately reproduce the internal state used to generate the MAC. This padding, once calculated and URL-encoded, is essential for enabling the hash length extension attack in later steps.
@@ -11,7 +81,7 @@ The objective of this task was to compute the exact SHA-256 padding that the ser
 #### **1. Measuring the byte-length of the message**
 
 * **Commands Used:**
-
+ 
   ```bash
   echo -n "123456:myname=GoncaloMoreira&uid=1001&lstcmd=1" | wc -c
   ```
@@ -23,7 +93,7 @@ The objective of this task was to compute the exact SHA-256 padding that the ser
 
 * **Screenshot:**
 
-![Figure 1](./screenshots/screenshots-week10/task2/1-length_bytes_wc.png)
+![Figure 1](./screenshots/screenshots-week10/task2/1-mac_calculation.png)
 
 <figcaption><strong>Figure 1</strong> – Obtaining the exact byte length (46 bytes) of the message using <code>wc -c</code>.</figcaption>
 
@@ -55,7 +125,7 @@ The objective of this task was to compute the exact SHA-256 padding that the ser
 
 * **Screenshot:**
 
-![Figure 2](./screenshots/screenshots-week10/task2/2-sha256_padding_calculation.png)
+![Figure 2](./screenshots/screenshots-week10/task2/2-server_validation.png)
 
 <figcaption><strong>Figure 2</strong> – Manual computation of SHA-256 padding, including the 0x80 byte, zero padding, big-endian length field, and the final URL-encoded padding.</figcaption>
 
