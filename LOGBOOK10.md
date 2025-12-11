@@ -28,9 +28,9 @@ The objective of this task was to understand how the server authenticates reques
 #### **2. Generating the SHA-256 Hash**
 
 * **Command Used:**
-```
+
 echo -n "123456:myname=GoncaloMoreira&uid=1001&lstcmd=1" | shasum -a 256
-´´´
+
 
 **Description:**
 We used the `echo -n` command to output the constructed string without a trailing newline character, piping it into `shasum -a 256` to calculate the SHA-256 hash. This hash acts as the Message Authentication Code (MAC).
@@ -93,7 +93,7 @@ The objective of this task was to compute the exact SHA-256 padding that the ser
 
 * **Screenshot:**
 
-![Figure 1](./screenshots/screenshots-week10/task2/1-mac_calculation.png)
+![Figure 1](./screenshots/screenshots-week10/task1/1-mac_calculation.png)
 
 <figcaption><strong>Figure 1</strong> – Obtaining the exact byte length (46 bytes) of the message using <code>wc -c</code>.</figcaption>
 
@@ -125,7 +125,7 @@ The objective of this task was to compute the exact SHA-256 padding that the ser
 
 * **Screenshot:**
 
-![Figure 2](./screenshots/screenshots-week10/task2/2-server_validation.png)
+![Figure 2](./screenshots/screenshots-week10/task1/2-server_validation.png)
 
 <figcaption><strong>Figure 2</strong> – Manual computation of SHA-256 padding, including the 0x80 byte, zero padding, big-endian length field, and the final URL-encoded padding.</figcaption>
 
