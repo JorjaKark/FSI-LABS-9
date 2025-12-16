@@ -9,7 +9,7 @@ In a normal PKI setup, you pay or otherwise rely on a commercial Certificate Aut
 
 #### 1. Installing / locating OpenSSL + copying the config
 
-You verified OpenSSL was installed via Homebrew and set OpenSSL’s binary path, then located the system `openssl.cnf` and copied it into your working directory so you could edit it locally.
+We verified OpenSSL was installed via Homebrew and set OpenSSL’s binary path, then located the system `openssl.cnf` and copied it into your working directory so you could edit it locally.
 
   ![Figure 1](./screenshots/screenshots-week11/task1/1.png)
   <figcaption><b>Figure 1.</b>–Installing/verifying OpenSSL via Homebrew and setting an OpenSSL path variable.</figcaption>
@@ -20,11 +20,11 @@ You verified OpenSSL was installed via Homebrew and set OpenSSL’s binary path,
 
 #### 2 Editing `openssl.cnf` (CA defaults)
 
-You opened the copied `openssl.cnf` in the Pico editor, navigated to the CA section, and specifically changed the setting that the lab asked you to change: **allow repeated subjects** by setting:
+We opened the copied `openssl.cnf` in the nano editor, navigated to the CA section, and specifically changed the setting that the lab asked us to change: **allow repeated subjects** by setting:
 
-* `unique_subject = no` (uncommented)
+* `unique_subject = no` (to uncomment)
 
-That matches the lab’s note (“very likely we will do that in the lab”).
+
 
 ![Figure 3](./screenshots/screenshots-week11/task1/3.png)
 <figcaption><b>Figure 3.</b>–Opening the copied <code>openssl.cnf</code> file using the Pico text editor.</figcaption>
@@ -358,11 +358,6 @@ In this task, we successfully:
 
 The generated CSR (`server.csr`) and private key (`server.key`) are now fully validated and ready to be used by the Certificate Authority created in Task 1 to issue a signed server certificate in the next task.
 
----
-Amazing — this is **exactly** the right material for Task 3, and you executed every required step correctly. Below is a **complete Task 3 report**, written in the **same style, structure, and tone as Task 1 and Task 2**, and explicitly tied to the screenshots and the SEED Lab instructions you pasted.
-
-You can copy–paste this directly into your report.
-(I’ll assume your screenshots are numbered `1.png` → `7.png` under `screenshots-week11/task3/` — adjust paths if needed.)
 
 ---
 
