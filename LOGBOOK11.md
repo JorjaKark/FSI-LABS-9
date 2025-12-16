@@ -14,11 +14,11 @@ A key detail from the instructions you pasted: OpenSSL’s CA workflow relies on
 
 You verified OpenSSL was installed via Homebrew and set OpenSSL’s binary path, then located the system `openssl.cnf` and copied it into your working directory so you could edit it locally.
 
-  ![Figure 1](./screenshots/screenshots-week11/task1/)
+  ![Figure 1](./screenshots/screenshots-week11/task1/1.png)
   <figcaption><b>Figure 1.</b>–Installing/verifying OpenSSL via Homebrew and setting an OpenSSL path variable.</figcaption>
 
   
-![Figure 2](./screenshots/screenshots-week11/task1/)
+![Figure 2](./screenshots/screenshots-week11/task1/2.png)
 <figcaption><b>Figure 2.</b>–Locating the Homebrew OpenSSL configuration file and copying <code>openssl.cnf</code> into the working directory.</figcaption>
 
 #### 2.2 Editing `openssl.cnf` (CA defaults)
@@ -29,13 +29,13 @@ You opened the copied `openssl.cnf` in the Pico editor, navigated to the CA sect
 
 That matches the lab’s note (“very likely we will do that in the lab”).
 
-![Figure 3](./screenshots/screenshots-week11/task1/)
+![Figure 3](./screenshots/screenshots-week11/task1/3.png)
 <figcaption><b>Figure 3.</b>–Opening the copied <code>openssl.cnf</code> file using the Pico text editor.</figcaption>
 
-![Figure 4](./screenshots/screenshots-week11/task1/)
+![Figure 4](./screenshots/screenshots-week11/task1/4.png)
 <figcaption><b>Figure 4.</b>–Viewing the <code>[ CA_default ]</code> section of <code>openssl.cnf</code> before enabling duplicate-subject certificates.</figcaption>
 
-![Figure 5](./screenshots/screenshots-week11/task1/)
+![Figure 5](./screenshots/screenshots-week11/task1/5.png)
 <figcaption><b>Figure 5.</b>–Enabling the <code>unique_subject = no</code> option to allow issuing multiple certificates with the same subject.</figcaption>
 
 #### 2.3 Creating the CA directory structure (`demoCA`)
@@ -45,7 +45,7 @@ Per the lab instructions (and matching the config defaults), you created the exp
 * `index.txt` as an empty database index
 * `serial` initialized to `1000`
 
-![Figure 6](./screenshots/screenshots-week11/task1/)
+![Figure 6](./screenshots/screenshots-week11/task1/6.png)
 <figcaption><b>Figure 6.</b>–Creating the <code>demoCA</code> directory structure and initializing the <code>index.txt</code> and <code>serial</code> files.</figcaption>
 
 
@@ -63,7 +63,7 @@ OpenSSL generated the RSA keypair (4096-bit) and prompted you for:
 * a PEM passphrase (to protect `ca.key`)
 * subject fields (Country, State, Organization, Common Name, etc.)
 
-![Figure 7](./screenshots/screenshots-week11/task1/)
+![Figure 7](./screenshots/screenshots-week11/task1/7.png)
 <figcaption><b>Figure 7.</b>–Generating the self-signed root CA certificate using the <code>openssl req -x509</code> command.</figcaption>
 
 
@@ -77,7 +77,7 @@ Your entered subject information (as shown) was:
 * **CN** = to1-group6 Root CA
 * **emailAddress** = [www.modelCA.com](http://www.modelCA.com)
 
-![Figure 8](./screenshots/screenshots-week11/task1/)
+![Figure 8](./screenshots/screenshots-week11/task1/8.png)
 <figcaption><b>Figure 8.</b>–Entering the Distinguished Name (DN) information for the root CA certificate.</figcaption>
 
 
@@ -90,31 +90,31 @@ openssl x509 -in ca.crt -text -noout
 openssl rsa  -in ca.key -text -noout
 ```
 
-![Figure 9](./screenshots/screenshots-week11/task1/)
+![Figure 9](./screenshots/screenshots-week11/task1/9.png)
 <figcaption><b>Figure 9.</b>–Decoded output of the CA certificate showing version, serial number, issuer, subject, and validity period.</figcaption>
 
 
-![Figure 10](./screenshots/screenshots-week11/task1/)
+![Figure 10](./screenshots/screenshots-week11/task1/10.png)
 <figcaption><b>Figure 10.</b>–Decoded certificate output displaying the RSA public key modulus and public exponent.</figcaption>
 
 
-![Figure 11](./screenshots/screenshots-week11/task1/)
+![Figure 11](./screenshots/screenshots-week11/task1/11.png)
 <figcaption><b>Figure 11.</b>–X509v3 extensions confirming CA status through <code>Basic Constraints: CA:TRUE</code>.</figcaption>
 
-![Figure 12](./screenshots/screenshots-week11/task1/)
+![Figure 12](./screenshots/screenshots-week11/task1/12.png)
 <figcaption><b>Figure 12.</b>–Decoded RSA private key output showing the 4096-bit modulus <code>n</code>.</figcaption>
 
 
-![Figure 13](./screenshots/screenshots-week11/task1/)
+![Figure 13](./screenshots/screenshots-week11/task1/13.png)
 <figcaption><b>Figure 13.</b>–RSA private key output displaying the public exponent <code>e</code> and private exponent <code>d</code>.</figcaption>
 
-![Figure 14](./screenshots/screenshots-week11/task1/)
+![Figure 14](./screenshots/screenshots-week11/task1/14.png)
 <figcaption><b>Figure 14.</b>–RSA private key output showing the prime numbers <code>p</code> (prime1) and <code>q</code> (prime2).</figcaption>
 
-![Figure 15](./screenshots/screenshots-week11/task1/)
+![Figure 15](./screenshots/screenshots-week11/task1/15.png)
 <figcaption><b>Figure 15.</b>–RSA private key output displaying CRT parameters <code>exponent1</code> and <code>exponent2</code>.</figcaption>
 
-![Figure 16](./screenshots/screenshots-week11/task1/)
+![Figure 16](./screenshots/screenshots-week11/task1/16.png)
 <figcaption><b>Figure 16.</b>–RSA private key output showing the CRT coefficient used for optimized decryption.</figcaption>
 
 ---
