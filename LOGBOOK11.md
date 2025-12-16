@@ -364,5 +364,188 @@ In this task, we successfully:
 The generated CSR (`server.csr`) and private key (`server.key`) are now fully validated and ready to be used by the Certificate Authority created in Task 1 to issue a signed server certificate in the next task.
 
 ---
+Amazing — this is **exactly** the right material for Task 3, and you executed every required step correctly. Below is a **complete Task 3 report**, written in the **same style, structure, and tone as Task 1 and Task 2**, and explicitly tied to the screenshots and the SEED Lab instructions you pasted.
+
+You can copy–paste this directly into your report.
+(I’ll assume your screenshots are numbered `1.png` → `7.png` under `screenshots-week11/task3/` — adjust paths if needed.)
+
+---
+
+## Task 3 Report — Generating a Certificate for the Web Server
+
+In this task, we use the **Certificate Authority (CA)** created in Task 1 to **sign the server’s Certificate Signing Request (CSR)** generated in Task 2. The result is a valid **X.509 server certificate** that can be used by a web server to authenticate itself to clients.
+
+In real-world deployments, CSRs are sent to trusted third-party CAs. In this lab, however, our own CA acts as a trusted root, allowing us to issue certificates locally.
+
+---
+
+### 1. Preparing the OpenSSL configuration file
+
+Before signing the server certificate, we verified and modified the OpenSSL configuration file (`openssl.cnf`) used by the CA.
+
+#### 1.1 CA default settings
+
+The configuration file defines the CA’s working directory and database files. In particular, the `[ CA_default ]` section specifies where issued certificates, serial numbers, and keys are stored.
+
+![Figure 1](./screenshots/screenshots-week11/task3/1.png)
+
+<figcaption><b>Figure 1.</b>–Opening the OpenSSL configuration file (<code>openssl.cnf</code>) in the Pico editor.</figcaption>
+
+![Figure 2](./screenshots/screenshots-week11/task3/2.png)
+
+<figcaption><b>Figure 2.</b>–<code>[ CA_default ]</code> section showing the CA directory, database, and serial number configuration.</figcaption>
+
+As configured:
+
+* the CA directory is `./demoCA`;
+* issued certificates are tracked via `index.txt`;
+* serial numbers are stored in `serial`;
+* the CA private key is stored in `demoCA/private/cakey.pem`.
+
+---
+
+#### 1.2 Enabling extension copying
+
+By default, OpenSSL does **not** copy extensions from a CSR into the issued certificate. This would cause the **Subject Alternative Name (SAN)** extension to be dropped, even if it was present in the CSR.
+
+To ensure that SAN entries are preserved, we enabled extension copying by uncommenting the following line in `openssl.cnf`:
+
+```ini
+copy_extensions = copy
+```
+
+![Figure 3](./screenshots/screenshots-week11/task3/3.png)
+
+<figcaption><b>Figure 3.</b>–Enabling extension copying to allow SAN fields from the CSR to be included in the issued certificate.</figcaption>
+
+This step is essential for modern TLS certificates, as browsers rely on SAN rather than the Common Name for hostname validation.
+
+---
+
+### 2. Signing the server CSR with the CA
+
+Once the configuration file was correctly prepared, we used the CA’s private key to sign the server’s CSR and generate a server certificate.
+
+The following command was executed:
+
+```bash
+openssl ca -config openssl.cnf -policy policy_anything \
+-md sha256 -days 3650 \
+-in demoCA/server.csr -out demoCA/server.crt -batch \
+-cert demoCA/ca.crt -keyfile demoCA/ca.key
+```
+
+This command performs the following:
+
+* uses our CA configuration file (`openssl.cnf`);
+* applies the `policy_anything` policy, which does not enforce strict subject matching;
+* signs the CSR using SHA-256;
+* issues a certificate valid for 3650 days (10 years);
+* signs the certificate using the CA’s certificate (`ca.crt`) and private key (`ca.key`).
+
+![Figure 4](./screenshots/screenshots-week11/task3/4.png)
+
+<figcaption><b>Figure 4.</b>–Signing the server CSR using the CA private key and certificate.</figcaption>
+
+From the output, we observe:
+
+* the CSR signature is verified successfully;
+* a new serial number (`4096 / 0x1000`) is assigned;
+* the CA database is updated with a new entry.
+
+This confirms that the certificate was successfully issued by the CA.
+
+---
+
+### 3. Inspecting the generated server certificate
+
+After issuing the certificate, we decoded it to verify its contents and ensure that all required extensions were correctly included.
+
+The following command was used:
+
+```bash
+openssl x509 -in demoCA/server.crt -text -noout
+```
+
+![Figure 5](./screenshots/screenshots-week11/task3/5.png)
+
+<figcaption><b>Figure 5.</b>–Decoded server certificate showing issuer, subject, and validity period.</figcaption>
+
+From the decoded certificate output, we confirm:
+
+* **Issuer**:
+  The issuer corresponds to our Root CA created in Task 1, proving that the certificate was signed by the CA.
+
+* **Subject**:
+
+  ```
+  C=PT, O=FEUP, CN=www.group06.com
+  ```
+
+  This matches the subject specified in the CSR.
+
+* **Public Key**:
+
+  * Algorithm: RSA
+  * Key size: 2048 bits
+  * Public exponent: 65537
+
+---
+
+### 4. Verifying certificate extensions
+
+The decoded certificate also includes the expected X.509 extensions.
+
+![Figure 6](./screenshots/screenshots-week11/task3/6.png)
+
+<figcaption><b>Figure 6.</b>–X509v3 extensions confirming that the certificate is not a CA certificate.</figcaption>
+
+The **Basic Constraints** extension shows:
+
+```
+CA:FALSE
+```
+
+This confirms that the issued certificate is a **server certificate**, not a CA certificate.
+
+---
+
+![Figure 7](./screenshots/screenshots-week11/task3/7.png)
+
+<figcaption><b>Figure 7.</b>–Subject Alternative Name (SAN) extension included in the issued server certificate.</figcaption>
+
+The **Subject Alternative Name (SAN)** extension contains:
+
+```
+DNS:www.group06.com
+DNS:www.group06A.com
+DNS:www.group06B.com
+```
+
+This verifies that:
+
+* the SAN extension from the CSR was successfully copied into the final certificate;
+* all required hostnames are valid and recognized by modern browsers.
+
+---
+
+## Conclusions
+
+In this task, we successfully:
+
+* configured OpenSSL to allow extension copying from CSRs;
+* used our self-created Certificate Authority to sign a server CSR;
+* generated a valid X.509 server certificate (`server.crt`);
+* verified that the certificate:
+
+  * was issued by our CA;
+  * contains the correct subject information;
+  * has **CA:FALSE** in its Basic Constraints;
+  * includes all required **Subject Alternative Names (SANs)**.
+
+The generated server certificate is now fully functional and ready to be deployed on a web server for TLS authentication.
+
+---
+
 
 
