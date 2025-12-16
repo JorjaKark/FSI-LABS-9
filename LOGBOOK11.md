@@ -209,3 +209,160 @@ We:
   * it is self-signed (`Issuer == Subject`, and SKI == AKI);
   * and you extracted the RSA parameters from the printed modulus/exponents/primes.
 
+
+
+Perfect — below is a **complete, polished Task 2 report**, written in the **same style, tone, and level of detail as your Task 1 report**, and fully aligned with the SEED Labs description.
+
+You can **copy–paste this directly** into your report and just keep the image paths as you already have them.
+
+---
+
+## Task 2 Report — Generating a Certificate Signing Request (CSR) for a Web Server
+
+In this task, we generate a **Certificate Signing Request (CSR)** for a web server that wishes to obtain a public-key certificate from the Certificate Authority (CA) created in Task 1. A CSR contains the server’s **public key** and **identity information**, and it is later sent to the CA, which verifies the information and issues a signed certificate.
+
+Unlike Task 1, where a **self-signed certificate** was created using the `-x509` option, here we intentionally **omit** that option so that OpenSSL generates a **request**, not a certificate. This CSR will later be signed by our root CA in the next task.
+
+> Note: Modern browsers enforce strict hostname validation rules. Therefore, in addition to the Common Name (CN), the CSR must include a **Subject Alternative Name (SAN)** extension containing all valid hostnames for the server.
+
+---
+
+### 1. Generating the server private key and CSR
+
+We generated a new RSA key pair and a CSR for our web server using the following command:
+
+```bash
+openssl req -newkey rsa:2048 -sha256 \
+-keyout server.key -out server.csr \
+-subj "/CN=www.group06.com/O=FEUP/C=PT" \
+-passout pass:dees \
+-addext "subjectAltName = DNS:www.group06.com, DNS:www.group06A.com, DNS:www.group06B.com"
+```
+
+This command performs the following actions:
+
+* generates a **2048-bit RSA private key**, stored in `server.key` and protected with a passphrase;
+* creates a **certificate signing request**, stored in `server.csr`;
+* sets the server’s identity information (CN, organization, country);
+* adds a **Subject Alternative Name (SAN)** extension containing multiple DNS names.
+
+![Figure 1](./screenshots/screenshots-week11/task2/1.png)
+
+<figcaption><b>Figure 1.</b>–Generating a 2048-bit RSA private key and a Certificate Signing Request (CSR) with Subject Alternative Names.</figcaption>
+
+The Common Name (CN) identifies the primary hostname of the server, while the SAN extension includes additional hostnames that will be accepted by browsers.
+
+---
+
+### 2. Inspecting the generated CSR
+
+After generating the CSR, we inspected its contents to verify that all required information was correctly included:
+
+```bash
+openssl req -in server.csr -text -noout
+```
+
+![Figure 2](./screenshots/screenshots-week11/task2/2.png)
+
+<figcaption><b>Figure 2.</b>–Decoded CSR output showing the subject information and RSA public key parameters.</figcaption>
+
+From the decoded CSR output, we observe:
+
+* **Subject**:
+
+  ```
+  CN=www.group06.com, O=FEUP, C=PT
+  ```
+
+  This matches exactly the identity information provided during CSR generation.
+
+* **Public Key Information**:
+
+  * Algorithm: RSA
+  * Key size: 2048 bits
+  * Public exponent: 65537 (0x10001)
+
+![Figure 3](./screenshots/screenshots-week11/task2/3.png)
+
+<figcaption><b>Figure 3.</b>–CSR extensions showing the Subject Alternative Name (SAN) field.</figcaption>
+
+The CSR also contains the required **X509v3 Subject Alternative Name** extension:
+
+```
+DNS:www.group06.com
+DNS:www.group06A.com
+DNS:www.group06B.com
+```
+
+Including the Common Name inside the SAN extension is mandatory; otherwise, modern browsers would reject the certificate even if the CN matches the hostname.
+
+---
+
+## 3. Inspecting the server private key
+
+After generating the CSR, we inspected the server’s private key to verify that the RSA parameters were correctly generated. This was done using the following command:
+
+```bash
+openssl rsa -in server.key -text -noout
+```
+
+The correct passphrase was entered, allowing OpenSSL to successfully decode the private key.
+
+![Figure 4](./screenshots/screenshots-week11/task2/4.png)
+
+<figcaption><b>Figure 4.</b>–Decoded RSA private key showing the modulus and public/private exponents.</figcaption>
+
+![Figure 5](./screenshots/screenshots-week11/task2/5.png)
+
+<figcaption><b>Figure 5.</b>–Decoded RSA private key showing the prime factors and CRT parameters.</figcaption>
+
+From the decoded output, we observe the following:
+
+* **Key size**:
+
+  ```
+  Private-Key: (2048 bit, 2 primes)
+  ```
+
+  This confirms that a 2048-bit RSA key pair was generated, as required.
+
+* **Modulus (`n`)**:
+  The modulus is displayed as a large hexadecimal value and represents the product of the two prime numbers (`n = p × q`).
+
+* **Public exponent (`e`)**:
+
+  ```
+  publicExponent: 65537 (0x10001)
+  ```
+
+  This is the standard public exponent used in RSA.
+
+* **Private exponent (`d`)**:
+  Displayed under `privateExponent`, used for decryption and signing operations.
+
+* **Prime numbers (`p` and `q`)**:
+  Shown as `prime1` and `prime2`, these are the two secret primes whose product forms the modulus.
+
+* **CRT parameters**:
+  The values `exponent1`, `exponent2`, and `coefficient` are also present. These parameters are used to optimize RSA operations via the Chinese Remainder Theorem.
+
+The successful decoding confirms that the private key is valid, correctly encrypted, and corresponds to the public key included in the CSR.
+
+---
+
+## Conclusions
+
+In this task, we successfully:
+
+* generated a **2048-bit RSA private key** for a web server;
+* created a **Certificate Signing Request (CSR)** containing the server’s public key and identity;
+* correctly specified the Common Name (CN) for hostname identification;
+* added a **Subject Alternative Name (SAN)** extension with multiple DNS entries;
+* verified the CSR contents and confirmed the presence of the SAN extension;
+* successfully decoded and inspected the server’s private key, identifying all RSA parameters (`n`, `e`, `d`, `p`, `q`) and CRT values.
+
+The generated CSR (`server.csr`) and private key (`server.key`) are now fully validated and ready to be used by the Certificate Authority created in Task 1 to issue a signed server certificate in the next task.
+
+---
+
+
