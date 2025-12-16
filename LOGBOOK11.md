@@ -37,7 +37,7 @@ That matches the lab’s note (“very likely we will do that in the lab”).
 
 #### 3. Creating the CA directory structure (`demoCA`)
 
-Per the lab instructions (and matching the config defaults), you created the expected CA working directory and its subfolders, and initialized the two required files:
+Per the lab instructions (and matching the config defaults), we created the expected CA working directory and its subfolders, and initialized the two required files:
 
 * `index.txt` as an empty database index
 * `serial` initialized to `1000`
@@ -48,7 +48,7 @@ Per the lab instructions (and matching the config defaults), you created the exp
 
 #### 4. Generating the root CA key + self-signed certificate
 
-You ran the CA self-signed certificate generation command:
+We ran the CA self-signed certificate generation command:
 
 ```bash
 openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 \
@@ -80,7 +80,7 @@ Your entered subject information (as shown) was:
 
 #### 5. Inspecting the certificate and key (the lab questions come from here)
 
-You ran the two inspection commands the lab requested:
+We ran the two inspection commands the lab requested:
 
 ```bash
 openssl x509 -in ca.crt -text -noout
