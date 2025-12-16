@@ -7,9 +7,7 @@ In a normal PKI setup, you pay or otherwise rely on a commercial Certificate Aut
 
 ---
 
-### 2) Evidence from your screenshots (what you actually did)
-
-#### 2.1 Installing / locating OpenSSL + copying the config
+#### 1. Installing / locating OpenSSL + copying the config
 
 You verified OpenSSL was installed via Homebrew and set OpenSSL’s binary path, then located the system `openssl.cnf` and copied it into your working directory so you could edit it locally.
 
@@ -20,7 +18,7 @@ You verified OpenSSL was installed via Homebrew and set OpenSSL’s binary path,
 ![Figure 2](./screenshots/screenshots-week11/task1/2.png)
 <figcaption><b>Figure 2.</b>–Locating the Homebrew OpenSSL configuration file and copying <code>openssl.cnf</code> into the working directory.</figcaption>
 
-#### 2.2 Editing `openssl.cnf` (CA defaults)
+#### 2 Editing `openssl.cnf` (CA defaults)
 
 You opened the copied `openssl.cnf` in the Pico editor, navigated to the CA section, and specifically changed the setting that the lab asked you to change: **allow repeated subjects** by setting:
 
@@ -37,7 +35,7 @@ That matches the lab’s note (“very likely we will do that in the lab”).
 ![Figure 5](./screenshots/screenshots-week11/task1/5.png)
 <figcaption><b>Figure 5.</b>–Enabling the <code>unique_subject = no</code> option to allow issuing multiple certificates with the same subject.</figcaption>
 
-#### 2.3 Creating the CA directory structure (`demoCA`)
+#### 3. Creating the CA directory structure (`demoCA`)
 
 Per the lab instructions (and matching the config defaults), you created the expected CA working directory and its subfolders, and initialized the two required files:
 
@@ -48,7 +46,7 @@ Per the lab instructions (and matching the config defaults), you created the exp
 <figcaption><b>Figure 6.</b>–Creating the <code>demoCA</code> directory structure and initializing the <code>index.txt</code> and <code>serial</code> files.</figcaption>
 
 
-#### 2.4 Generating the root CA key + self-signed certificate
+#### 4. Generating the root CA key + self-signed certificate
 
 You ran the CA self-signed certificate generation command:
 
@@ -80,7 +78,7 @@ Your entered subject information (as shown) was:
 <figcaption><b>Figure 8.</b>–Entering the Distinguished Name (DN) information for the root CA certificate.</figcaption>
 
 
-#### 2.5 Inspecting the certificate and key (the lab questions come from here)
+#### 5. Inspecting the certificate and key (the lab questions come from here)
 
 You ran the two inspection commands the lab requested:
 
@@ -118,7 +116,7 @@ openssl rsa  -in ca.key -text -noout
 
 ---
 
-## 3) Answers to the lab questions (based on your outputs)
+##  Answers to the lab questions (based on your outputs)
 
 ### Q1 — What part of the certificate indicates this is a CA’s certificate?
 
@@ -197,11 +195,11 @@ Below I’m mapping each RSA parameter to *where it appears* in your outputs, an
 
 ---
 
-## 4) Quick wrap-up (what this proves)
+## Conclusions
 
-From your screenshots, you successfully:
+We:
 
-* prepared the CA config (`openssl.cnf`) correctly, including enabling duplicate subject issuance (`unique_subject = no`);
+* prepared the CA config (`openssl.cnf`) and enabled duplicate subject issuance (`unique_subject = no`);
 * created the CA database structure (`demoCA`, `index.txt`, `serial=1000`);
 * generated a 4096-bit RSA private key (`ca.key`) protected by a passphrase;
 * generated a **self-signed Root CA certificate** (`ca.crt`);
@@ -211,4 +209,3 @@ From your screenshots, you successfully:
   * it is self-signed (`Issuer == Subject`, and SKI == AKI);
   * and you extracted the RSA parameters from the printed modulus/exponents/primes.
 
-If you want, I can also reformat the RSA parameters (`n, d, p, q`) into cleaner single-line hex strings (no wraps) *using exactly what’s visible in your figures*, but I’ll keep it as-is unless you tell me how strict your report format needs to be.
