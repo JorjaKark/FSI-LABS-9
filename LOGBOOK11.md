@@ -70,8 +70,8 @@ Your entered subject information (as shown) was:
 * **ST** = Porto
 * **L** = Paranhos
 * **O** = FEUP
-* **OU** = to1-group6
-* **CN** = to1-group6 Root CA
+* **OU** = t01-group6
+* **CN** = t01-group6 Root CA
 * **emailAddress** = [www.modelCA.com](http://www.modelCA.com)
 
 ![Figure 8](./screenshots/screenshots-week11/task1/8.png)
@@ -209,11 +209,6 @@ We:
   * it is self-signed (`Issuer == Subject`, and SKI == AKI);
   * and you extracted the RSA parameters from the printed modulus/exponents/primes.
 
-
-
-Perfect — below is a **complete, polished Task 2 report**, written in the **same style, tone, and level of detail as your Task 1 report**, and fully aligned with the SEED Labs description.
-
-You can **copy–paste this directly** into your report and just keep the image paths as you already have them.
 
 ---
 
