@@ -3,7 +3,7 @@
 
 In a normal PKI setup, you pay or otherwise rely on a commercial Certificate Authority (CA) to vouch for identities by signing certificates. In this lab, we *become* that trusted entity ourselves by creating a **root CA certificate**. Because it’s a *root*, it is **self-signed** (it signs its own certificate). Once that’s done, this CA can later sign certificates for servers/users in the other tasks.
 
-A key detail from the instructions you pasted: OpenSSL’s CA workflow relies on a configuration file (commonly `openssl.cnf`) and a small CA “database” structure (folders + `index.txt` + `serial`) so OpenSSL can track what it issued.
+> Note: OpenSSL’s CA workflow relies on a configuration file (commonly `openssl.cnf`) and a small CA “database” structure (folders + `index.txt` + `serial`) so OpenSSL can track what it issued.
 
 ---
 
