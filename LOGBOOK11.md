@@ -4,8 +4,8 @@
 
 ## Task 1 — Becoming a Certificate Authority (CA) (OpenSSL)
 
-
 In a normal PKI setup, you pay or otherwise rely on a commercial Certificate Authority (CA) to vouch for identities by signing certificates. In this lab, we become that trusted entity ourselves by creating a **root CA certificate**. Because it’s a root, it is **self-signed** (it signs its own certificate). Once that’s done, this CA can later sign certificates for servers/users in the other tasks.
+
 ---
 
 #### 1. Installing / locating OpenSSL + copying the config
@@ -131,23 +131,22 @@ This is evident because the Issuer and Subject fields contain identical Distingu
 
 From the decoded outputs:
 
-Public exponent (e): 65537 (0x10001)
+- Public exponent (e): 65537 (0x10001)
 
-Modulus (n): displayed in both the certificate and private key outputs
+- Modulus (n): displayed in both the certificate and private key outputs
 
-Private exponent (d): shown under privateExponent
+- Private exponent (d): shown as privateExponent in the private key
 
-Prime factors (p and q): shown as prime1 and prime2
+- Prime factors (p and q): shown as prime1 and prime2
 
-CRT parameters: exponent1, exponent2, and coefficient used for optimized RSA operations
+These values confirm that the CA uses a correctly generated 4096-bit RSA key pair.
 
 
 ---
 
 ## Conclusions
 
-By the end of this task, we had successfully set up a fully functional root Certificate Authority. We prepared the CA configuration, created the required directory structure, generated a protected 4096-bit RSA key, and issued a self-signed root CA certificate. Inspection of the certificate confirmed that it is self-signed, authorized as a CA, and correctly exposes all RSA parameters.
-
+By the end of this task, we successfully set up a functional root Certificate Authority. We prepared the CA configuration, created the required directory structure, generated a protected 4096-bit RSA key, and issued a self-signed root CA certificate. Inspection confirmed that the certificate is self-signed, authorized as a CA, and correctly configured for subsequent certificate issuance.
 
 ---
 
