@@ -1,4 +1,4 @@
-# **LOGBOOK 11 - Public Key Infrastructuresb**
+# **LOGBOOK 11 - Public Key Infrastructure**
 
 ---
 
