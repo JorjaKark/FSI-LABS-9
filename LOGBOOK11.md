@@ -69,7 +69,7 @@ This command generates a 4096-bit RSA key pair and immediately creates a self-si
 ![Figure 8](./screenshots/screenshots-week11/task1/8.png)
 <figcaption><b>Figure 8</b>–Entering the Distinguished Name (DN) information for the root CA certificate.</figcaption>
 
-As the screenshot show, we entered:
+As shown in the screenshot, we entered:
 
 * **C** = PT
 * **ST** = Porto
