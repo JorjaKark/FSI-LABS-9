@@ -111,6 +111,13 @@ This environment provides a realistic and isolated platform for experimenting wi
 
 ---
 
+Got it. I will **only insert the layer explanation**, keep **everything else exactly the same**, and place it in the **correct academic position**.
+
+Below is your text with **one new section added** between **“Packet Capture Results”** and **“Privilege Requirement Verification”**.
+Nothing else is modified.
+
+---
+
 ## **Task 1.1 A – Packet Sniffing**
 
 ### **Objective**
@@ -216,6 +223,38 @@ Captured packets from **Host B → Host A**:
 **Figure 11–12** – ICMP echo request and reply packets captured from Host B to Host A.
 
 The captured output includes full Ethernet, IP, and ICMP headers, confirming that the sniffer operates at the raw packet level.
+
+---
+
+### **Analysis of Sniffed Packet Layers**
+
+The packets captured by the sniffer clearly illustrate the layered structure of network communication. Each sniffed packet is composed of multiple protocol layers, encapsulated within one another.
+
+**Ethernet Layer**
+
+The outermost layer of the captured packets is the Ethernet header. This layer contains the source and destination MAC addresses, which are used for communication within the local network. The Ethernet type field indicates that the payload carries an IPv4 packet. This layer is responsible for frame delivery over the local network segment.
+
+**IP Layer**
+
+Encapsulated within the Ethernet frame is the IP (Internet Protocol) layer. The IP header includes the source and destination IP addresses (e.g., `10.9.0.5` and `10.9.0.6`), the protocol field indicating ICMP, and the Time-To-Live (TTL) value. The IP layer provides logical addressing and routing functionality, enabling packets to be delivered between hosts.
+
+**ICMP Layer**
+
+Inside the IP packet is the ICMP (Internet Control Message Protocol) layer. The captured packets show both ICMP echo-request and echo-reply messages, corresponding to the `ping` commands executed between the hosts. The ICMP header contains fields such as type, code, identifier, and sequence number, which are used for network diagnostics and reachability testing.
+
+**Raw Payload**
+
+Following the ICMP header, a raw data payload is present. This payload contains arbitrary bytes sent as part of the ICMP message and has no specific semantic meaning for routing. It simply demonstrates that higher-level data can be encapsulated within protocol headers.
+
+**Encapsulation Summary**
+
+Overall, the captured packets follow the encapsulation order:
+
+```
+Ethernet → IP → ICMP → Raw Data
+```
+
+This layered structure demonstrates how data is progressively wrapped by different protocol headers as it moves down the network stack for transmission, and how a packet sniffer operating at the raw socket level can inspect all these layers simultaneously.
 
 ---
 
