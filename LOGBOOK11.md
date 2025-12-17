@@ -438,40 +438,84 @@ At this point, the server certificate is complete and ready to be deployed on a 
 
 ## Task 4
 
+In this task, we deployed the server certificate generated in Task 3 on an Apache web server running inside a Docker container, enabling HTTPS for the website. This demonstrates how public-key certificates are used in practice to secure web communication.
+
+---
+
+1. Hostname resolution setup
+
+Before configuring HTTPS, we ensured that all required hostnames resolved to the Apache container’s IP address. To achieve this, we added the following entries to the local /etc/hosts file, mapping the group06 domains to the container IP (10.9.0.80).
+
 ![Figure 30](./screenshots/screenshots-week11/task4/1.png)
 <figcaption><b>Figure 30</b>–Editing the <code>/etc/hosts</code> file to map <code>www.group06.com</code>, <code>www.group06A.com</code>, and <code>www.group06B.com</code> to the container IP address (10.9.0.80).</figcaption>
+
+We then verified that hostname resolution was working correctly using the getent hosts command.
 
 ![Figure 31](./screenshots/screenshots-week11/task4/2.png)
 <figcaption><b>Figure 31</b>–Verifying local hostname resolution using the <code>getent hosts</code> command for the group06 domains.</figcaption>
 
+2. Making the certificate available to the container
+
+To allow Apache to access the TLS materials, we copied the generated server certificate and private key into the shared Docker volumes/ directory. This directory is mounted inside the container, making the files accessible without rebuilding the container.
+
 ![Figure 32](./screenshots/screenshots-week11/task4/3.png)
 <figcaption><b>Figure 32</b>–Copying the generated TLS server certificate (<code>server.crt</code>) and private key (<code>server.key</code>) from the local PKI directory into the Docker <code>volumes/</code> directory so they can be mounted and used by the Apache HTTPS container.</figcaption>
+
+3. Apache HTTPS virtual host configuration
+
+Next, we accessed the Apache container shell and inspected the available site configuration files.
 
 ![Figure 33](./screenshots/screenshots-week11/task4/4.png)
 <figcaption><b>Figure 33</b>–Starting the Apache web server container and entering its shell using <code>docker exec</code>, then listing the available Apache site configuration files under <code>/etc/apache2/sites-available/</code>.</figcaption>
 
+We then created a new HTTPS virtual host configuration for the group06 website by copying the provided reference configuration file and adapting it to our setup.
+
 ![Figure 34](./screenshots/screenshots-week11/task4/6.png)
 <figcaption><b>Figure 34</b>–Copying the reference HTTPS configuration file (<code>bank32_apache_ssl.conf</code>) to create a new configuration file (<code>group06_apache_ssl.conf</code>) for the group06 HTTPS virtual host.</figcaption>
+
+The new configuration file was edited to:
+
+- set the correct DocumentRoot;
+
+- define the ServerName and ServerAlias entries;
+
+- reference the correct TLS certificate and private key paths.
 
 ![Figure 35](./screenshots/screenshots-week11/task4/7.png)
 <figcaption><b>Figure 35</b>–Editing the newly created Apache HTTPS configuration file (<code>group06_apache_ssl.conf</code>) to update the document root, server names, aliases, and SSL certificate paths for the group06 website.</figcaption>
 
+The final configuration defines both HTTP and HTTPS virtual hosts and enables TLS using the generated server certificate.
+
 ![Figure 36](./screenshots/screenshots-week11/task4/8.png)
 <figcaption><b>Figure 36</b>–Finalizing the Apache HTTPS virtual host configuration for group06, defining both HTTP and HTTPS virtual hosts and enabling TLS using the generated server certificate and private key.</figcaption>
+
+4. Website content preparation
+
+Inside the container, we created the document root directory for the group06 website and added simple HTML files. Different pages were used for HTTP and HTTPS access to make it clear which protocol was being used.
 
 ![Figure 37](./screenshots/screenshots-week11/task4/9.png)
 <figcaption><b>Figure 37</b>–Creating the document root directory for the group06 website inside the Apache container and generating simple HTML files to distinguish between HTTP (<code>index_red.html</code>) and HTTPS (<code>index.html</code>) access.</figcaption>
 
+5. Enabling SSL and starting Apache
+
+We enabled Apache’s SSL module, activated the new HTTPS site configuration, and disabled the default sites to ensure that only the group06 configuration was served.
 
 ![Figure 38](./screenshots/screenshots-week11/task4/10.png)
 <figcaption><b>Figure 38</b>–Enabling the Apache SSL module, activating the <code>group06_apache_ssl.conf</code> virtual host configuration, and disabling the default HTTP and HTTPS sites to ensure only the group06 configuration is served.</figcaption>
 
+We then validated the Apache configuration and started the Apache web server. Since the server’s private key is encrypted, Apache prompted for the passphrase during startup.
 
 ![Figure 39](./screenshots/screenshots-week11/task4/11.png)
 <figcaption><b>Figure 39</b>–Validating the Apache configuration and starting the Apache web server, unlocking the encrypted private key when prompted.</figcaption>
 
+To confirm that Apache was running correctly, we verified that it was listening on TCP port 443.
+
 ![Figure 40](./screenshots/screenshots-week11/task4/12.png)
 <figcaption><b>Figure 40</b>–Verifying that the Apache web server inside the container is actively listening on TCP port 443 using the <code>ss -tlnp</code> command.</figcaption>
+
+6. Accessing the HTTPS website and trust establishment
+
+When initially accessing https://www.group06.com, the browser displayed a security warning. This occurred because the Certificate Authority that issued the server certificate is not trusted by default.
 
 ![Figure 41](./screenshots/screenshots-week11/task4/13.png)
 <figcaption><b>Figure 41</b>–Attempting to access <code>https://www.group06.com</code> before trusting the custom Certificate Authority, resulting in a Firefox security warning.</figcaption>
@@ -497,3 +541,8 @@ At this point, the server certificate is complete and ready to be deployed on a 
 ![Figure 48](./screenshots/screenshots-week11/task4/20.png)
 <figcaption><b>Figure 48</b>–Successfully accessing <code>https://www.group06.com</code> after trusting the custom Root CA, displaying the HTTPS webpage content served by the Apache container.</figcaption>
 
+---
+
+Conclusions
+
+In this task, we successfully deployed the server certificate on an Apache web server and enabled HTTPS communication. We configured hostname resolution, prepared the Apache HTTPS virtual host, enabled SSL, and demonstrated the trust relationship by importing the custom Root CA into the browser. After establishing trust, the HTTPS website could be accessed securely without warnings.
