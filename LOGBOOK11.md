@@ -1,3 +1,7 @@
+# **LOGBOOK 11 - Public Key Infrastructuresb**
+
+---
+
 ## Task 1 Report — Becoming a Certificate Authority (CA) (OpenSSL)
 
 
@@ -27,7 +31,7 @@ We opened the copied `openssl.cnf` in the nano editor, navigated to the CA secti
 
 
 ![Figure 3](./screenshots/screenshots-week11/task1/3.png)
-<figcaption><b>Figure 3</b>–Opening the copied <code>openssl.cnf</code> file using the Pico text editor.</figcaption>
+<figcaption><b>Figure 3</b>–Opening the copied <code>openssl.cnf</code> file using the nano text editor.</figcaption>
 
 ![Figure 4](./screenshots/screenshots-week11/task1/4.png)
 <figcaption><b>Figure 4</b>–Viewing the <code>[ CA_default ]</code> section of <code>openssl.cnf</code> before enabling duplicate-subject certificates.</figcaption>
