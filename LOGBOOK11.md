@@ -150,7 +150,7 @@ By the end of this task, we successfully set up a functional root Certificate Au
 
 ---
 
-## Task 2 — Generating a Certificate Signing Request (CSR) for a Web Server
+## Task 2 —  Generating a Certificate Request for Your Web Server
 
 In this task, we generated a Certificate Signing Request (CSR) for a web server that will later request a certificate from the CA created in Task 1. The CSR contains the server’s public key and identity information, which the CA uses to issue a signed certificate.
 
