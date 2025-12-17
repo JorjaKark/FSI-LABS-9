@@ -554,21 +554,23 @@ The generated server certificate is now fully functional and ready to be deploye
 ![Figure 34](./screenshots/screenshots-week11/task4/5.png)
 <figcaption><b>Figure 34</b>–Inspecting the <code>server.crt</code> file to confirm issuer, subject (CN), validity, and the presence of the Subject Alternative Names (SANs).</figcaption>
 
-![Figure 35](./screenshots/screenshots-week11/task4/7.png)
+![Figure 35](./screenshots/screenshots-week11/task4/6.png)
+
+![Figure 36](./screenshots/screenshots-week11/task4/7.png)
 <figcaption><b>Figure 35</b>–Entering the Apache container shell and listing available Apache site configurations in <code>/etc/apache2/sites-available/</code>.</figcaption>
 
-![Figure 36](./screenshots/screenshots-week11/task4/8.png)
-<figcaption><b>Figure 36</b>–Viewing the provided SSL site configuration template (<code>bank32_apache_ssl.conf</code>) used as a reference for creating the group06 HTTPS configuration.</figcaption>
+![Figure 37](./screenshots/screenshots-week11/task4/8.png)
+<figcaption><b>Figure 37</b>–Viewing the provided SSL site configuration template (<code>bank32_apache_ssl.conf</code>) used as a reference for creating the group06 HTTPS configuration.</figcaption>
 
-![Figure 37](./screenshots/screenshots-week11/task4/9.png)
-<figcaption><b>Figure 37</b>–Creating the document root directory for the group06 website and generating simple HTML pages for HTTP and HTTPS testing.</figcaption>
+![Figure 38](./screenshots/screenshots-week11/task4/9.png)
+<figcaption><b>Figure 38</b>–Creating the document root directory for the group06 website and generating simple HTML pages for HTTP and HTTPS testing.</figcaption>
 
 
-![Figure 38](./screenshots/screenshots-week11/task4/10.png)
-<figcaption><b>Figure 38</b>–Configuring the group06 Apache VirtualHosts for HTTP (port 80) and HTTPS (port 443), including <code>ServerName</code>, <code>ServerAlias</code>, and SSL certificate paths.</figcaption>
+![Figure 39](./screenshots/screenshots-week11/task4/10.png)
+<figcaption><b>Figure 39</b>–Configuring the group06 Apache VirtualHosts for HTTP (port 80) and HTTPS (port 443), including <code>ServerName</code>, <code>ServerAlias</code>, and SSL certificate paths.</figcaption>
 
-![Figure 39](./screenshots/screenshots-week11/task4/11.png)
-<figcaption><b>Figure 39</b>–Confirming that the certificate and key are accessible inside the container via the mounted <code>/volumes</code> directory.</figcaption>
+![Figure 3X](./screenshots/screenshots-week11/task4/11.png)
+<figcaption><b>Figure 3X</b>–Confirming that the certificate and key are accessible inside the container via the mounted <code>/volumes</code> directory.</figcaption>
 
 ![Figure 40](./screenshots/screenshots-week11/task4/12.png)
 <figcaption><b>Figure 40</b>–Starting Apache inside the container and unlocking the encrypted private key when prompted.</figcaption>
