@@ -12,11 +12,11 @@ In a normal PKI setup, you pay or otherwise rely on a commercial Certificate Aut
 We verified OpenSSL was installed via Homebrew and set OpenSSL’s binary path, then located the system `openssl.cnf` and copied it into your working directory so you could edit it locally.
 
   ![Figure 1](./screenshots/screenshots-week11/task1/1.png)
-  <figcaption><b>Figure 1.</b>–Installing/verifying OpenSSL via Homebrew and setting an OpenSSL path variable.</figcaption>
+  <figcaption><b>Figure 1</b>–Installing/verifying OpenSSL via Homebrew and setting an OpenSSL path variable.</figcaption>
 
   
 ![Figure 2](./screenshots/screenshots-week11/task1/2.png)
-<figcaption><b>Figure 2.</b>–Locating the Homebrew OpenSSL configuration file and copying <code>openssl.cnf</code> into the working directory.</figcaption>
+<figcaption><b>Figure 2</b>–Locating the Homebrew OpenSSL configuration file and copying <code>openssl.cnf</code> into the working directory.</figcaption>
 
 #### 2 Editing `openssl.cnf` (CA defaults)
 
@@ -536,6 +536,3 @@ In this task, we successfully:
 The generated server certificate is now fully functional and ready to be deployed on a web server for TLS authentication.
 
 ---
-
-
-
