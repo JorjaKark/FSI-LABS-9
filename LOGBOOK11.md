@@ -110,10 +110,10 @@ openssl rsa  -in ca.key -text -noout
 <figcaption><b>Figure 14</b>–RSA private key output showing the prime numbers <code>p</code> (prime1) and <code>q</code> (prime2).</figcaption>
 
 ![Figure 15](./screenshots/screenshots-week11/task1/15.png)
-<figcaption><b>Figure 15</b>–RSA private key output displaying CRT parameters <code>exponent1</code> and <code>exponent2</code>.</figcaption>
+<figcaption><b>Figure 15</b>– RSA private key output (continuation) </figcaption>
 
 ![Figure 16](./screenshots/screenshots-week11/task1/16.png)
-<figcaption><b>Figure 16</b>–RSA private key output showing the CRT coefficient used for optimized decryption.</figcaption>
+<figcaption><b>Figure 16</b>–RSA private key output (finalization) </figcaption>
 
 ---
 
