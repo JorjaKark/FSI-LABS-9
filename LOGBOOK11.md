@@ -13,7 +13,7 @@ In a normal PKI setup, you pay or otherwise rely on a commercial Certificate Aut
 
 #### 1. Installing / locating OpenSSL + copying the config
 
-We verified OpenSSL was installed via Homebrew and set OpenSSL’s binary path, then located the system `openssl.cnf` and copied it into your working directory so you could edit it locally.
+We first confirmed that OpenSSL was installed on the system and accessible from the command line. Since we needed to customize the CA behavior, we located the system-wide openssl.cnf file and copied it into our working directory, allowing us to modify it without affecting the global installation.
 
   ![Figure 1](./screenshots/screenshots-week11/task1/1.png)
   <figcaption><b>Figure 1</b>–Installing/verifying OpenSSL via Homebrew and setting an OpenSSL path variable.</figcaption>
@@ -24,9 +24,11 @@ We verified OpenSSL was installed via Homebrew and set OpenSSL’s binary path, 
 
 #### 2 Editing `openssl.cnf` (CA defaults)
 
-We opened the copied `openssl.cnf` in the nano editor, navigated to the CA section, and specifically changed the setting that the lab asked us to change: **allow repeated subjects** by setting:
+We then opened the copied openssl.cnf file using the nano editor and navigated to the CA configuration section. As required by the lab, we enabled support for issuing multiple certificates with the same subject by uncommenting the following option:
 
-* `unique_subject = no` (to uncomment)
+* `unique_subject = no`
+
+This setting becomes important later, as it allows the CA to reissue certificates for the same hostname without rejecting them.
 
 
 
@@ -41,7 +43,7 @@ We opened the copied `openssl.cnf` in the nano editor, navigated to the CA secti
 
 #### 3. Creating the CA directory structure (`demoCA`)
 
-Per the lab instructions (and matching the config defaults), we created the expected CA working directory and its subfolders, and initialized the two required files:
+OpenSSL expects a specific directory layout for Certificate Authorities. Following the configuration defaults and the lab instructions, we created the required demoCA directory structure and initialized the two mandatory database files:
 
 * `index.txt` as an empty database index
 * `serial` initialized to `1000`
@@ -52,17 +54,14 @@ Per the lab instructions (and matching the config defaults), we created the expe
 
 #### 4. Generating the root CA key + self-signed certificate
 
-We ran the CA self-signed certificate generation command:
+With the CA structure in place, we generated the root CA’s private key and self-signed certificate using the following command:
 
 ```bash
 openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 \
   -keyout ca.key -out ca.crt
 ```
 
-OpenSSL generated the RSA keypair (4096-bit) and prompted you for:
-
-* a PEM passphrase (to protect `ca.key`)
-* subject fields (Country, State, Organization, Common Name, etc.)
+This command generates a 4096-bit RSA key pair and immediately creates a self-signed X.509 certificate valid for 10 years. During execution, OpenSSL prompted us to set a passphrase to protect the private key (ca.key) and to enter the Distinguished Name (DN) fields for the CA.
 
 ![Figure 7](./screenshots/screenshots-week11/task1/7.png)
 <figcaption><b>Figure 7</b>–Generating the self-signed root CA certificate using the <code>openssl req -x509</code> command.</figcaption>
@@ -84,7 +83,7 @@ Your entered subject information (as shown) was:
 
 #### 5. Inspecting the certificate and key (the lab questions come from here)
 
-We ran the two inspection commands the lab requested:
+To answer the lab questions and verify the generated artifacts, we inspected both the CA certificate and its private key using OpenSSL’s decoding tools:
 
 ```bash
 openssl x509 -in ca.crt -text -noout
@@ -120,115 +119,51 @@ openssl rsa  -in ca.key -text -noout
 
 ---
 
-##  Answers to the lab questions (based on your outputs)
+##  Answers to the lab questions
 
-### Q1 — What part of the certificate indicates this is a CA’s certificate?
+### Q1 — What indicates that this is a CA certificate?
 
-The clearest marker is the **X509v3 Basic Constraints** extension showing:
+The certificate includes the X509v3 Basic Constraints extension marked as critical and set to CA:TRUE. This explicitly authorizes the certificate to act as a Certificate Authority.
 
-* `X509v3 Basic Constraints: critical`
-* `CA:TRUE`
+### Q2 — What indicates that the certificate is self-signed?
 
-This appears directly in your decoded certificate output.
-(See Figure 11.)
+This is evident because the Issuer and Subject fields contain identical Distinguished Names. Additionally, the Authority Key Identifier matches the Subject Key Identifier, which is expected when a certificate signs itself.
 
-Why this matters: in X.509, **Basic Constraints** is the standard extension that tells verifiers whether the certificate is allowed to act as a CA (i.e., sign other certificates).
+### Q3 — Identifying RSA parameters
 
----
+From the decoded outputs:
 
-### Q2 — What part of the certificate indicates this is a self-signed certificate?
+Public exponent (e): 65537 (0x10001)
 
-You have two strong “tells” in your output:
+Modulus (n): displayed in both the certificate and private key outputs
 
-1. **Issuer equals Subject**
-   In the decoded certificate text, the `Issuer:` line and the `Subject:` line contain the same DN values (C=PT, ST=Porto, … CN=to1-group6 Root CA, …).
-   (Visible in Figure 9)
+Private exponent (d): shown under privateExponent
 
-2. **Authority Key Identifier matches Subject Key Identifier**
-   In your certificate’s extensions, the **Authority Key Identifier** value is the same as the **Subject Key Identifier** value (same hex bytes). That’s exactly what you’d expect when the certificate is signed by itself.
-   (Visible in Figure 11)
+Prime factors (p and q): shown as prime1 and prime2
 
----
+CRT parameters: exponent1, exponent2, and coefficient used for optimized RSA operations
 
-### Q3 — Identify RSA parameters `e`, `d`, `n`, `p`, and `q` from your certificate/key output
-
-Below I’m mapping each RSA parameter to *where it appears* in your outputs, and I’m listing the values in the same colon-hex formatting OpenSSL prints.
-
-#### Public exponent `e`
-
-* Found in: certificate output (Figure 10) and RSA key output (Figure 13)
-* Value:
-
-  * `e = 65537 (0x10001)`
-
-#### Modulus `n`
-
-* Found in: certificate output under **Subject Public Key Info → Modulus** (Figures 9–10) and also in the private key output under `modulus:` (Figure 12)
-* Value (shown across many wrapped lines in your screenshots):
-
-  * Starts with: `00:c8:15:31:ec:a3:c1:48:f8:79:ab:98:91:3c:65:...`
-  * Ends with: `...:3b:bc:31:67:4d:75:2e:d0:d8:03:aa:e3:a2:0b:a5:7b:69:ab`
-  * (Full value is printed in Figures 9–10 / Figure 12)
-
-#### Private exponent `d`
-
-* Found in: private key output under `privateExponent:` (Figure 13)
-* Value (also wrapped across many lines):
-
-  * Starts with: `07:43:55:b3:9c:62:28:ce:f4:43:b9:5f:14:4d:30:...`
-  * Ends with: `...:cd:0c:10:bf:0e:ba:15:84:dc:95:d0:29`
-  * (Full value is printed in Figure 13)
-
-#### Prime `p` (prime1)
-
-* Found in: private key output under `prime1:` (Figure 14)
-* Value:
-
-  * Starts with: `00:e7:9c:43:ea:f9:3f:d8:6c:12:e9:b0:74:14:f1:...`
-  * Ends with: `...:3d:87:8f:11:4a:2f:e5`
-  * (Full value is printed in Figure 14)
-
-#### Prime `q` (prime2)
-
-* Found in: private key output under `prime2:` (Figure 14; continues into later output)
-* Value:
-
-  * Starts with: `00:dd:27:02:bf:77:01:28:dc:e1:56:db:e3:9e:6e:...`
-  * Ends with: `...:13:9f:47:f2:7d:fa:4f`
-  * (The start is visible in Figure 14, and the “...fa:4f” ending is visible at the top of Figure 15)
 
 ---
 
 ## Conclusions
 
-We:
-
-* prepared the CA config (`openssl.cnf`) and enabled duplicate subject issuance (`unique_subject = no`);
-* created the CA database structure (`demoCA`, `index.txt`, `serial=1000`);
-* generated a 4096-bit RSA private key (`ca.key`) protected by a passphrase;
-* generated a **self-signed Root CA certificate** (`ca.crt`);
-* verified via decoded output that:
-
-  * it is a CA cert (`Basic Constraints: CA:TRUE`);
-  * it is self-signed (`Issuer == Subject`, and SKI == AKI);
-  * and you extracted the RSA parameters from the printed modulus/exponents/primes.
+By the end of this task, we had successfully set up a fully functional root Certificate Authority. We prepared the CA configuration, created the required directory structure, generated a protected 4096-bit RSA key, and issued a self-signed root CA certificate. Inspection of the certificate confirmed that it is self-signed, authorized as a CA, and correctly exposes all RSA parameters.
 
 
 ---
 
 ## Task 2 Report — Generating a Certificate Signing Request (CSR) for a Web Server
 
-In this task, we generate a **Certificate Signing Request (CSR)** for a web server that wishes to obtain a public-key certificate from the Certificate Authority (CA) created in Task 1. A CSR contains the server’s **public key** and **identity information**, and it is later sent to the CA, which verifies the information and issues a signed certificate.
+In this task, we generated a Certificate Signing Request (CSR) for a web server that will later request a certificate from the CA created in Task 1. The CSR contains the server’s public key and identity information, which the CA uses to issue a signed certificate.
 
-Unlike Task 1, where a **self-signed certificate** was created using the `-x509` option, here we intentionally **omit** that option so that OpenSSL generates a **request**, not a certificate. This CSR will later be signed by our root CA in the next task.
-
-> Note: Modern browsers enforce strict hostname validation rules. Therefore, in addition to the Common Name (CN), the CSR must include a **Subject Alternative Name (SAN)** extension containing all valid hostnames for the server.
+Unlike the CA certificate, this step intentionally produces a request, not a certificate, so the -x509 option is omitted.
 
 ---
 
 ### 1. Generating the server private key and CSR
 
-We generated a new RSA key pair and a CSR for our web server using the following command:
+We generated a new 2048-bit RSA private key and a CSR using the following command:
 
 ```bash
 openssl req -newkey rsa:2048 -sha256 \
@@ -238,24 +173,19 @@ openssl req -newkey rsa:2048 -sha256 \
 -addext "subjectAltName = DNS:www.group06.com, DNS:www.group06A.com, DNS:www.group06B.com"
 ```
 
-This command performs the following actions:
-
-* generates a **2048-bit RSA private key**, stored in `server.key` and protected with a passphrase;
-* creates a **certificate signing request**, stored in `server.csr`;
-* sets the server’s identity information (CN, organization, country);
-* adds a **Subject Alternative Name (SAN)** extension containing multiple DNS names.
+This creates the server’s private key, embeds the identity information, and includes a Subject Alternative Name (SAN) extension containing all hostnames that the server should be valid for.
 
 ![Figure 17](./screenshots/screenshots-week11/task2/1.png)
 
 <figcaption><b>Figure 17</b>–Generating a 2048-bit RSA private key and a Certificate Signing Request (CSR) with Subject Alternative Names.</figcaption>
 
-The Common Name (CN) identifies the primary hostname of the server, while the SAN extension includes additional hostnames that will be accepted by browsers.
+
 
 ---
 
 ### 2. Inspecting the generated CSR
 
-After generating the CSR, we inspected its contents to verify that all required information was correctly included:
+We inspected the CSR to ensure that the subject and public key were correctly embedded:
 
 ```bash
 openssl req -in server.csr -text -noout
@@ -285,7 +215,7 @@ From the decoded CSR output, we observe:
 
 <figcaption><b>Figure 19</b>–CSR extensions showing the Subject Alternative Name (SAN) field.</figcaption>
 
-The CSR also contains the required **X509v3 Subject Alternative Name** extension:
+The decoded output confirms that the SAN extension includes all required DNS entries, which is essential for browser compatibility.
 
 ```
 DNS:www.group06.com
@@ -293,13 +223,13 @@ DNS:www.group06A.com
 DNS:www.group06B.com
 ```
 
-Including the Common Name inside the SAN extension is mandatory; otherwise, modern browsers would reject the certificate even if the CN matches the hostname.
+
 
 ---
 
 ## 3. Inspecting the server private key
 
-After generating the CSR, we inspected the server’s private key to verify that the RSA parameters were correctly generated. This was done using the following command:
+Finally, we decoded the server’s private key to confirm that it was generated correctly and protected with a passphrase.
 
 ```bash
 openssl rsa -in server.key -text -noout
@@ -315,71 +245,28 @@ The correct passphrase was entered, allowing OpenSSL to successfully decode the 
 
 <figcaption><b>Figure 21</b>–Decoded RSA private key showing the prime factors and CRT parameters.</figcaption>
 
-From the decoded output, we observe the following:
-
-* **Key size**:
-
-  ```
-  Private-Key: (2048 bit, 2 primes)
-  ```
-
-  This confirms that a 2048-bit RSA key pair was generated, as required.
-
-* **Modulus (`n`)**:
-  The modulus is displayed as a large hexadecimal value and represents the product of the two prime numbers (`n = p × q`).
-
-* **Public exponent (`e`)**:
-
-  ```
-  publicExponent: 65537 (0x10001)
-  ```
-
-  This is the standard public exponent used in RSA.
-
-* **Private exponent (`d`)**:
-  Displayed under `privateExponent`, used for decryption and signing operations.
-
-* **Prime numbers (`p` and `q`)**:
-  Shown as `prime1` and `prime2`, these are the two secret primes whose product forms the modulus.
-
-* **CRT parameters**:
-  The values `exponent1`, `exponent2`, and `coefficient` are also present. These parameters are used to optimize RSA operations via the Chinese Remainder Theorem.
-
-The successful decoding confirms that the private key is valid, correctly encrypted, and corresponds to the public key included in the CSR.
-
 ---
 
 ## Conclusions
 
-In this task, we successfully:
-
-* generated a **2048-bit RSA private key** for a web server;
-* created a **Certificate Signing Request (CSR)** containing the server’s public key and identity;
-* correctly specified the Common Name (CN) for hostname identification;
-* added a **Subject Alternative Name (SAN)** extension with multiple DNS entries;
-* verified the CSR contents and confirmed the presence of the SAN extension;
-* successfully decoded and inspected the server’s private key, identifying all RSA parameters (`n`, `e`, `d`, `p`, `q`) and CRT values.
-
-The generated CSR (`server.csr`) and private key (`server.key`) are now fully validated and ready to be used by the Certificate Authority created in Task 1 to issue a signed server certificate in the next task.
+At the end of this task, we had a valid server private key and CSR containing the correct identity information and SAN entries. These artifacts are now ready to be signed by the Certificate Authority created earlier.
 
 
 ---
 
-## Task 3 Report — Generating a Certificate for the Web Server
+## Task 3 - Generating a Certificate for the Web Server
 
-In this task, we use the **Certificate Authority (CA)** created in Task 1 to **sign the server’s Certificate Signing Request (CSR)** generated in Task 2. The result is a valid **X.509 server certificate** that can be used by a web server to authenticate itself to clients.
-
-In real-world deployments, CSRs are sent to trusted third-party CAs. In this lab, however, our own CA acts as a trusted root, allowing us to issue certificates locally.
+In this task, we used the Certificate Authority created in Task 1 to sign the server’s CSR from Task 2 and issue a proper X.509 server certificate. This mirrors what happens in a real PKI setup, except here the CA is under our control instead of being a public provider.
 
 ---
 
 ### 1. Preparing the OpenSSL configuration file
 
-Before signing the server certificate, we verified and modified the OpenSSL configuration file (`openssl.cnf`) used by the CA.
+Before signing the CSR, we double-checked that the CA configuration was correctly set up and adjusted one important option so that browser-required extensions (namely SAN) would not be lost.
 
 #### 1.1 CA default settings
 
-The configuration file defines the CA’s working directory and database files. In particular, the `[ CA_default ]` section specifies where issued certificates, serial numbers, and keys are stored.
+The OpenSSL configuration file (openssl.cnf) defines how the CA operates and where it stores its files. In particular, the [ CA_default ] section specifies the CA’s working directory, certificate database, and key locations.
 
 ![Figure 22](./screenshots/screenshots-week11/task3/1.png)
 
@@ -389,20 +276,22 @@ The configuration file defines the CA’s working directory and database files. 
 
 <figcaption><b>Figure 23</b>–<code>[ CA_default ]</code> section showing the CA directory, database, and serial number configuration.</figcaption>
 
-As configured:
+From this section, we can see that:
 
 * the CA directory is `./demoCA`;
 * issued certificates are tracked via `index.txt`;
 * serial numbers are stored in `serial`;
 * the CA private key is stored in `demoCA/private/cakey.pem`.
 
+This matches the directory structure created earlier in Task 1.
+
 ---
 
 #### 1.2 Enabling extension copying
 
-By default, OpenSSL does **not** copy extensions from a CSR into the issued certificate. This would cause the **Subject Alternative Name (SAN)** extension to be dropped, even if it was present in the CSR.
+By default, OpenSSL does not copy extensions from a CSR into the final certificate. This is a problem because it would silently drop the Subject Alternative Name (SAN) extension, even if it was present in the CSR.
 
-To ensure that SAN entries are preserved, we enabled extension copying by uncommenting the following line in `openssl.cnf`:
+To avoid that, we enabled extension copying by uncommenting the following line in openssl.cnf:
 
 ```ini
 copy_extensions = copy
@@ -412,13 +301,12 @@ copy_extensions = copy
 
 <figcaption><b>Figure 24</b>–Enabling extension copying to allow SAN fields from the CSR to be included in the issued certificate.</figcaption>
 
-This step is essential for modern TLS certificates, as browsers rely on SAN rather than the Common Name for hostname validation.
 
 ---
 
 ### 2. Signing the server CSR with the CA
 
-Once the configuration file was correctly prepared, we used the CA’s private key to sign the server’s CSR and generate a server certificate.
+With the configuration ready, we used the CA’s private key to sign the server’s CSR and issue the final certificate.
 
 The following command was executed:
 
@@ -429,23 +317,23 @@ openssl ca -config openssl.cnf -policy policy_anything \
 -cert demoCA/ca.crt -keyfile demoCA/ca.key
 ```
 
-This command performs the following:
+In short, this command:
 
-* uses our CA configuration file (`openssl.cnf`);
-* applies the `policy_anything` policy, which does not enforce strict subject matching;
-* signs the CSR using SHA-256;
-* issues a certificate valid for 3650 days (10 years);
-* signs the certificate using the CA’s certificate (`ca.crt`) and private key (`ca.key`).
+* uses our CA configuration file;
+* applies a permissive policy (policy_anything);
+* signs the certificate using SHA-256;
+* sets a validity period of 3650 days (10 years);
+* uses the CA’s certificate and private key to sign the CSR.
 
 ![Figure 25](./screenshots/screenshots-week11/task3/4.png)
 
 <figcaption><b>Figure 25</b>–Signing the server CSR using the CA private key and certificate.</figcaption>
 
-From the output, we observe:
+From the command output, we can confirm that:
 
-* the CSR signature is verified successfully;
-* a new serial number (`4096 / 0x1000`) is assigned;
-* the CA database is updated with a new entry.
+* the CSR signature was successfully verified;
+* a new serial number (`4096 / 0x1000`) was assigned;
+* the CA database was updated.
 
 This confirms that the certificate was successfully issued by the CA.
 
@@ -453,9 +341,9 @@ This confirms that the certificate was successfully issued by the CA.
 
 ### 3. Inspecting the generated server certificate
 
-After issuing the certificate, we decoded it to verify its contents and ensure that all required extensions were correctly included.
+After issuing the certificate, we decoded it to verify that the information matched what we requested and that no extensions were missing.
 
-The following command was used:
+We used the following command:
 
 ```bash
 openssl x509 -in demoCA/server.crt -text -noout
@@ -465,10 +353,10 @@ openssl x509 -in demoCA/server.crt -text -noout
 
 <figcaption><b>Figure 26</b>–Decoded server certificate showing issuer, subject, and validity period.</figcaption>
 
-From the decoded certificate output, we confirm:
+From the decoded output, we verified that:
 
 * **Issuer**:
-  The issuer corresponds to our Root CA created in Task 1, proving that the certificate was signed by the CA.
+  The issuer matches the Root CA created in Task 1, confirming that the certificate was signed by our CA.
 
 * **Subject**:
 
@@ -488,19 +376,19 @@ From the decoded certificate output, we confirm:
 
 ### 4. Verifying certificate extensions
 
-The decoded certificate also includes the expected X.509 extensions.
+Next, we checked the X.509 extensions to ensure the certificate has the correct role and browser-required fields.
 
 ![Figure 27](./screenshots/screenshots-week11/task3/6.png)
 
 <figcaption><b>Figure 28</b>–X509v3 extensions confirming that the certificate is not a CA certificate.</figcaption>
 
-The **Basic Constraints** extension shows:
+The Basic Constraints extension shows:
 
 ```
 CA:FALSE
 ```
 
-This confirms that the issued certificate is a **server certificate**, not a CA certificate.
+This confirms that the issued certificate is a server certificate, not a CA certificate, which is exactly what we want.
 
 ---
 
@@ -508,7 +396,7 @@ This confirms that the issued certificate is a **server certificate**, not a CA 
 
 <figcaption><b>Figure 29</b>–Subject Alternative Name (SAN) extension included in the issued server certificate.</figcaption>
 
-The **Subject Alternative Name (SAN)** extension contains:
+We also verified that the Subject Alternative Name (SAN) extension was included and contains all requested hostnames:
 
 ```
 DNS:www.group06.com
@@ -516,28 +404,28 @@ DNS:www.group06A.com
 DNS:www.group06B.com
 ```
 
-This verifies that:
+This confirms that:
 
-* the SAN extension from the CSR was successfully copied into the final certificate;
-* all required hostnames are valid and recognized by modern browsers.
+* the SAN extension from the CSR was correctly copied into the final certificate;
+* all required hostnames are present and will be accepted by modern browsers.
 
 ---
 
 ## Conclusions
 
-In this task, we successfully:
+By the end of this task, we:
 
-* configured OpenSSL to allow extension copying from CSRs;
+* prepared the CA configuration to preserve CSR extensions;
 * used our self-created Certificate Authority to sign a server CSR;
-* generated a valid X.509 server certificate (`server.crt`);
+* generated a valid X.509 server certificate (server.crt);
 * verified that the certificate:
 
-  * was issued by our CA;
-  * contains the correct subject information;
-  * has **CA:FALSE** in its Basic Constraints;
-  * includes all required **Subject Alternative Names (SANs)**.
+  * was issued by our CA,
+  * is marked as CA:FALSE,
+  * includes the correct subject information,
+  * and contains all required Subject Alternative Names (SANs).
 
-The generated server certificate is now fully functional and ready to be deployed on a web server for TLS authentication.
+At this point, the server certificate is complete and ready to be deployed on a web server to enable HTTPS.
 
 ---
 
