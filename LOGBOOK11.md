@@ -539,42 +539,60 @@ The generated server certificate is now fully functional and ready to be deploye
 
 ## Task 4
 
-<figcaption><b>Figure 1.</b>–Editing the <code>/etc/hosts</code> file to map <code>www.group06.com</code>, <code>www.group06A.com</code>, and <code>www.group06B.com</code> to the container IP address (10.9.0.80).</figcaption>
+![Figure 30](./screenshots/screenshots-week11/task4/1.png)
+<figcaption><b>Figure 30</b>–Editing the <code>/etc/hosts</code> file to map <code>www.group06.com</code>, <code>www.group06A.com</code>, and <code>www.group06B.com</code> to the container IP address (10.9.0.80).</figcaption>
 
-<figcaption><b>Figure 2.</b>–Verifying local hostname resolution using the <code>getent hosts</code> command for the group06 domains.</figcaption>
+![Figure 31](./screenshots/screenshots-week11/task4/2.png)
+<figcaption><b>Figure 31</b>–Verifying local hostname resolution using the <code>getent hosts</code> command for the group06 domains.</figcaption>
 
-<figcaption><b>Figure 3.</b>–Copying the server TLS certificate and private key into the Docker <code>volumes/</code> directory to be mounted by the Apache container.</figcaption>
+![Figure 32](./screenshots/screenshots-week11/task4/3.png)
+<figcaption><b>Figure 32</b>–Starting the lab container environment and confirming that the web server container is running.</figcaption>
 
-<figcaption><b>Figure 4.</b>–Inspecting the contents of the <code>volumes/</code> directory to confirm that <code>server.crt</code> and <code>server.key</code> are present.</figcaption>
+![Figure 33](./screenshots/screenshots-week11/task4/4.png)
+<figcaption><b>Figure 33</b>–Copying the server TLS certificate and private key into the Docker <code>volumes/</code> directory to be mounted by the Apache container.</figcaption>
 
-<figcaption><b>Figure 5.</b>–Launching the Apache web server container using <code>docker-compose up -d</code> and confirming that the container is running.</figcaption>
+![Figure 34](./screenshots/screenshots-week11/task4/5.png)
+<figcaption><b>Figure 34</b>–Inspecting the <code>server.crt</code> file to confirm issuer, subject (CN), validity, and the presence of the Subject Alternative Names (SANs).</figcaption>
 
-<figcaption><b>Figure 6.</b>–Accessing the running container using <code>docker exec</code> and listing the available Apache virtual host configuration files.</figcaption>
+![Figure 35](./screenshots/screenshots-week11/task4/6.png)
+<figcaption><b>Figure 35</b>–Verifying that the private key file (<code>server.key</code>) is present and encrypted (PEM encrypted private key format).</figcaption>
 
-<figcaption><b>Figure 7.</b>–Displaying the reference Apache SSL configuration (<code>bank32_apache_ssl.conf</code>) used as a template for the group06 HTTPS setup.</figcaption>
+![Figure 36](./screenshots/screenshots-week11/task4/7.png)
+<figcaption><b>Figure 36</b>–Entering the Apache container shell and listing available Apache site configurations in <code>/etc/apache2/sites-available/</code>.</figcaption>
 
-<figcaption><b>Figure 8.</b>–Creating a new Apache virtual host configuration file for <code>www.group06.com</code> with both HTTP (port 80) and HTTPS (port 443) support.</figcaption>
+![Figure 37](./screenshots/screenshots-week11/task4/8.png)
+<figcaption><b>Figure 37</b>–Viewing the provided SSL site configuration template (<code>bank32_apache_ssl.conf</code>) used as a reference for creating the group06 HTTPS configuration.</figcaption>
 
-<figcaption><b>Figure 9.</b>–Defining the HTTPS virtual host with SSL enabled and configuring Apache to use the custom server certificate and private key.</figcaption>
+![Figure 38](./screenshots/screenshots-week11/task4/9.png)
+<figcaption><b>Figure 38</b>–Creating the document root directory for the group06 website and generating simple HTML pages for HTTP and HTTPS testing.</figcaption>
 
-<figcaption><b>Figure 10.</b>–Creating the document root directory and basic HTML files for HTTP and HTTPS testing.</figcaption>
 
-<figcaption><b>Figure 11.</b>–Verifying the contents of the newly created Apache configuration file for the group06 virtual host.</figcaption>
+![Figure 39](./screenshots/screenshots-week11/task4/10.png)
+<figcaption><b>Figure 39</b>–Configuring the group06 Apache VirtualHosts for HTTP (port 80) and HTTPS (port 443), including <code>ServerName</code>, <code>ServerAlias</code>, and SSL certificate paths.</figcaption>
 
-<figcaption><b>Figure 12.</b>–Running <code>apachectl configtest</code> to validate the Apache configuration syntax.</figcaption>
+![Figure 40](./screenshots/screenshots-week11/task4/11.png)
+<figcaption><b>Figure 40</b>–Confirming that the certificate and key are accessible inside the container via the mounted <code>/volumes</code> directory.</figcaption>
 
-<figcaption><b>Figure 13.</b>–Starting the Apache web server inside the container and unlocking the encrypted TLS private key.</figcaption>
+![Figure 41](./screenshots/screenshots-week11/task4/12.png)
+<figcaption><b>Figure 41</b>–Starting Apache inside the container and unlocking the encrypted private key when prompted.</figcaption>
 
-<figcaption><b>Figure 14.</b>–Confirming that Apache is listening on port 443 using the <code>ss</code> command.</figcaption>
+![Figure 42](./screenshots/screenshots-week11/task4/13.png)
+<figcaption><b>Figure 42</b>–Verifying that Apache is listening for HTTPS connections on port 443 using the <code>ss</code> command.</figcaption>
 
-<figcaption><b>Figure 15.</b>–Accessing the HTTPS website (<code>https://www.group06.com</code>) before trusting the custom Certificate Authority, resulting in a browser security warning.</figcaption>
+![Figure 43](./screenshots/screenshots-week11/task4/14.png)
+<figcaption><b>Figure 43</b>–Accessing <code>https://www.group06.com</code> before trusting the custom CA, resulting in a Firefox security warning.</figcaption>
 
-<figcaption><b>Figure 16.</b>–Opening Firefox certificate preferences to manage trusted Certificate Authorities.</figcaption>
+![Figure 44](./screenshots/screenshots-week11/task4/15.png)
+<figcaption><b>Figure 44</b>–Opening Firefox certificate settings to manage trusted Certificate Authorities.</figcaption>
 
-<figcaption><b>Figure 17.</b>–Importing the custom Root CA certificate (<code>ca.crt</code>) into Firefox’s trusted authorities store.</figcaption>
+![Figure 45](./screenshots/screenshots-week11/task4/16.png)
+<figcaption><b>Figure 45</b>–Importing the custom Root CA certificate (<code>ca.crt</code>) into Firefox’s Authorities store.</figcaption>
 
-<figcaption><b>Figure 18.</b>–Explicitly trusting the custom Root CA to identify websites.</figcaption>
+![Figure 46](./screenshots/screenshots-week11/task4/17.png)
+<figcaption><b>Figure 46</b>–Selecting the option to trust the imported Root CA to identify websites.</figcaption>
 
-<figcaption><b>Figure 19.</b>–Verifying that the custom Root CA is now listed as a trusted authority in Firefox.</figcaption>
+![Figure 47](./screenshots/screenshots-week11/task4/18.png)
+<figcaption><b>Figure 47</b>–Confirming that the custom Root CA now appears in Firefox as a trusted authority.</figcaption>
 
-<figcaption><b>Figure 20.</b>–Successfully accessing the HTTPS website after trusting the custom Certificate Authority, with no browser security warnings.</figcaption>
+![Figure 48](./screenshots/screenshots-week11/task4/19.png)
+<figcaption><b>Figure 48</b>–Successfully loading <code>https://www.group06.com</code> after trusting the custom CA, with the HTTPS connection established without warnings.</figcaption>
