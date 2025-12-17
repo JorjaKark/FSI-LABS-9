@@ -572,7 +572,7 @@ The generated server certificate is now fully functional and ready to be deploye
 
 
 ![Figure 40](./screenshots/screenshots-week11/task4/11.png)
-<figcaption><b>Figure 40</b>–Validating the Apache configuration syntax and starting the Apache web server inside the container, unlocking the encrypted private key when prompted to enable HTTPS on port 443.</figcaption>
+<figcaption><b>Figure 40</b>–Validating the Apache configuration and starting the Apache web server, unlocking the encrypted private key when prompted.</figcaption>
 
 ![Figure 41](./screenshots/screenshots-week11/task4/12.png)
 <figcaption><b>Figure 41</b>–Verifying that the Apache web server inside the container is actively listening on TCP port 443 using the <code>ss -tlnp</code> command.</figcaption>
