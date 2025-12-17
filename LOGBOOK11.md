@@ -442,7 +442,7 @@ In this task, we deployed the server certificate generated in Task 3 on an Apach
 
 ---
 
-1. Hostname resolution setup
+## 1. Hostname resolution setup
 
 Before configuring HTTPS, we ensured that all required hostnames resolved to the Apache container’s IP address. To achieve this, we added the following entries to the local /etc/hosts file, mapping the group06 domains to the container IP (10.9.0.80).
 
@@ -454,14 +454,14 @@ We then verified that hostname resolution was working correctly using the getent
 ![Figure 31](./screenshots/screenshots-week11/task4/2.png)
 <figcaption><b>Figure 31</b>–Verifying local hostname resolution using the <code>getent hosts</code> command for the group06 domains.</figcaption>
 
-2. Making the certificate available to the container
+## 2. Making the certificate available to the container
 
 To allow Apache to access the TLS materials, we copied the generated server certificate and private key into the shared Docker volumes/ directory. This directory is mounted inside the container, making the files accessible without rebuilding the container.
 
 ![Figure 32](./screenshots/screenshots-week11/task4/3.png)
 <figcaption><b>Figure 32</b>–Copying the generated TLS server certificate (<code>server.crt</code>) and private key (<code>server.key</code>) from the local PKI directory into the Docker <code>volumes/</code> directory so they can be mounted and used by the Apache HTTPS container.</figcaption>
 
-3. Apache HTTPS virtual host configuration
+## 3. Apache HTTPS virtual host configuration
 
 Next, we accessed the Apache container shell and inspected the available site configuration files.
 
@@ -489,14 +489,14 @@ The final configuration defines both HTTP and HTTPS virtual hosts and enables TL
 ![Figure 36](./screenshots/screenshots-week11/task4/8.png)
 <figcaption><b>Figure 36</b>–Finalizing the Apache HTTPS virtual host configuration for group06, defining both HTTP and HTTPS virtual hosts and enabling TLS using the generated server certificate and private key.</figcaption>
 
-4. Website content preparation
+## 4. Website content preparation
 
 Inside the container, we created the document root directory for the group06 website and added simple HTML files. Different pages were used for HTTP and HTTPS access to make it clear which protocol was being used.
 
 ![Figure 37](./screenshots/screenshots-week11/task4/9.png)
 <figcaption><b>Figure 37</b>–Creating the document root directory for the group06 website inside the Apache container and generating simple HTML files to distinguish between HTTP (<code>index_red.html</code>) and HTTPS (<code>index.html</code>) access.</figcaption>
 
-5. Enabling SSL and starting Apache
+## 5. Enabling SSL and starting Apache
 
 We enabled Apache’s SSL module, activated the new HTTPS site configuration, and disabled the default sites to ensure that only the group06 configuration was served.
 
@@ -513,9 +513,9 @@ To confirm that Apache was running correctly, we verified that it was listening 
 ![Figure 40](./screenshots/screenshots-week11/task4/12.png)
 <figcaption><b>Figure 40</b>–Verifying that the Apache web server inside the container is actively listening on TCP port 443 using the <code>ss -tlnp</code> command.</figcaption>
 
-6. Accessing the HTTPS website and trust establishment
+## 6. Accessing the HTTPS website and trust establishment
 
-When initially accessing https://www.group06.com, the browser displayed a security warning. This occurred because the Certificate Authority that issued the server certificate is not trusted by default.
+When initially accessing https://www.group06.com, the browser displayed a security warning. This occurs because the server certificate was signed by the custom Root Certificate Authority created in Task 1. Since this CA is not present in Firefox’s trusted Authorities store by default, the browser cannot establish a valid certificate trust chain from the server certificate to a trusted root, and therefore marks the connection as untrusted.
 
 ![Figure 41](./screenshots/screenshots-week11/task4/13.png)
 <figcaption><b>Figure 41</b>–Attempting to access <code>https://www.group06.com</code> before trusting the custom Certificate Authority, resulting in a Firefox security warning.</figcaption>
@@ -543,6 +543,6 @@ When initially accessing https://www.group06.com, the browser displayed a securi
 
 ---
 
-Conclusions
+## Conclusions
 
 In this task, we successfully deployed the server certificate on an Apache web server and enabled HTTPS communication. We configured hostname resolution, prepared the Apache HTTPS virtual host, enabled SSL, and demonstrated the trust relationship by importing the custom Root CA into the browser. After establishing trust, the HTTPS website could be accessed securely without warnings.
