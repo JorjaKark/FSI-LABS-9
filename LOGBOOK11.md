@@ -574,26 +574,30 @@ The generated server certificate is now fully functional and ready to be deploye
 ![Figure 40](./screenshots/screenshots-week11/task4/11.png)
 <figcaption><b>Figure 40</b>–Validating the Apache configuration syntax and starting the Apache web server inside the container, unlocking the encrypted private key when prompted to enable HTTPS on port 443.</figcaption>
 
-![Figure 40](./screenshots/screenshots-week11/task4/12.png)
-<figcaption><b>Figure 40</b>–Starting Apache inside the container and unlocking the encrypted private key when prompted.</figcaption>
+![Figure 41](./screenshots/screenshots-week11/task4/12.png)
+<figcaption><b>Figure 41</b>–Verifying that the Apache web server inside the container is actively listening on TCP port 443 using the <code>ss -tlnp</code> command.</figcaption>
 
-![Figure 41](./screenshots/screenshots-week11/task4/13.png)
-<figcaption><b>Figure 41</b>–Verifying that the Apache web server is actively listening on TCP port 443, confirming that the HTTPS service is running successfully inside the container.</figcaption>
+![Figure 42](./screenshots/screenshots-week11/task4/13.png)
+<figcaption><b>Figure 42</b>–Attempting to access <code>https://www.group06.com</code> before trusting the custom Certificate Authority, resulting in a Firefox security warning.</figcaption>
 
-![Figure 42](./screenshots/screenshots-week11/task4/14.png)
-<figcaption><b>Figure 42</b>–Accessing <code>https://www.group06.com</code> before trusting the custom CA, resulting in a Firefox security warning.</figcaption>
+![Figure 43](./screenshots/screenshots-week11/task4/14.png)
+<figcaption><b>Figure 43</b>–Opening Firefox preferences to access privacy and security settings in order to manage trusted certificates.</figcaption>
 
-![Figure 43](./screenshots/screenshots-week11/task4/15.png)
-<figcaption><b>Figure 43</b>–Opening Firefox certificate settings to manage trusted Certificate Authorities.</figcaption>
+![Figure 44](./screenshots/screenshots-week11/task4/15.png)
+<figcaption><b>Figure 44</b>–Navigating to Firefox’s certificate management interface by selecting <b>View Certificates</b> under the Authorities section.</figcaption>
 
-![Figure 44](./screenshots/screenshots-week11/task4/16.png)
-<figcaption><b>Figure 44</b>–Importing the custom Root CA certificate (<code>ca.crt</code>) into Firefox’s Authorities store.</figcaption>
+![Figure 45](./screenshots/screenshots-week11/task4/16.png)
+<figcaption><b>Figure 45</b>–Importing the custom Root CA certificate (<code>ca.crt</code>) into Firefox’s Authorities certificate store.</figcaption>
 
-![Figure 45](./screenshots/screenshots-week11/task4/17.png)
-<figcaption><b>Figure 45</b>–Selecting the option to trust the imported Root CA to identify websites.</figcaption>
+![Figure 46](./screenshots/screenshots-week11/task4/17.png)
+<figcaption><b>Figure 46</b>–Selecting the option to trust the imported Root CA for identifying websites during the certificate import process.</figcaption>
 
-![Figure 46](./screenshots/screenshots-week11/task4/18.png)
-<figcaption><b>Figure 46</b>–Confirming that the custom Root CA now appears in Firefox as a trusted authority.</figcaption>
+![Figure 47](./screenshots/screenshots-week11/task4/18.png)
+<figcaption><b>Figure 47</b>–Confirming that the custom Root CA (<code>t01-group6 Root CA</code>) now appears in Firefox as a trusted certificate authority.</figcaption>
 
-![Figure 47](./screenshots/screenshots-week11/task4/19.png)
-<figcaption><b>Figure 47</b>–Successfully loading <code>https://www.group06.com</code> after trusting the custom CA, with the HTTPS connection established without warnings.</figcaption>
+![Figure 48](./screenshots/screenshots-week11/task4/19.png)
+<figcaption><b>Figure 48</b>–Successfully loading <code>https://www.group06.com</code> after trusting the custom Root CA, with the HTTPS connection established without browser warnings.</figcaption>
+
+![Figure 49](./screenshots/screenshots-week11/task4/20.png)
+<figcaption><b>Figure 49</b>–Successfully accessing <code>https://www.group06.com</code> after trusting the custom Root CA, displaying the HTTPS webpage content served by the Apache container.</figcaption>
+
