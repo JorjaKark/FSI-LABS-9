@@ -596,7 +596,7 @@ The generated server certificate is now fully functional and ready to be deploye
 <figcaption><b>Figure 47</b>–Confirming that the custom Root CA (<code>t01-group6 Root CA</code>) now appears in Firefox as a trusted certificate authority.</figcaption>
 
 ![Figure 48](./screenshots/screenshots-week11/task4/19.png)
-<figcaption><b>Figure 48</b>–Successfully loading <code>https://www.group06.com</code> after trusting the custom Root CA, with the HTTPS connection established without browser warnings.</figcaption>
+<figcaption><b>Figure 48.</b>–Verifying that the custom Root CA (t01-group06 Root CA / FEUP) has been successfully imported into Firefox’s Authorities store.</figcaption>
 
 ![Figure 49](./screenshots/screenshots-week11/task4/20.png)
 <figcaption><b>Figure 49</b>–Successfully accessing <code>https://www.group06.com</code> after trusting the custom Root CA, displaying the HTTPS webpage content served by the Apache container.</figcaption>
