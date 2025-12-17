@@ -67,7 +67,12 @@ This command generates a 4096-bit RSA key pair and immediately creates a self-si
 <figcaption><b>Figure 7</b>–Generating the self-signed root CA certificate using the <code>openssl req -x509</code> command.</figcaption>
 
 
-Your entered subject information (as shown) was:
+
+
+![Figure 8](./screenshots/screenshots-week11/task1/8.png)
+<figcaption><b>Figure 8</b>–Entering the Distinguished Name (DN) information for the root CA certificate.</figcaption>
+
+As the screenshot show, we entered:
 
 * **C** = PT
 * **ST** = Porto
@@ -76,10 +81,6 @@ Your entered subject information (as shown) was:
 * **OU** = t01-group6
 * **CN** = t01-group6 Root CA
 * **emailAddress** = [www.modelCA.com](http://www.modelCA.com)
-
-![Figure 8](./screenshots/screenshots-week11/task1/8.png)
-<figcaption><b>Figure 8</b>–Entering the Distinguished Name (DN) information for the root CA certificate.</figcaption>
-
 
 #### 5. Inspecting the certificate and key (the lab questions come from here)
 
