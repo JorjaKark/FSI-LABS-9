@@ -2,7 +2,7 @@
 
 ---
 
-## Task 1 Report — Becoming a Certificate Authority (CA) (OpenSSL)
+## Task 1 — Becoming a Certificate Authority (CA) (OpenSSL)
 
 
 In a normal PKI setup, you pay or otherwise rely on a commercial Certificate Authority (CA) to vouch for identities by signing certificates. In this lab, we become that trusted entity ourselves by creating a **root CA certificate**. Because it’s a root, it is **self-signed** (it signs its own certificate). Once that’s done, this CA can later sign certificates for servers/users in the other tasks.
@@ -154,7 +154,7 @@ By the end of this task, we had successfully set up a fully functional root Cert
 
 ---
 
-## Task 2 Report — Generating a Certificate Signing Request (CSR) for a Web Server
+## Task 2 — Generating a Certificate Signing Request (CSR) for a Web Server
 
 In this task, we generated a Certificate Signing Request (CSR) for a web server that will later request a certificate from the CA created in Task 1. The CSR contains the server’s public key and identity information, which the CA uses to issue a signed certificate.
 
@@ -230,13 +230,15 @@ DNS:www.group06B.com
 
 ## 3. Inspecting the server private key
 
-Finally, we decoded the server’s private key to confirm that it was generated correctly and protected with a passphrase.
+After generating the CSR, we inspected the server’s private key to confirm that it was correctly generated and that it matched the public key included in the CSR.
+
+The following command was used:
 
 ```bash
 openssl rsa -in server.key -text -noout
 ```
 
-The correct passphrase was entered, allowing OpenSSL to successfully decode the private key.
+After entering the passphrase, OpenSSL successfully decoded the key.
 
 ![Figure 20](./screenshots/screenshots-week11/task2/4.png)
 
@@ -245,6 +247,14 @@ The correct passphrase was entered, allowing OpenSSL to successfully decode the 
 ![Figure 21](./screenshots/screenshots-week11/task2/5.png)
 
 <figcaption><b>Figure 21</b>–Decoded RSA private key showing the prime factors and CRT parameters.</figcaption>
+
+From this output, we confirmed that:
+
+- the private key is a 2048-bit RSA key, as required;
+
+- the key is valid and protected with a passphrase;
+
+- the key structure is consistent with the public key used in the CSR.
 
 ---
 
