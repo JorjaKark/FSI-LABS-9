@@ -1,7 +1,7 @@
 ## Task 1 Report — Becoming a Certificate Authority (CA) (OpenSSL)
 
 
-In a normal PKI setup, you pay or otherwise rely on a commercial Certificate Authority (CA) to vouch for identities by signing certificates. In this lab, we *become* that trusted entity ourselves by creating a **root CA certificate**. Because it’s a *root*, it is **self-signed** (it signs its own certificate). Once that’s done, this CA can later sign certificates for servers/users in the other tasks.
+In a normal PKI setup, you pay or otherwise rely on a commercial Certificate Authority (CA) to vouch for identities by signing certificates. In this lab, we become that trusted entity ourselves by creating a **root CA certificate**. Because it’s a root, it is **self-signed** (it signs its own certificate). Once that’s done, this CA can later sign certificates for servers/users in the other tasks.
 
 > Note: OpenSSL’s CA workflow relies on a configuration file (`openssl.cnf`) and a small CA “database” structure (folders + `index.txt` + `serial`) so OpenSSL can track what it issued.
 
@@ -27,13 +27,13 @@ We opened the copied `openssl.cnf` in the nano editor, navigated to the CA secti
 
 
 ![Figure 3](./screenshots/screenshots-week11/task1/3.png)
-<figcaption><b>Figure 3.</b>–Opening the copied <code>openssl.cnf</code> file using the Pico text editor.</figcaption>
+<figcaption><b>Figure 3</b>–Opening the copied <code>openssl.cnf</code> file using the Pico text editor.</figcaption>
 
 ![Figure 4](./screenshots/screenshots-week11/task1/4.png)
-<figcaption><b>Figure 4.</b>–Viewing the <code>[ CA_default ]</code> section of <code>openssl.cnf</code> before enabling duplicate-subject certificates.</figcaption>
+<figcaption><b>Figure 4</b>–Viewing the <code>[ CA_default ]</code> section of <code>openssl.cnf</code> before enabling duplicate-subject certificates.</figcaption>
 
 ![Figure 5](./screenshots/screenshots-week11/task1/5.png)
-<figcaption><b>Figure 5.</b>–Enabling the <code>unique_subject = no</code> option to allow issuing multiple certificates with the same subject.</figcaption>
+<figcaption><b>Figure 5</b>–Enabling the <code>unique_subject = no</code> option to allow issuing multiple certificates with the same subject.</figcaption>
 
 #### 3. Creating the CA directory structure (`demoCA`)
 
@@ -43,7 +43,7 @@ Per the lab instructions (and matching the config defaults), we created the expe
 * `serial` initialized to `1000`
 
 ![Figure 6](./screenshots/screenshots-week11/task1/6.png)
-<figcaption><b>Figure 6.</b>–Creating the <code>demoCA</code> directory structure and initializing the <code>index.txt</code> and <code>serial</code> files.</figcaption>
+<figcaption><b>Figure 6</b>–Creating the <code>demoCA</code> directory structure and initializing the <code>index.txt</code> and <code>serial</code> files.</figcaption>
 
 
 #### 4. Generating the root CA key + self-signed certificate
@@ -61,7 +61,7 @@ OpenSSL generated the RSA keypair (4096-bit) and prompted you for:
 * subject fields (Country, State, Organization, Common Name, etc.)
 
 ![Figure 7](./screenshots/screenshots-week11/task1/7.png)
-<figcaption><b>Figure 7.</b>–Generating the self-signed root CA certificate using the <code>openssl req -x509</code> command.</figcaption>
+<figcaption><b>Figure 7</b>–Generating the self-signed root CA certificate using the <code>openssl req -x509</code> command.</figcaption>
 
 
 Your entered subject information (as shown) was:
@@ -75,7 +75,7 @@ Your entered subject information (as shown) was:
 * **emailAddress** = [www.modelCA.com](http://www.modelCA.com)
 
 ![Figure 8](./screenshots/screenshots-week11/task1/8.png)
-<figcaption><b>Figure 8.</b>–Entering the Distinguished Name (DN) information for the root CA certificate.</figcaption>
+<figcaption><b>Figure 8</b>–Entering the Distinguished Name (DN) information for the root CA certificate.</figcaption>
 
 
 #### 5. Inspecting the certificate and key (the lab questions come from here)
@@ -88,31 +88,31 @@ openssl rsa  -in ca.key -text -noout
 ```
 
 ![Figure 9](./screenshots/screenshots-week11/task1/9.png)
-<figcaption><b>Figure 9.</b>–Decoded output of the CA certificate showing version, serial number, issuer, subject, and validity period.</figcaption>
+<figcaption><b>Figure 9</b>–Decoded output of the CA certificate showing version, serial number, issuer, subject, and validity period.</figcaption>
 
 
 ![Figure 10](./screenshots/screenshots-week11/task1/10.png)
-<figcaption><b>Figure 10.</b>–Decoded certificate output displaying the RSA public key modulus and public exponent.</figcaption>
+<figcaption><b>Figure 10</b>–Decoded certificate output displaying the RSA public key modulus and public exponent.</figcaption>
 
 
 ![Figure 11](./screenshots/screenshots-week11/task1/11.png)
-<figcaption><b>Figure 11.</b>–X509v3 extensions confirming CA status through <code>Basic Constraints: CA:TRUE</code>.</figcaption>
+<figcaption><b>Figure 11</b>–X509v3 extensions confirming CA status through <code>Basic Constraints: CA:TRUE</code>.</figcaption>
 
 ![Figure 12](./screenshots/screenshots-week11/task1/12.png)
-<figcaption><b>Figure 12.</b>–Decoded RSA private key output showing the 4096-bit modulus <code>n</code>.</figcaption>
+<figcaption><b>Figure 12</b>–Decoded RSA private key output showing the 4096-bit modulus <code>n</code>.</figcaption>
 
 
 ![Figure 13](./screenshots/screenshots-week11/task1/13.png)
-<figcaption><b>Figure 13.</b>–RSA private key output displaying the public exponent <code>e</code> and private exponent <code>d</code>.</figcaption>
+<figcaption><b>Figure 13</b>–RSA private key output displaying the public exponent <code>e</code> and private exponent <code>d</code>.</figcaption>
 
 ![Figure 14](./screenshots/screenshots-week11/task1/14.png)
-<figcaption><b>Figure 14.</b>–RSA private key output showing the prime numbers <code>p</code> (prime1) and <code>q</code> (prime2).</figcaption>
+<figcaption><b>Figure 14</b>–RSA private key output showing the prime numbers <code>p</code> (prime1) and <code>q</code> (prime2).</figcaption>
 
 ![Figure 15](./screenshots/screenshots-week11/task1/15.png)
-<figcaption><b>Figure 15.</b>–RSA private key output displaying CRT parameters <code>exponent1</code> and <code>exponent2</code>.</figcaption>
+<figcaption><b>Figure 15</b>–RSA private key output displaying CRT parameters <code>exponent1</code> and <code>exponent2</code>.</figcaption>
 
 ![Figure 16](./screenshots/screenshots-week11/task1/16.png)
-<figcaption><b>Figure 16.</b>–RSA private key output showing the CRT coefficient used for optimized decryption.</figcaption>
+<figcaption><b>Figure 16</b>–RSA private key output showing the CRT coefficient used for optimized decryption.</figcaption>
 
 ---
 
@@ -138,11 +138,11 @@ You have two strong “tells” in your output:
 
 1. **Issuer equals Subject**
    In the decoded certificate text, the `Issuer:` line and the `Subject:` line contain the same DN values (C=PT, ST=Porto, … CN=to1-group6 Root CA, …).
-   (Visible in Figure 9.)
+   (Visible in Figure 9)
 
 2. **Authority Key Identifier matches Subject Key Identifier**
    In your certificate’s extensions, the **Authority Key Identifier** value is the same as the **Subject Key Identifier** value (same hex bytes). That’s exactly what you’d expect when the certificate is signed by itself.
-   (Visible in Figure 11.)
+   (Visible in Figure 11)
 
 ---
 
@@ -164,7 +164,7 @@ Below I’m mapping each RSA parameter to *where it appears* in your outputs, an
 
   * Starts with: `00:c8:15:31:ec:a3:c1:48:f8:79:ab:98:91:3c:65:...`
   * Ends with: `...:3b:bc:31:67:4d:75:2e:d0:d8:03:aa:e3:a2:0b:a5:7b:69:ab`
-  * (Full value is printed in Figures 9–10 / Figure 12.)
+  * (Full value is printed in Figures 9–10 / Figure 12)
 
 #### Private exponent `d`
 
@@ -173,7 +173,7 @@ Below I’m mapping each RSA parameter to *where it appears* in your outputs, an
 
   * Starts with: `07:43:55:b3:9c:62:28:ce:f4:43:b9:5f:14:4d:30:...`
   * Ends with: `...:cd:0c:10:bf:0e:ba:15:84:dc:95:d0:29`
-  * (Full value is printed in Figure 13.)
+  * (Full value is printed in Figure 13)
 
 #### Prime `p` (prime1)
 
@@ -182,7 +182,7 @@ Below I’m mapping each RSA parameter to *where it appears* in your outputs, an
 
   * Starts with: `00:e7:9c:43:ea:f9:3f:d8:6c:12:e9:b0:74:14:f1:...`
   * Ends with: `...:3d:87:8f:11:4a:2f:e5`
-  * (Full value is printed in Figure 14.)
+  * (Full value is printed in Figure 14)
 
 #### Prime `q` (prime2)
 
@@ -191,7 +191,7 @@ Below I’m mapping each RSA parameter to *where it appears* in your outputs, an
 
   * Starts with: `00:dd:27:02:bf:77:01:28:dc:e1:56:db:e3:9e:6e:...`
   * Ends with: `...:13:9f:47:f2:7d:fa:4f`
-  * (The start is visible in Figure 14, and the “...fa:4f” ending is visible at the top of Figure 15.)
+  * (The start is visible in Figure 14, and the “...fa:4f” ending is visible at the top of Figure 15)
 
 ---
 
@@ -241,9 +241,9 @@ This command performs the following actions:
 * sets the server’s identity information (CN, organization, country);
 * adds a **Subject Alternative Name (SAN)** extension containing multiple DNS names.
 
-![Figure 1](./screenshots/screenshots-week11/task2/1.png)
+![Figure 17](./screenshots/screenshots-week11/task2/1.png)
 
-<figcaption><b>Figure 1.</b>–Generating a 2048-bit RSA private key and a Certificate Signing Request (CSR) with Subject Alternative Names.</figcaption>
+<figcaption><b>Figure 17</b>–Generating a 2048-bit RSA private key and a Certificate Signing Request (CSR) with Subject Alternative Names.</figcaption>
 
 The Common Name (CN) identifies the primary hostname of the server, while the SAN extension includes additional hostnames that will be accepted by browsers.
 
@@ -257,9 +257,9 @@ After generating the CSR, we inspected its contents to verify that all required 
 openssl req -in server.csr -text -noout
 ```
 
-![Figure 2](./screenshots/screenshots-week11/task2/2.png)
+![Figure 18](./screenshots/screenshots-week11/task2/2.png)
 
-<figcaption><b>Figure 2.</b>–Decoded CSR output showing the subject information and RSA public key parameters.</figcaption>
+<figcaption><b>Figure 18</b>–Decoded CSR output showing the subject information and RSA public key parameters.</figcaption>
 
 From the decoded CSR output, we observe:
 
@@ -277,9 +277,9 @@ From the decoded CSR output, we observe:
   * Key size: 2048 bits
   * Public exponent: 65537 (0x10001)
 
-![Figure 3](./screenshots/screenshots-week11/task2/3.png)
+![Figure 19](./screenshots/screenshots-week11/task2/3.png)
 
-<figcaption><b>Figure 3.</b>–CSR extensions showing the Subject Alternative Name (SAN) field.</figcaption>
+<figcaption><b>Figure 19</b>–CSR extensions showing the Subject Alternative Name (SAN) field.</figcaption>
 
 The CSR also contains the required **X509v3 Subject Alternative Name** extension:
 
@@ -303,13 +303,13 @@ openssl rsa -in server.key -text -noout
 
 The correct passphrase was entered, allowing OpenSSL to successfully decode the private key.
 
-![Figure 4](./screenshots/screenshots-week11/task2/4.png)
+![Figure 20](./screenshots/screenshots-week11/task2/4.png)
 
-<figcaption><b>Figure 4.</b>–Decoded RSA private key showing the modulus and public/private exponents.</figcaption>
+<figcaption><b>Figure 20</b>–Decoded RSA private key showing the modulus and public/private exponents.</figcaption>
 
-![Figure 5](./screenshots/screenshots-week11/task2/5.png)
+![Figure 21](./screenshots/screenshots-week11/task2/5.png)
 
-<figcaption><b>Figure 5.</b>–Decoded RSA private key showing the prime factors and CRT parameters.</figcaption>
+<figcaption><b>Figure 21</b>–Decoded RSA private key showing the prime factors and CRT parameters.</figcaption>
 
 From the decoded output, we observe the following:
 
@@ -377,13 +377,13 @@ Before signing the server certificate, we verified and modified the OpenSSL conf
 
 The configuration file defines the CA’s working directory and database files. In particular, the `[ CA_default ]` section specifies where issued certificates, serial numbers, and keys are stored.
 
-![Figure 1](./screenshots/screenshots-week11/task3/1.png)
+![Figure 22](./screenshots/screenshots-week11/task3/1.png)
 
-<figcaption><b>Figure 1.</b>–Opening the OpenSSL configuration file (<code>openssl.cnf</code>) in the Pico editor.</figcaption>
+<figcaption><b>Figure 22</b>–Opening the OpenSSL configuration file (<code>openssl.cnf</code>) in the Pico editor.</figcaption>
 
-![Figure 2](./screenshots/screenshots-week11/task3/2.png)
+![Figure 23](./screenshots/screenshots-week11/task3/2.png)
 
-<figcaption><b>Figure 2.</b>–<code>[ CA_default ]</code> section showing the CA directory, database, and serial number configuration.</figcaption>
+<figcaption><b>Figure 23</b>–<code>[ CA_default ]</code> section showing the CA directory, database, and serial number configuration.</figcaption>
 
 As configured:
 
@@ -404,9 +404,9 @@ To ensure that SAN entries are preserved, we enabled extension copying by uncomm
 copy_extensions = copy
 ```
 
-![Figure 3](./screenshots/screenshots-week11/task3/3.png)
+![Figure 24](./screenshots/screenshots-week11/task3/3.png)
 
-<figcaption><b>Figure 3.</b>–Enabling extension copying to allow SAN fields from the CSR to be included in the issued certificate.</figcaption>
+<figcaption><b>Figure 24</b>–Enabling extension copying to allow SAN fields from the CSR to be included in the issued certificate.</figcaption>
 
 This step is essential for modern TLS certificates, as browsers rely on SAN rather than the Common Name for hostname validation.
 
@@ -433,9 +433,9 @@ This command performs the following:
 * issues a certificate valid for 3650 days (10 years);
 * signs the certificate using the CA’s certificate (`ca.crt`) and private key (`ca.key`).
 
-![Figure 4](./screenshots/screenshots-week11/task3/4.png)
+![Figure 25](./screenshots/screenshots-week11/task3/4.png)
 
-<figcaption><b>Figure 4.</b>–Signing the server CSR using the CA private key and certificate.</figcaption>
+<figcaption><b>Figure 25</b>–Signing the server CSR using the CA private key and certificate.</figcaption>
 
 From the output, we observe:
 
@@ -457,9 +457,9 @@ The following command was used:
 openssl x509 -in demoCA/server.crt -text -noout
 ```
 
-![Figure 5](./screenshots/screenshots-week11/task3/5.png)
+![Figure 26](./screenshots/screenshots-week11/task3/5.png)
 
-<figcaption><b>Figure 5.</b>–Decoded server certificate showing issuer, subject, and validity period.</figcaption>
+<figcaption><b>Figure 26</b>–Decoded server certificate showing issuer, subject, and validity period.</figcaption>
 
 From the decoded certificate output, we confirm:
 
@@ -486,9 +486,9 @@ From the decoded certificate output, we confirm:
 
 The decoded certificate also includes the expected X.509 extensions.
 
-![Figure 6](./screenshots/screenshots-week11/task3/6.png)
+![Figure 27](./screenshots/screenshots-week11/task3/6.png)
 
-<figcaption><b>Figure 6.</b>–X509v3 extensions confirming that the certificate is not a CA certificate.</figcaption>
+<figcaption><b>Figure 28</b>–X509v3 extensions confirming that the certificate is not a CA certificate.</figcaption>
 
 The **Basic Constraints** extension shows:
 
@@ -500,9 +500,9 @@ This confirms that the issued certificate is a **server certificate**, not a CA 
 
 ---
 
-![Figure 7](./screenshots/screenshots-week11/task3/7.png)
+![Figure 29](./screenshots/screenshots-week11/task3/7.png)
 
-<figcaption><b>Figure 7.</b>–Subject Alternative Name (SAN) extension included in the issued server certificate.</figcaption>
+<figcaption><b>Figure 29</b>–Subject Alternative Name (SAN) extension included in the issued server certificate.</figcaption>
 
 The **Subject Alternative Name (SAN)** extension contains:
 
