@@ -2,7 +2,7 @@
 
 ---
 
-## Task 1 — Becoming a Certificate Authority (CA) (OpenSSL)
+## Task 1 — Becoming a Certificate Authority (CA)
 
 In a normal PKI setup, you pay or otherwise rely on a commercial Certificate Authority (CA) to vouch for identities by signing certificates. In this lab, we become that trusted entity ourselves by creating a **root CA certificate**. Because it’s a root, it is **self-signed** (it signs its own certificate). Once that’s done, this CA can later sign certificates for servers/users in the other tasks.
 
