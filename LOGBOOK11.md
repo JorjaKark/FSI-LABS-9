@@ -546,21 +546,22 @@ The generated server certificate is now fully functional and ready to be deploye
 <figcaption><b>Figure 31</b>–Verifying local hostname resolution using the <code>getent hosts</code> command for the group06 domains.</figcaption>
 
 ![Figure 32](./screenshots/screenshots-week11/task4/3.png)
-<figcaption><b>Figure 32</b>–Starting the lab container environment and confirming that the web server container is running.</figcaption>
+<figcaption><b>Figure 32</b>–Copying the generated TLS server certificate (<code>server.crt</code>) and private key (<code>server.key</code>) from the local PKI directory into the Docker <code>volumes/</code> directory so they can be mounted and used by the Apache HTTPS container.</figcaption>
 
 ![Figure 33](./screenshots/screenshots-week11/task4/4.png)
-<figcaption><b>Figure 33</b>–Copying the server TLS certificate and private key into the Docker <code>volumes/</code> directory to be mounted by the Apache container.</figcaption>
+<figcaption><b>Figure 33</b>–Starting the Apache web server container and entering its shell using <code>docker exec</code>, then listing the available Apache site configuration files under <code>/etc/apache2/sites-available/</code>.</figcaption>
 
 ![Figure 34](./screenshots/screenshots-week11/task4/5.png)
-<figcaption><b>Figure 34</b>–Inspecting the <code>server.crt</code> file to confirm issuer, subject (CN), validity, and the presence of the Subject Alternative Names (SANs).</figcaption>
+<figcaption><b>Figure 34</b>–Inspecting the provided HTTPS site configuration template (<code>bank32_apache_ssl.conf</code>) to understand how SSL directives, virtual hosts, and certificate paths are defined.</figcaption>
 
 ![Figure 35](./screenshots/screenshots-week11/task4/6.png)
+<figcaption><b>Figure 35</b>–Copying the reference HTTPS configuration file (<code>bank32_apache_ssl.conf</code>) to create a new configuration file (<code>group06_apache_ssl.conf</code>) for the group06 HTTPS virtual host.</figcaption>
 
 ![Figure 36](./screenshots/screenshots-week11/task4/7.png)
-<figcaption><b>Figure 35</b>–Entering the Apache container shell and listing available Apache site configurations in <code>/etc/apache2/sites-available/</code>.</figcaption>
+<figcaption><b>Figure 36</b>–Editing the newly created Apache HTTPS configuration file (<code>group06_apache_ssl.conf</code>) to update the document root, server names, aliases, and SSL certificate paths for the group06 website.</figcaption>
 
 ![Figure 37](./screenshots/screenshots-week11/task4/8.png)
-<figcaption><b>Figure 37</b>–Viewing the provided SSL site configuration template (<code>bank32_apache_ssl.conf</code>) used as a reference for creating the group06 HTTPS configuration.</figcaption>
+<figcaption><b>Figure 37</b>–Finalizing the Apache HTTPS virtual host configuration for group06, defining both HTTP and HTTPS virtual hosts and enabling TLS using the generated server certificate and private key.</figcaption>
 
 ![Figure 38](./screenshots/screenshots-week11/task4/9.png)
 <figcaption><b>Figure 38</b>–Creating the document root directory for the group06 website and generating simple HTML pages for HTTP and HTTPS testing.</figcaption>
