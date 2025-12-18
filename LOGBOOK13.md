@@ -118,7 +118,7 @@ Nothing else is modified.
 
 ---
 
-## **Task 1.1 A – Packet Sniffing**
+## **Task 1.1 A – Sniffing Packets**
 
 ### **Objective**
 
@@ -285,5 +285,159 @@ In Task 1.1 A:
 * Root privileges were confirmed as mandatory for raw packet sniffing
 
 This task demonstrates how an attacker on the same network can passively observe traffic if proper isolation and protections are not enforced.
+
+---
+
+Alright — **calm reset**, you’re right to be pissed, and thank you for stopping it **now** instead of after submission.
+
+You are correct:
+
+* **You sent the screenshots so they MUST be referenced**
+* **Task 1.1B must explicitly show screenshots for each filter**
+* **The professor explicitly asked for syntax + commands + demonstration**
+
+Below is a **FIXED Task 1.1B**, same structure as 1.1A, **WITH SCREENSHOT PATHS**, **IN THE CORRECT ORDER**, and **reusing ICMP logically**.
+
+I am **not rewriting 1.1A**.
+This is **Task 1.1B ONLY**, ready to paste.
+
+---
+
+## **Task 1.1 B – Packet Sniffing with BPF Filters**
+
+### **Objective**
+
+The objective of Task 1.1B is to explore the **Berkeley Packet Filter (BPF) syntax** and demonstrate how packet capture can be restricted based on protocol, IP addresses, port numbers, and subnets.
+
+This task also requires identifying the **commands needed to generate the desired packets**, validating that each BPF filter works as intended.
+
+---
+
+### **BPF Filter 1 – Capturing Only ICMP Packets**
+
+The first filter captures **only ICMP packets**.
+
+This filter was already demonstrated in **Task 1.1A**, where the sniffer was configured as:
+
+```python
+pkt = sniff(iface='br-9eaacd4259b', filter='icmp', prn=print_pkt)
+```
+
+ICMP traffic was generated using `ping` between Host A and Host B.
+
+**Screenshot (reused from Task 1.1A):**
+![Figure 14](./screenshots/screenshots-week13/task1.1/A/packets-capture-sniffer-A-B.png)
+
+**Figure 14** – ICMP echo-request and echo-reply packets captured using the `icmp` BPF filter.
+
+This confirms that the `icmp` filter restricts packet capture strictly to ICMP traffic.
+
+---
+
+### **BPF Filter 2 – Capturing TCP Packets from a Specific Host and Destination Port**
+
+The second filter captures **TCP packets originating from a specific IP address and destined to port 23 (Telnet)**.
+
+The sniffer was configured with the following BPF filter:
+
+```python
+pkt = sniff(
+    iface='br-9eaacd4259b',
+    filter='tcp and src host 10.9.0.5 and dst port 23',
+    prn=print_pkt
+)
+```
+
+This filter combines multiple BPF conditions:
+
+* `tcp` → capture only TCP packets
+* `src host 10.9.0.5` → packets sent by Host A
+* `dst port 23` → packets destined to the Telnet port
+
+**Screenshot:**
+![Figure 15](./screenshots/screenshots-week13/task1.1/B/sniffer-tcp-filter.png)
+
+**Figure 15** – Sniffer configured with TCP source host and destination port filter.
+
+To generate matching traffic, a TCP connection attempt was initiated from **Host A** using:
+
+```bash
+docker exec -it hostA-10.9.0.5 bash -c "echo hello > /dev/tcp/10.9.0.6/23"
+```
+
+**Screenshot:**
+![Figure 16](./screenshots/screenshots-week13/task1.1/B/tcp-host-A.png)
+
+**Figure 16** – TCP traffic sent from Host A to port 23 on Host B.
+
+The sniffer successfully captured the corresponding TCP packets, including payload data:
+
+**Screenshot:**
+![Figure 17](./screenshots/screenshots-week13/task1.1/B/tcp-packets-host-A.png)
+
+![Figure 18](./screenshots/screenshots-week13/task1.1/B/tcp-packets-host-A-hello.png)
+
+**Figure 17–18** – TCP packets captured using the BPF filter, including application payload (`hello`).
+
+---
+
+### **BPF Filter 3 – Capturing Packets from or to an External Subnet**
+
+The final filter captures packets **originating from or destined to a subnet different from the VM’s local network**, as required by the guide.
+
+The selected subnet was:
+
+```
+128.230.0.0/16
+```
+
+The sniffer was configured with the following BPF filter:
+
+```python
+pkt = sniff(
+    iface='ens160',
+    filter='net 128.230.0.0/16',
+    prn=print_pkt
+)
+```
+
+**Screenshot:**
+![Figure 19](./screenshots/screenshots-week13/task1.1/B/sniffer-other-subnet-filter-ens60.png)
+
+**Figure 19** – Sniffer configured to capture traffic to or from subnet `128.230.0.0/16`.
+
+To generate matching traffic, an ICMP echo request was sent to a host within the selected subnet:
+
+```bash
+ping -c 1 -W 1 128.230.0.1
+```
+
+**Screenshot:**
+![Figure 20](./screenshots/screenshots-week13/task1.1/B/ping-other-subnet.png)
+
+**Figure 20** – ICMP echo request sent to an external subnet host.
+
+The sniffer captured packets matching the subnet filter:
+
+**Screenshot:**
+![Figure 21](./screenshots/screenshots-week13/task1.1/B/other-subnet-packets.png)
+
+![Figure 22](./screenshots/screenshots-week13/task1.1/B/other-subnet-packets-2.png)
+
+**Figure 21–22** – Packets captured using the `net 128.230.0.0/16` BPF filter.
+
+---
+
+### **Summary**
+
+In Task 1.1B:
+
+* BPF syntax was used to selectively filter packets by protocol, IP address, port, and subnet
+* ICMP-only filtering was demonstrated using the `icmp` keyword
+* TCP traffic from a specific host and destination port was captured using compound BPF conditions
+* Traffic to and from an external subnet was captured using the `net` keyword
+* Appropriate commands were executed to generate traffic matching each filter
+
+This task demonstrates how BPF filters provide fine-grained control over packet sniffing, allowing precise inspection of specific network traffic patterns.
 
 ---
