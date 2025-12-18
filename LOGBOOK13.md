@@ -420,15 +420,6 @@ This task demonstrates how BPF filters provide fine-grained control over packet 
 
 ---
 
-Got it. Yes — I understand exactly what you want now, and thanks for your patience.
-Below is **Task 1.2 written cleanly, following the same structure and tone as Task 1.1A**, **using the screenshots you sent**, and **explicitly satisfying the professor’s requirement**:
-
-> **“Task 1.2: Garanta que corre o Wireshark com permissões de root.”**
-
-Nothing from previous tasks is changed. This is a **drop-in section** for your `LOGBOOK13.md`.
-
----
-
 ## **Task 1.2 – Packet Spoofing with ICMP**
 
 ### **Objective**
@@ -449,9 +440,9 @@ sudo wireshark
 ```
 
 **Screenshot:**
-![Figure 20](./screenshots/screenshots-week13/task1.2/launch-wireshark-root-perms.png)
+![Figure 23](./screenshots/screenshots-week13/task1.2/launch-wireshark-root-perms.png)
 
-**Figure 20** – Wireshark launched with root privileges.
+**Figure 23** – Wireshark launched with root privileges.
 
 Running Wireshark without root permissions would prevent access to raw sockets and result in incomplete or failed packet captures. 
 
@@ -467,16 +458,16 @@ Once Wireshark was running, the Docker bridge interface used by the lab environm
 This ensures that only ICMP packets are captured, reducing noise and making spoofed packets easier to identify.
 
 **Screenshot:**
-![Figure 21](./screenshots/screenshots-week13/task1.2/choose-iface-filter-wireshark.png)
+![Figure 24](./screenshots/screenshots-week13/task1.2/choose-iface-filter-wireshark.png)
 
-**Figure 21** – Selection of the Docker bridge interface with an ICMP capture filter.
+**Figure 24** – Selection of the Docker bridge interface with an ICMP capture filter.
 
 After selecting the interface and filter, packet capture was started.
 
 **Screenshot:**
-![Figure 22](./screenshots/screenshots-week13/task1.2/start-cap-with-filter.png)
+![Figure 25](./screenshots/screenshots-week13/task1.2/start-cap-with-filter.png)
 
-**Figure 22** – Wireshark capturing ICMP packets on the bridge interface.
+**Figure 25** – Wireshark capturing ICMP packets on the bridge interface.
 
 ---
 
@@ -501,9 +492,9 @@ send(pkt)
 ```
 
 **Screenshot:**
-![Figure 23](./screenshots/screenshots-week13/task1.2/spoof_icmp-py.png)
+![Figure 26](./screenshots/screenshots-week13/task1.2/spoof_icmp-py.png)
 
-**Figure 23** – ICMP spoofing script implemented using Scapy.
+**Figure 26** – ICMP spoofing script implemented using Scapy.
 
 This script demonstrates that Scapy allows full control over packet fields, enabling source IP spoofing.
 
@@ -519,9 +510,9 @@ sudo ./spoof_icmp.py
 ```
 
 **Screenshot:**
-![Figure 24](./screenshots/screenshots-week13/task1.2/spoof-perms-run-1-pkt-sent.png)
+![Figure 27](./screenshots/screenshots-week13/task1.2/spoof-perms-run-1-pkt-sent.png)
 
-**Figure 24** – Spoofed ICMP packet successfully sent.
+**Figure 27** – Spoofed ICMP packet successfully sent.
 
 The output confirms that **one forged packet** was injected into the network.
 
@@ -532,9 +523,9 @@ The output confirms that **one forged packet** was injected into the network.
 While the spoofing script was executed, Wireshark captured the injected packet in real time.
 
 **Screenshot:**
-![Figure 25](./screenshots/screenshots-week13/task1.2/wireshark-spoof-run-capture.png)
+![Figure 28](./screenshots/screenshots-week13/task1.2/wireshark-spoof-run-capture.png)
 
-**Figure 25** – Wireshark capture showing the spoofed ICMP packet.
+**Figure 28** – Wireshark capture showing the spoofed ICMP packet.
 
 The captured packet clearly shows:
 
@@ -603,9 +594,9 @@ print(f"Sent ICMP Echo Request to {dst} with TTL={ttl}")
 ```
 
 **Screenshot:**
-![Figure 1](./screenshots/screenshots-week13/task1.3/traceroute-py.png)
+![Figure 29](./screenshots/screenshots-week13/task1.3/traceroute-py.png)
 
-**Figure 1** – Traceroute implementation using ICMP and configurable TTL.
+**Figure 29** – Traceroute implementation using ICMP and configurable TTL.
 
 Execution permissions were granted to the script:
 
@@ -624,9 +615,9 @@ sudo ./traceroute.py 1
 ```
 
 **Screenshot:**
-![Figure 2](./screenshots/screenshots-week13/task1.3/traceroute-perms+run-ttl-1.png)
+![Figure 30](./screenshots/screenshots-week13/task1.3/traceroute-perms+run-ttl-1.png)
 
-**Figure 2** – ICMP Echo Request sent to 8.8.8.8 with TTL = 1.
+**Figure 30** – ICMP Echo Request sent to 8.8.8.8 with TTL = 1.
 
 ---
 
@@ -644,9 +635,9 @@ When the packet with TTL = 1 was sent, Wireshark captured:
 * An **ICMP Time Exceeded** response from the first router on the path
 
 **Screenshot:**
-![Figure 3](./screenshots/screenshots-week13/task1.3/wireshark-ttl-1.png)
+![Figure 31](./screenshots/screenshots-week13/task1.3/wireshark-ttl-1.png)
 
-**Figure 3** – ICMP Time Exceeded message generated due to TTL expiration (TTL = 1).
+**Figure 31** – ICMP Time Exceeded message generated due to TTL expiration (TTL = 1).
 
 This confirms that the packet reached the first hop and was discarded when the TTL reached zero.
 
@@ -662,9 +653,9 @@ sudo ./traceroute.py 3
 ```
 
 **Screenshot:**
-![Figure 4](./screenshots/screenshots-week13/task1.3/traceroute-run-ttl-2-3.png)
+![Figure 32](./screenshots/screenshots-week13/task1.3/traceroute-run-ttl-2-3.png)
 
-**Figure 4** – ICMP Echo Requests sent with TTL = 2 and TTL = 3.
+**Figure 32** – ICMP Echo Requests sent with TTL = 2 and TTL = 3.
 
 ---
 
@@ -678,9 +669,9 @@ Wireshark captured additional ICMP responses corresponding to each TTL value:
 Each response reveals the IP address of an intermediate router along the path to `8.8.8.8`.
 
 **Screenshot:**
-![Figure 5](./screenshots/screenshots-week13/task1.3/wireshark-tt-2-3.png)
+![Figure 33](./screenshots/screenshots-week13/task1.3/wireshark-tt-2-3.png)
 
-**Figure 5** – ICMP Time Exceeded responses for TTL = 2 and TTL = 3, revealing intermediate hops.
+**Figure 33** – ICMP Time Exceeded responses for TTL = 2 and TTL = 3, revealing intermediate hops.
 
 ---
 
