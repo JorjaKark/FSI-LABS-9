@@ -567,3 +567,146 @@ In Task 1.2:
 * The injected packet was captured and analyzed using Wireshark
 
 This task clearly demonstrates the feasibility and danger of packet spoofing in improperly protected networks.
+
+---
+
+## **Task 1.3 – Traceroute Using ICMP and TTL Manipulation**
+
+### **Objective**
+
+The objective of Task 1.3 is to understand how **traceroute** works at the network level by manually crafting ICMP packets with increasing **Time-To-Live (TTL)** values.
+By sending ICMP Echo Requests to an **external IP address (8.8.8.8)** and observing the ICMP responses, it is possible to identify intermediate routers along the path to the destination.
+
+This task demonstrates how routers decrement the TTL field and generate **ICMP Time Exceeded** messages when the TTL reaches zero.
+
+---
+
+### **Traceroute Script Preparation**
+
+A custom Python script (`traceroute.py`) was created using **Scapy** to send ICMP packets with a configurable TTL value.
+
+The contents of the script are shown below:
+
+```python
+#!/usr/bin/env python3
+from scapy.all import *
+import sys
+
+dst = "8.8.8.8"
+ttl = int(sys.argv[1])
+
+ip = IP(dst=dst, ttl=ttl)
+icmp = ICMP()
+send(ip/icmp, verbose=0)
+
+print(f"Sent ICMP Echo Request to {dst} with TTL={ttl}")
+```
+
+**Screenshot:**
+![Figure 1](./screenshots/screenshots-week13/task1.3/traceroute-py.png)
+
+**Figure 1** – Traceroute implementation using ICMP and configurable TTL.
+
+Execution permissions were granted to the script:
+
+```bash
+chmod +x traceroute.py
+```
+
+---
+
+### **Sending ICMP Packet with TTL = 1**
+
+The traceroute process begins by sending an ICMP Echo Request with **TTL = 1**:
+
+```bash
+sudo ./traceroute.py 1
+```
+
+**Screenshot:**
+![Figure 2](./screenshots/screenshots-week13/task1.3/traceroute-perms+run-ttl-1.png)
+
+**Figure 2** – ICMP Echo Request sent to 8.8.8.8 with TTL = 1.
+
+---
+
+### **Wireshark Capture (TTL = 1)**
+
+Wireshark was executed with **root privileges**, and a capture was started on interface `ens160` using the capture filter:
+
+```
+icmp
+```
+
+When the packet with TTL = 1 was sent, Wireshark captured:
+
+* The original ICMP Echo Request
+* An **ICMP Time Exceeded** response from the first router on the path
+
+**Screenshot:**
+![Figure 3](./screenshots/screenshots-week13/task1.3/wireshark-ttl-1.png)
+
+**Figure 3** – ICMP Time Exceeded message generated due to TTL expiration (TTL = 1).
+
+This confirms that the packet reached the first hop and was discarded when the TTL reached zero.
+
+---
+
+### **Sending ICMP Packets with TTL = 2 and TTL = 3**
+
+The traceroute process was continued by increasing the TTL value:
+
+```bash
+sudo ./traceroute.py 2
+sudo ./traceroute.py 3
+```
+
+**Screenshot:**
+![Figure 4](./screenshots/screenshots-week13/task1.3/traceroute-run-ttl-2-3.png)
+
+**Figure 4** – ICMP Echo Requests sent with TTL = 2 and TTL = 3.
+
+---
+
+### **Wireshark Capture (TTL = 2 and TTL = 3)**
+
+Wireshark captured additional ICMP responses corresponding to each TTL value:
+
+* For **TTL = 2**, an ICMP Time Exceeded message from the second hop
+* For **TTL = 3**, an ICMP Time Exceeded message from the third hop
+
+Each response reveals the IP address of an intermediate router along the path to `8.8.8.8`.
+
+**Screenshot:**
+![Figure 5](./screenshots/screenshots-week13/task1.3/wireshark-tt-2-3.png)
+
+**Figure 5** – ICMP Time Exceeded responses for TTL = 2 and TTL = 3, revealing intermediate hops.
+
+---
+
+### **Analysis**
+
+This experiment clearly demonstrates how traceroute works:
+
+1. The sender transmits ICMP Echo Requests with increasing TTL values
+2. Each router decrements the TTL field
+3. When TTL reaches zero, the router discards the packet
+4. The router responds with an **ICMP Time Exceeded** message
+5. The source IP of the ICMP response identifies the router
+
+By gradually increasing TTL, the full network path to the destination can be mapped.
+
+---
+
+### **Summary**
+
+In Task 1.3:
+
+* An external IP address (**8.8.8.8**) was successfully used as the traceroute destination
+* ICMP packets with increasing TTL values were generated using Scapy
+* Wireshark captured ICMP Time Exceeded messages from intermediate routers
+* The internal operation of traceroute was demonstrated and analyzed
+
+This task illustrates how packet sniffing and ICMP behavior can be leveraged to infer network topology and routing paths.
+
+---
