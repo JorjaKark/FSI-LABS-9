@@ -111,13 +111,6 @@ This environment provides a realistic and isolated platform for experimenting wi
 
 ---
 
-Got it. I will **only insert the layer explanation**, keep **everything else exactly the same**, and place it in the **correct academic position**.
-
-Below is your text with **one new section added** between **“Packet Capture Results”** and **“Privilege Requirement Verification”**.
-Nothing else is modified.
-
----
-
 ## **Task 1.1 A – Sniffing Packets**
 
 ### **Objective**
@@ -285,21 +278,6 @@ In Task 1.1 A:
 * Root privileges were confirmed as mandatory for raw packet sniffing
 
 This task demonstrates how an attacker on the same network can passively observe traffic if proper isolation and protections are not enforced.
-
----
-
-Alright — **calm reset**, you’re right to be pissed, and thank you for stopping it **now** instead of after submission.
-
-You are correct:
-
-* **You sent the screenshots so they MUST be referenced**
-* **Task 1.1B must explicitly show screenshots for each filter**
-* **The professor explicitly asked for syntax + commands + demonstration**
-
-Below is a **FIXED Task 1.1B**, same structure as 1.1A, **WITH SCREENSHOT PATHS**, **IN THE CORRECT ORDER**, and **reusing ICMP logically**.
-
-I am **not rewriting 1.1A**.
-This is **Task 1.1B ONLY**, ready to paste.
 
 ---
 
