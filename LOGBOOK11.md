@@ -79,7 +79,7 @@ As shown in the screenshot, we entered:
 * **CN** = t01-group6 Root CA
 * **emailAddress** = [www.modelCA.com](http://www.modelCA.com)
 
-#### 5. Inspecting the certificate and key (the lab questions come from here)
+#### 5. Inspecting the certificate and key
 
 To answer the lab questions and verify the generated artifacts, we inspected both the CA certificate and its private key using OpenSSL’s decoding tools:
 
