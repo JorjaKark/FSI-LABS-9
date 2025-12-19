@@ -633,7 +633,8 @@ Inspection of the presented certificate revealed the following details:
 
 ![Figure 55](./screenshots/screenshots-week11/task5/5.png)
 
-<figcaption><b>Figure 54</b> – Certificate details confirming that the certificate was issued for <code>www.bank32.com</code> and not for <code>www.example.com</code>.</figcaption>
+<figcaption><b>Figure 55
+</b> – Certificate details confirming that the certificate was issued for <code>www.bank32.com</code> and not for <code>www.example.com</code>.</figcaption>
 
 ---
 
