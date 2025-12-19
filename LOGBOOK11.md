@@ -436,7 +436,7 @@ At this point, the server certificate is complete and ready to be deployed on a 
 
 ---
 
-## Task 4
+## Task 4 - 
 
 In this task, we deployed the server certificate generated in Task 3 on an Apache web server running inside a Docker container, enabling HTTPS for the website. This demonstrates how public-key certificates are used in practice to secure web communication.
 
@@ -546,3 +546,247 @@ When initially accessing https://www.group06.com, the browser displayed a securi
 ## Conclusions
 
 In this task, we successfully deployed the server certificate on an Apache web server and enabled HTTPS communication. We configured hostname resolution, prepared the Apache HTTPS virtual host, enabled SSL, and demonstrated the trust relationship by importing the custom Root CA into the browser. After establishing trust, the HTTPS website could be accessed securely without warnings.
+
+## Task 5: Launching a Man-In-The-Middle Attack
+
+### **1. Setting up the malicious website**
+
+We created a fake website to impersonate **www.example.com**. First, we set up a dedicated directory to host the malicious content:
+
+```bash
+mkdir -p /var/www/example
+echo "<h1>Fake example.com - MITM</h1>" > /var/www/example/index.html
+```
+
+Then, we configured Apache to serve this fake website for HTTPS requests to **www.example.com**.
+
+![Figure 51](./screenshots/screenshots-week11/task5/1.png)
+
+<figcaption><b>Figure 51</b> – Configuring Apache to host the malicious website for <code>www.example.com</code>.</figcaption>
+
+**Important:**  
+We intentionally used a certificate that was **not issued for www.example.com**. Instead, the certificate presented by the server was issued for **www.bank32.com**, clearly demonstrating a certificate hostname mismatch.
+
+---
+
+### **2. Becoming the Man-in-the-Middle**
+
+To simulate DNS spoofing, a common technique used in MITM attacks, we modified the victim’s `/etc/hosts` file to redirect traffic for **www.example.com** to the malicious server’s IP address.
+
+```bash
+10.9.0.80 www.example.com
+```
+
+![Figure 52](./screenshots/screenshots-week11/task5/2.png)
+
+<figcaption><b>Figure 52</b> – Modifying <code>/etc/hosts</code> to redirect <code>www.example.com</code> to the malicious server at IP address <code>10.9.0.80</code>.</figcaption>
+
+To verify that the redirection was active, we used the following command:
+
+```bash
+getent hosts www.example.com
+```
+
+**Output:**
+```
+10.9.0.80 www.example.com
+```
+
+This confirms that DNS resolution was successfully redirected to the attacker-controlled server.
+
+---
+
+### **3. Browsing the target website**
+
+With the malicious server and DNS spoofing in place, we attempted to access **https://www.example.com** using the Firefox browser.
+
+**Result:**  
+Firefox immediately displayed a security warning and refused to establish the connection.
+
+![Figure 53](./screenshots/screenshots-week11/task5/3.png)
+
+<figcaption><b>Figure 53</b> – Firefox blocking access due to a certificate mismatch. The presented certificate was issued for <code>www.bank32.com</code>, not for <code>www.example.com</code>.</figcaption>
+
+---
+
+### **4. Verifying DNS configuration**
+
+To confirm the DNS redirection was properly configured, we displayed the complete /etc/hosts file:
+
+```bash
+cat /etc/hosts
+```
+
+![Figure 54](./screenshots/screenshots-week11/task5/4.png)
+
+<figcaption><b>Figure 54</b> – Complete <code>/etc/hosts</code> configuration confirming the DNS spoofing setup.</figcaption>
+
+---
+
+### **5. Certificate details analysis**
+
+Inspection of the presented certificate revealed the following details:
+
+* **Subject:** CN = www.bank32.com  
+* **Issuer:** CN = ModelCA_Refreshed  
+* **Validity:** The certificate was issued for a completely different domain than the one being accessed.
+
+![Figure 55](./screenshots/screenshots-week11/task5/5.png)
+
+<figcaption><b>Figure 54</b> – Certificate details confirming that the certificate was issued for <code>www.bank32.com</code> and not for <code>www.example.com</code>.</figcaption>
+
+---
+
+### **Analysis and Conclusions**
+
+The browser’s security warning clearly demonstrates that Public Key Infrastructure (PKI) successfully prevented the Man-In-The-Middle attack. This occurred due to several built-in security mechanisms:
+
+* **Certificate Name Validation:**  
+  During the TLS handshake, the browser verifies that the certificate’s Common Name (CN) matches the requested hostname. In this case, the certificate was valid only for **www.bank32.com**, while the requested domain was **www.example.com**.
+
+* **Automatic Protection:**  
+  Modern browsers perform this validation automatically without requiring user intervention.
+
+* **Clear User Warning:**  
+  Firefox presented a clear and explicit warning explaining the risk and advising against proceeding.
+
+**Key Takeaway:**  
+Even though network traffic was successfully redirected to a malicious server through DNS spoofing, it was not possible to establish a trusted HTTPS connection without a valid certificate for the target domain.
+
+This experiment confirms that certificate validation is a critical defense mechanism in HTTPS, ensuring that users communicate only with legitimate servers and not with impostors.
+
+
+## Task 6: Launching a Man-In-The-Middle Attack with a Compromised CA
+
+In this task, we explored the catastrophic consequences of a compromised Certificate Authority (CA). By assuming possession of the Root CA's private key (`ca.key`), we demonstrated how an attacker can successfully execute a Man-in-the-Middle (MITM) attack against an HTTPS website. The target domain for this attack was **www.example.com**.
+
+---
+
+### **1. Generating a Fake RSA Key Pair**
+
+We began by generating a new 2048-bit RSA private key, which would be used by the malicious web server impersonating **www.example.com**.
+
+```bash
+openssl genrsa -out example_fake.key 2048
+```
+
+![Figure 56](./screenshots/screenshots-week11/task6/1.png)
+
+<figcaption><b>Figure 1</b> – Generation of a new RSA private key for the fake <code>www.example.com</code> website.</figcaption>
+
+---
+
+### **2. Creating a Forged Certificate Signing Request (CSR)**
+
+Using the generated private key, we created a Certificate Signing Request (CSR). The Common Name (CN) was deliberately set to **www.example.com**, while the organizational details were falsified.
+
+```bash
+openssl req -new -key example_fake.key -out example_fake.csr \
+  -subj "/C=PT/ST=Porto/L=Paranhos/O=EvilCorp/OU=MITM/CN=www.example.com"
+```
+
+![Figure 57](./screenshots/screenshots-week11/task6/1.png)
+
+<figcaption><b>Figure 2</b> – Creation of a forged CSR containing malicious organizational details and the victim domain as the Common Name.</figcaption>
+
+---
+
+### **3. Signing the Fake Certificate with the Compromised CA**
+
+With access to the legitimate CA’s private key, we signed the forged CSR. This produced a certificate that would be trusted by any browser that trusts the compromised Root CA.
+
+```bash
+openssl x509 -req -in example_fake.csr -CA ca.crt -CAkey ca.key \
+  -CAcreateserial -out example_fake.crt -days 365 -sha256 \
+  -extfile <(printf "subjectAltName=DNS:www.example.com")
+```
+
+![Figure 58](./screenshots/screenshots-week11/task6/3.png)
+
+<figcaption><b>Figure 3</b> – Signing the fake certificate using the compromised CA’s private key, including a valid Subject Alternative Name for <code>www.example.com</code>.</figcaption>
+
+---
+
+### **4. Deploying the Malicious Certificate to the Web Server**
+
+The forged certificate and its corresponding private key were copied into the Apache SSL directories inside the attacker-controlled Docker container.
+
+```bash
+docker cp example_fake.crt 43c:/etc/ssl/certs/example_fake.crt
+docker cp example_fake.key 43c:/etc/ssl/private/example_fake.key
+```
+
+![Figure 59](./screenshots/screenshots-week11/task6/4.png)
+
+<figcaption><b>Figure 4</b> – Deployment of the malicious certificate and private key to the Apache web server.</figcaption>
+
+---
+
+### **5. Configuring Apache for the MITM Attack**
+
+Apache was configured with a dedicated HTTPS VirtualHost for **www.example.com**, using the forged certificate and a fake document root.
+
+```apache
+<VirtualHost *:443>
+    ServerName www.example.com
+    DocumentRoot /var/www/example
+    SSLEngine On
+    SSLCertificateFile /etc/ssl/certs/example_fake.crt
+    SSLCertificateKeyFile /etc/ssl/private/example_fake.key
+</VirtualHost>
+```
+
+![Figure 60](./screenshots/screenshots-week11/task6/5.png)
+
+<figcaption><b>Figure 5</b> – Apache VirtualHost configuration enabling the MITM attack using the forged certificate.</figcaption>
+
+---
+
+### **6. Activating the MITM Setup**
+
+After completing the Apache configuration, the web server was restarted to activate the MITM infrastructure.
+
+```bash
+docker exec -it 43c service apache2 restart
+```
+
+![Figure 61](./screenshots/screenshots-week11/task6/6.png)
+
+<figcaption><b>Figure 6</b> – Restarting Apache to activate the malicious HTTPS configuration.</figcaption>
+
+---
+
+### **7. Verifying the Successful Attack**
+
+With DNS spoofing already configured via `/etc/hosts`, redirecting **www.example.com** to the attacker’s server, we accessed the website using a browser.
+
+The browser established a secure HTTPS connection **without any warnings**, and the malicious content was displayed.
+
+```text
+# Fake example.com - MITM
+```
+
+![Figure 62](./screenshots/screenshots-week11/task6/7.png)
+
+<figcaption><b>Figure 7</b> – Successful MITM attack. The fake website is served over HTTPS with no browser security warnings.</figcaption>
+
+---
+
+### **Analysis and Conclusions**
+
+This task demonstrates the complete failure of the Public Key Infrastructure (PKI) model when a Certificate Authority is compromised.
+
+* **Undetectable Impersonation:**  
+  Possession of the CA’s private key allows attackers to generate certificates for any domain, indistinguishable from legitimate ones.
+
+* **Browser Trust Maintained:**  
+  The browser trusted the malicious certificate because it was signed by a trusted Root CA.
+
+* **Contrast with Task 5:**  
+  In Task 5, PKI successfully blocked the MITM attack due to a certificate hostname mismatch. In this task, PKI provided no protection.
+
+* **Critical Security Implication:**  
+  A compromised CA undermines the security of all domains it certifies, enabling large-scale and undetectable MITM attacks.
+
+**Key Takeaway:**  
+PKI is highly effective against standard MITM attacks, but its entire trust model collapses if a Root CA is compromised, highlighting the critical importance of CA private key protection.
