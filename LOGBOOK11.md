@@ -436,7 +436,7 @@ At this point, the server certificate is complete and ready to be deployed on a 
 
 ---
 
-## Task 4 - 
+## Task 4 -  Deploying Certificate in an Apache-Based HTTPS Website
 
 In this task, we deployed the server certificate generated in Task 3 on an Apache web server running inside a Docker container, enabling HTTPS for the website. This demonstrates how public-key certificates are used in practice to secure web communication.
 
