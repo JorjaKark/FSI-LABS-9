@@ -672,7 +672,7 @@ openssl genrsa -out example_fake.key 2048
 
 ![Figure 56](./screenshots/screenshots-week11/task6/1.png)
 
-<figcaption><b>Figure 1</b> – Generation of a new RSA private key for the fake <code>www.example.com</code> website.</figcaption>
+<figcaption><b>Figure 56</b> – Generation of a new RSA private key for the fake <code>www.example.com</code> website.</figcaption>
 
 ---
 
@@ -687,7 +687,7 @@ openssl req -new -key example_fake.key -out example_fake.csr \
 
 ![Figure 57](./screenshots/screenshots-week11/task6/1.png)
 
-<figcaption><b>Figure 2</b> – Creation of a forged CSR containing malicious organizational details and the victim domain as the Common Name.</figcaption>
+<figcaption><b>Figure 57</b> – Creation of a forged CSR containing malicious organizational details and the victim domain as the Common Name.</figcaption>
 
 ---
 
@@ -701,9 +701,9 @@ openssl x509 -req -in example_fake.csr -CA ca.crt -CAkey ca.key \
   -extfile <(printf "subjectAltName=DNS:www.example.com")
 ```
 
-![Figure 58](./screenshots/screenshots-week11/task6/3.png)
+![Figure 58](./screenshots/screenshots-week11/task6/2.png)
 
-<figcaption><b>Figure 3</b> – Signing the fake certificate using the compromised CA’s private key, including a valid Subject Alternative Name for <code>www.example.com</code>.</figcaption>
+<figcaption><b>Figure 58</b> – Signing the fake certificate using the compromised CA’s private key, including a valid Subject Alternative Name for <code>www.example.com</code>.</figcaption>
 
 ---
 
@@ -716,9 +716,9 @@ docker cp example_fake.crt 43c:/etc/ssl/certs/example_fake.crt
 docker cp example_fake.key 43c:/etc/ssl/private/example_fake.key
 ```
 
-![Figure 59](./screenshots/screenshots-week11/task6/4.png)
+![Figure 59](./screenshots/screenshots-week11/task6/3.png)
 
-<figcaption><b>Figure 4</b> – Deployment of the malicious certificate and private key to the Apache web server.</figcaption>
+<figcaption><b>Figure 59</b> – Deployment of the malicious certificate and private key to the Apache web server.</figcaption>
 
 ---
 
@@ -736,9 +736,9 @@ Apache was configured with a dedicated HTTPS VirtualHost for **www.example.com**
 </VirtualHost>
 ```
 
-![Figure 60](./screenshots/screenshots-week11/task6/5.png)
+![Figure 60](./screenshots/screenshots-week11/task6/4.png)
 
-<figcaption><b>Figure 5</b> – Apache VirtualHost configuration enabling the MITM attack using the forged certificate.</figcaption>
+<figcaption><b>Figure 60</b> – Apache VirtualHost configuration enabling the MITM attack using the forged certificate.</figcaption>
 
 ---
 
@@ -750,9 +750,9 @@ After completing the Apache configuration, the web server was restarted to activ
 docker exec -it 43c service apache2 restart
 ```
 
-![Figure 61](./screenshots/screenshots-week11/task6/6.png)
+![Figure 61](./screenshots/screenshots-week11/task6/5.png)
 
-<figcaption><b>Figure 6</b> – Restarting Apache to activate the malicious HTTPS configuration.</figcaption>
+<figcaption><b>Figure 61</b> – Restarting Apache to activate the malicious HTTPS configuration.</figcaption>
 
 ---
 
@@ -766,9 +766,9 @@ The browser established a secure HTTPS connection **without any warnings**, and 
 # Fake example.com - MITM
 ```
 
-![Figure 62](./screenshots/screenshots-week11/task6/7.png)
+![Figure 62](./screenshots/screenshots-week11/task6/6.png)
 
-<figcaption><b>Figure 7</b> – Successful MITM attack. The fake website is served over HTTPS with no browser security warnings.</figcaption>
+<figcaption><b>Figure 62</b> – Successful MITM attack. The fake website is served over HTTPS with no browser security warnings.</figcaption>
 
 ---
 
