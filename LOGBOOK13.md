@@ -701,3 +701,211 @@ In Task 1.3:
 This task illustrates how packet sniffing and ICMP behavior can be leveraged to infer network topology and routing paths.
 
 ---
+
+## **Task 1.4 – Sniffing and then Spoofing**
+
+### **Objective**
+
+The objective of Task 1.4 is to combine **packet sniffing** and **packet spoofing** techniques to implement a **Man-In-The-Middle (MITM)** attack mechanism.
+In this experiment, an attacker-controlled program monitors the network for **ICMP Echo Request** packets and immediately forges corresponding **ICMP Echo Reply** packets.
+
+This causes the victim to believe that a target host is alive and reachable, regardless of whether the host actually exists or responds legitimately.
+
+---
+
+### **Implementation**
+
+To implement the sniff-and-spoof attack, a Python script named `sniff_spoof.py` was created using **Scapy**.
+The script operates as follows:
+
+* **Sniffing:**  
+  Listens on the Docker bridge interface (`br-2b5c48333e18`) for ICMP packets.
+
+* **Filtering:**  
+  Identifies ICMP Echo Request packets (ICMP Type 8).
+
+* **Packet Processing:**  
+  Extracts relevant fields from the captured packet, including:
+  - Source IP address
+  - Destination IP address
+  - ICMP Identifier
+  - ICMP Sequence Number
+
+* **Spoofing:**  
+  Constructs a forged IP packet with the source and destination IP addresses swapped.
+
+* **Replying:**  
+  Sends an ICMP Echo Reply (ICMP Type 0) with matching identifier and sequence number so that the victim accepts the reply as valid.
+
+---
+
+### **Sniff-and-Spoof Script**
+
+The full implementation of `sniff_spoof.py` is shown below:
+
+```python
+#!/usr/bin/env python3
+from scapy.all import *
+
+def spoof_pkt(pkt):
+    # Filter for ICMP Echo Requests (Type 8)
+    if ICMP in pkt and pkt[ICMP].type == 8:
+        print("Original Packet.........")
+        print("Source IP: ", pkt[IP].src)
+        print("Dest IP: ", pkt[IP].dst)
+
+        # Swap Source and Destination IP addresses
+        ip = IP(src=pkt[IP].dst, dst=pkt[IP].src)
+
+        # Construct ICMP Echo Reply (Type 0)
+        icmp = ICMP(type=0, id=pkt[ICMP].id, seq=pkt[ICMP].seq)
+
+        # Preserve payload if present
+        if Raw in pkt:
+            data = pkt[Raw].load
+            newpkt = ip / icmp / data
+        else:
+            newpkt = ip / icmp
+
+        print("Spoofed Packet Sent!\n")
+        send(newpkt, verbose=0)
+
+# Sniff packets on the Docker bridge interface
+pkt = sniff(iface='br-2b5c48333e18', filter='icmp', prn=spoof_pkt)
+```
+
+**Screenshot:**
+![Figure 34](./screenshots/screenshots-week13/task1.4/1.png)
+
+**Figure 34** - Sniff-and-spoof script implemented using Scapy.
+
+
+---
+
+### **Script Execution**
+
+The script was executed inside the **Attacker** container with root privileges, which are required for raw packet sniffing and injection:
+
+```bash
+chmod a+x sniff_spoof.py
+sudo ./sniff_spoof.py
+```
+
+Once running, the script continuously monitored the network and automatically responded to captured ICMP Echo Requests.
+
+**Screenshot:**
+![Figure 35](./screenshots/screenshots-week13/task1.4/2.png)
+
+**Figure 35** - Granting execution permissions and running the sniff-and-spoof script with root privileges.
+
+---
+
+### **Experiment Results**
+
+To evaluate the effectiveness of the sniff-and-spoof attack, three different ping scenarios were tested from **Host A (10.9.0.5)**.
+
+**Screenshot:**
+![Figure 36](./screenshots/screenshots-week13/task1.4/3.png)
+
+**Figure 36** - Accessing Host A container to perform the ping tests.
+
+---
+
+#### **Scenario 1 – Pinging a Non-Existent Internet Host (1.2.3.4)**
+
+An ICMP Echo Request was sent to IP address `1.2.3.4`, which is not reachable from the local network.
+
+```bash
+ping 1.2.3.4
+```
+
+**Observation:**  
+Host A received valid ICMP Echo Replies with minimal round-trip time.
+
+**Screenshot:**  
+![Figure 37](./screenshots/screenshots-week13/task1.4/4.png)
+**Figure 37** - Host A receiving valid ping replies from the non-existent IP 1.2.3.4.
+
+**Screenshot:**
+![Figure 38](./screenshots/screenshots-week13/task1.4/5.png)
+
+**Figure 38** - Successful ICMP echo replies spoofed by the attacker for destination IP 1.2.3.4.
+
+**Explanation:**  
+Since `1.2.3.4` is an external IP address, Host A forwarded the ICMP request to the gateway.
+The attacker’s sniffer captured the packet on the bridge interface and immediately injected a spoofed ICMP Echo Reply.
+Host A accepted the forged response, believing the host to be alive.
+
+---
+
+#### **Scenario 2 – Pinging a Non-Existent Local Host (10.9.0.99)**
+
+An ICMP Echo Request was sent to `10.9.0.99`, an IP address within the local subnet that does not correspond to any active host.
+
+```bash
+ping 10.9.0.99
+```
+
+**Observation:**  
+The ping command failed with a timeout or *Destination Host Unreachable*, and the sniffing script did not capture any packets.
+
+**Screenshot:**
+![Figure 39](./screenshots/screenshots-week13/task1.4/6.png)
+
+**Figure 39** - Ping attempt to non-existent local host 10.9.0.99 resulting in failure due to ARP resolution.
+
+**Explanation:**  
+
+This behavior is explained by the **ARP protocol**:
+
+* Before sending an ICMP packet to a local IP, the host must resolve the destination MAC address using ARP
+* Host A broadcasts an ARP request asking for the MAC address of `10.9.0.99`
+* Since the host does not exist, no ARP reply is received
+* Without a MAC address, the ICMP packet is never transmitted
+* As a result, the sniffer never sees the packet and cannot spoof a reply
+
+---
+
+#### **Scenario 3 – Pinging a Legitimate Internet Host (8.8.8.8)**
+
+An ICMP Echo Request was sent to `8.8.8.8`, a reachable and active Internet host.
+
+```bash
+ping 8.8.8.8
+```
+
+**Observation:**  
+Host A received replies marked as `(DUP!)`, indicating duplicate responses.
+
+**Screenshot:**
+![Figure 40](./screenshots/screenshots-week13/task1.4/7.png)
+
+**Figure 40** - Duplicate ICMP echo replies received when pinging 8.8.8.8, indicating spoofed and legitimate responses.
+
+**Screenshot:**
+![Figure 41](./screenshots/screenshots-week13/task1.4/8.png)
+
+**Figure 41** - Attacker console output showing ICMP packets related to the sniff-and-spoof attack involving destination 8.8.8.8.
+
+**Explanation:**  
+
+This result reveals a **race condition**:
+
+* The real `8.8.8.8` server received the request and sent a legitimate ICMP Echo Reply
+* The attacker’s script also sniffed the request and sent a spoofed reply
+* Host A received two replies for the same request
+* One of the replies was marked as duplicate by the `ping` utility
+
+---
+
+### **Summary**
+
+In Task 1.4:
+
+* A combined packet sniffing and spoofing attack was successfully implemented using Scapy
+* The attacker was able to forge ICMP replies for external IP addresses
+* The attack failed for non-existent local hosts due to ARP resolution requirements
+* Duplicate replies confirmed that spoofed packets can be injected even when the legitimate host is active
+
+This task demonstrates how sniffing and spoofing can be combined to manipulate network behavior, while also highlighting the limitations imposed by lower-layer protocols such as ARP.
+
